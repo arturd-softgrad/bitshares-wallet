@@ -74,7 +74,16 @@ class WalletActions {
                 referrer, //referrer_id,
                 referrer_percent, //referrer_percent,
                 true //broadcast
-            ).then( () => updateWallet() )
+            ).then( () => updateWallet() ).catch(error => {
+                if (
+                    error instanceof TypeError ||
+                    error.toString().indexOf('ECONNREFUSED') != -1
+                ) {
+                    console.log("Warning! faucet registration failed, falling back to direct application_api.create_account..");
+                    return create_account();
+                }
+                throw error;
+            })
         };
 
         if(registrar) {

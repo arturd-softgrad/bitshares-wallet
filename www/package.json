@@ -6,13 +6,14 @@
   "dependencies": {
     "alt": "*",
     "bignumber.js": "*",
+    "babel": "*",
     "classnames": "*",
     "cookies-js": "*",
     "counterpart": "*",
     "event-emitter": "*",
     "html-loader": "*",
     "immutable": "*",
-    "indexeddbshim": "*",
+    "indexeddbshim": "^2.0.4",
     "git-rev-sync": "*",
     "intl": "*",
     "jdenticon": "git+https://github.com/cryptonomex/jdenticon.git",
@@ -66,7 +67,7 @@
     "worker-loader": "^0.6.0"
   },
   "scripts": {
-    "start": "watchify -o js/bundle.js -v -d .",
+    "start": "node server.js",
     "build": "webpack --config conf/webpack-prod.js  --progress --profile --colors;"
   },
   "author": "Softgrad Solutions",

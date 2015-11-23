@@ -1,5 +1,6 @@
 import React from "react";
 import {PropTypes, Component} from "react";
+import ReactDOM from 'react-dom';
 import ActionSheet from "react-foundation-apps/src/action-sheet";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
@@ -14,7 +15,7 @@ class AutocompleteInput extends Component {
     }
 
     getInput() {
-        let action_sheet = React.findDOMNode(this.refs.action_sheet);
+        let action_sheet = ReactDOM.findDOMNode(this.refs.action_sheet);
         return action_sheet.querySelector('[name="value"]');
     }
 

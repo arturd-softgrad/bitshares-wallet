@@ -2,7 +2,7 @@ import idb_helper from "idb-helper"
 import Apis from "rpc_api/ApiInstances"
 
 const DB_VERSION_MAIN = 1
-const DB_PREFIX = "graphene_db_wallet"
+const DB_PREFIX = "graphene_db"
 
 /** Usage: openIndexDB.then( db => ... */
 export default class iDBRoot {

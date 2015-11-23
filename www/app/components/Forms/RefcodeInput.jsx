@@ -4,6 +4,7 @@ import classnames from "classnames";
 import Translate from "react-translate-component";
 import cookies from "cookies-js";
 import SettingsStore from "stores/SettingsStore";
+const TextField = require('material-ui/lib/text-field');
 
 /**
  * @brief Allows the user to enter a referral code
@@ -83,13 +84,16 @@ class RefcodeInput extends React.Component {
 
         return (
             <div className="refcode-input">
-                <label><Translate component="label" content={this.props.label}/></label>
                 <span className="inline-label">
-                <input type="text" ref="refcode_input" value={this.state.value}
-                       onChange={this.onInputChanged.bind(this)}
+                 <TextField
+                      hintText={this.props.placeholder}
+                      floatingLabelText={this.props.label}
+                      ref="refcode_input"
+                      onChange={this.onInputChanged.bind(this)}
                        onKeyDown={this.onKeyDown.bind(this)}
-                       tabIndex={this.props.tabIndex}
-                       autoComplete="off"/>
+                      type="text"
+                      value={this.state.value}
+                      autoComplete="off"/>
                 { this.props.allow_claim_to_account ? (
                     <button className={action_class}
                             onClick={this.onClaim.bind(this)}>

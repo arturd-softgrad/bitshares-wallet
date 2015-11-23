@@ -76,7 +76,8 @@ class Apis {
 
     setRpcConnectionStatusCallback(callback) {
         this.update_rpc_connection_status_callback = callback;
-    }   
+    }
+    
 }
 
 var apis_instance;

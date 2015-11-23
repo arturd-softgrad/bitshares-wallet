@@ -10,8 +10,11 @@ class IntlActions {
         this.dispatch(locale);
     }
 
-    getLanguages() {
-        this.dispatch();
+    switchTimezone(id){
+        this.dispatch(id);
+    }
+    switchCurrency(id){
+        this.dispatch(id);
     }
 
 }

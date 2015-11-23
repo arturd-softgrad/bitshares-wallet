@@ -16,6 +16,10 @@ import LoadingIndicator from "./LoadingIndicator";
 import WalletActions from "actions/WalletActions";
 import Translate from "react-translate-component";
 import RefcodeInput from "./Forms/RefcodeInput";
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
+import Colors from'material-ui/lib/styles/colors';
+const RaisedButton = require('material-ui/lib/raised-button');
 
 @connectToStores
 class CreateAccount extends React.Component {
@@ -28,12 +32,32 @@ class CreateAccount extends React.Component {
         return {}
     }
 
-    static contextTypes = {router: React.PropTypes.func.isRequired};
+    //static contextTypes = {router: React.PropTypes.func.isRequired};
 
     constructor() {
         super();
-        this.state = {validAccountName: false, accountName: "", validPassword: false, registrar_account: null, loading: false, hide_refcode: true};
+
+        super();
+        this.state = {
+            validAccountName: false,
+            accountName: "",
+            validPassword: false,
+            registrar_account: "bitshares-munich",
+            loading: false,
+            hide_refcode: true,
+            show_identicon: true
+        };
         this.onFinishConfirm = this.onFinishConfirm.bind(this);
+   }
+
+   shouldComponentUpdate(nextProps, nextState) {
+        return nextState.validAccountName !== this.state.validAccountName ||
+            nextState.accountName !== this.state.accountName ||
+            nextState.validPassword !== this.state.validPassword ||
+            nextState.registrar_account !== this.state.registrar_account ||
+            nextState.loading !== this.state.loading ||
+            nextState.hide_refcode !== this.state.hide_refcode ||
+            nextState.show_identicon !== this.state.show_identicon;
     }
 
     isValid() {
@@ -45,8 +69,11 @@ class CreateAccount extends React.Component {
     }
 
     onAccountNameChange(e) {
+         const state = {};
         if(e.valid !== undefined) this.setState({ validAccountName: e.valid })
-        if(e.value !== undefined) this.setState({ accountName: e.value })
+        if(e.value !== undefined) this.setState({ accountName: e.value });
+        if (!this.state.show_identicon) state.show_identicon = true;
+        this.setState(state);
     }
 
     onPasswordChange(e) {
@@ -60,21 +87,21 @@ class CreateAccount extends React.Component {
             TransactionConfirmStore.unlisten(this.onFinishConfirm);
             TransactionConfirmStore.reset();
             if(op0[0] === 5 && op0[1].name === this.state.accountName) {
-                this.context.router.transitionTo("account-overview", {account_name: this.state.accountName});
+                this.context.router.transitionTo("/", {account_name: this.state.accountName});
             }
         }
     }
 
     createAccount(name) {
         let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
-        WalletUnlockActions.unlock().then(() => {
+    //    WalletUnlockActions.unlock().then(() => {
             this.setState({loading: true});
             AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {
                 if(this.state.registrar_account) {
                     this.setState({loading: false});
                     TransactionConfirmStore.listen(this.onFinishConfirm);
                 } else {
-                    this.context.router.transitionTo("account-overview", {account_name: name});
+                    this.context.router.transitionTo("/", {account_name: name});
                 }
             }).catch(error => {
                 console.log("ERROR AccountActions.createAccount", error);
@@ -87,7 +114,7 @@ class CreateAccount extends React.Component {
                 });
                 this.setState({loading: false});
             });
-        });
+       // }); 
     }
 
     createWallet(password) {
@@ -113,7 +140,7 @@ class CreateAccount extends React.Component {
         if (WalletDb.getWallet()) {
             this.createAccount(account_name);
         } else {
-            let password = this.refs.password.value();
+            let password = this.refs.password.state.value;
             this.createWallet(password).then(() => this.createAccount(account_name));
         }
     }
@@ -133,23 +160,13 @@ class CreateAccount extends React.Component {
         let valid = this.isValid();
         let buttonClass = classNames("button", {disabled: !valid});
         return (
-                     <main className="no-nav">
+                    <section>
+                      <main className="no-nav">
                         <div className="page-header">
-                        {
-                            first_account ?
-                                (<div>
-                                    <h1><Translate content="account.welcome" /></h1>
-                                    <h3><Translate content="account.please_create_account" /></h3>
-                                </div>) :
-                                (
-                                    <h3><Translate content="account.create_account" /></h3>
-                                )
-                        }
+                            <h3>"ACCOUNT CREATE/REGISTER OR IMPORT"</h3>
                         </div>
-                   
                             <form onSubmit={this.onSubmit.bind(this)} noValidate>
                                 <div className="form-group">
-                                    <label><Translate content="account.identicon" /></label>
                                     <AccountImage account={this.state.validAccountName ? this.state.accountName:null}/>
                                 </div>
                                 <AccountNameInput ref="account_name" cheapNameOnly={first_account}
@@ -174,16 +191,16 @@ class CreateAccount extends React.Component {
                                         <br/>
                                     </div>
                                 }
-                                {this.state.loading ?  <LoadingIndicator type="circle"/> :<button className={buttonClass}><Translate content="account.create_account" /></button>}
+                                {this.state.loading ?  <LoadingIndicator type="circle"/> :<RaisedButton type="submit" label="Secondary" secondary={true} />}
                                 <br/>
                                 <br/>
-                                <label className="inline"><Link to="existing-account"><Translate content="account.existing_accounts" /></Link></label>
+                                <label className="inline"><Link to="existing-account">Existing account</Link></label>
                                 {this.state.hide_refcode ? <span>&nbsp; &bull; &nbsp;
-                                    <label className="inline"><a href onClick={this.showRefcodeInput.bind(this)}><Translate content="refcode.enter_refcode"/></a></label>
+                                    <label className="inline"><a href onClick={this.showRefcodeInput.bind(this)}>Enter refcode</a></label>
                                 </span> : null}
                             </form>
-    
-                    </main>
+                      </main>
+                    </section>
         );
     }
 }

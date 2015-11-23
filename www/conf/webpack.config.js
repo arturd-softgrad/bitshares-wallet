@@ -3,6 +3,7 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var Clean = require("clean-webpack-plugin");
 var git = require('git-rev-sync')
+require('es6-promise').polyfill();
 
 // BASE APP DIR
 var root_dir = path.resolve(__dirname, "..");
@@ -43,7 +44,7 @@ module.exports = function(options) {
         plugins.push(new webpack.PrefetchPlugin("react"));
         plugins.push(new ExtractTextPlugin("app.css"));
         plugins.push(new webpack.optimize.UglifyJsPlugin({warnings: false, minimize: false, sourceMap: false, compress: true, output: {screw_ie8: true}}));
-        plugins.push(new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js", Infinity));
+      //  plugins.push(new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js", Infinity));
         // PROD OUTPUT PATH
         outputPath = path.join(root_dir, "dist");
     } else {
@@ -53,30 +54,38 @@ module.exports = function(options) {
 
     var config = {
         entry: {
-            app: options.prod ?
-                path.resolve(root_dir, "js/main.js") :
-                [
+            app: // options.prod ?
+                path.resolve(root_dir, "app/main.js") // :
+            /* [
                     "webpack-dev-server/client?http://localhost:8080",
                     "webpack/hot/only-dev-server",
-                    path.resolve(root_dir, "js/main.js")
-                ]
+                    path.resolve(root_dir, "app/main.js")
+                ]  */
         },
         output: {
             path: outputPath,
-            filename: "bundle_new.js"
+            filename: "app.js",
+            pathinfo: !options.prod,
+            sourceMapFilename: "[name].js.map"
         },
-        devtool: "#inline-source-map",
+        devtool: options.prod ? "source-map" : "source-map",
         debug: options.prod ? false : true,
         module: {
             loaders: [
                 { 
                     test: /\.jsx$/,
-                    include: [path.join(root_dir, "js"), path.join(root_dir, "node_modules/react-foundation-apps")],
+                    include: [path.join(root_dir, "app"), path.join(root_dir, "node_modules/react-foundation-apps")],
                     loaders: options.prod ? ["babel-loader"] : ["babel-loader?cacheDirectory"]
                 },
-                { 
+            /*    { 
                     test: /\.js$/,
                     exclude: /node_modules/,
+                    loader: "babel-loader",
+                    query: {compact: false, cacheDirectory: true}
+                }, */
+                { 
+                    test: /\.js$/,
+                    exclude: [/node_modules/, path.resolve(root_dir, ".app/dl/node_modules")],
                     loader: "babel-loader",
                     query: {compact: false, cacheDirectory: true}
                 },
@@ -86,7 +95,6 @@ module.exports = function(options) {
                 { test: /\.css$/, loader: cssLoaders },
                 {
                     test: /\.scss$/,
-                    //loader: "style!css!sass?outputStyle=expanded&includePaths[]=" + (path.resolve(root_dir, "./node_modules"))
                     loader: scssLoaders
                 },
                 { test: /\.woff$/, loader: "url-loader?limit=100000&mimetype=application/font-woff" },
@@ -95,10 +103,11 @@ module.exports = function(options) {
             ]
         },
         resolve: {
-            //alias: {lzma: path.resolve(root_dir, "./node_modules/lzma/src/lzma.js")},
-            root: [path.resolve(root_dir, "./js"), path.resolve(root_dir, "../dl/src")],
+            alias: {bytebuffer: path.resolve(root_dir, "./app/dl/node_modules/bytebuffer")},
+            root: [path.resolve(root_dir, "./app"), path.resolve(root_dir, "./app/dl/src")],
             extensions: ["", ".js", ".jsx", ".coffee", ".json"],
-            modulesDirectories: ["node_modules", "bower_components", path.resolve(root_dir, "../dl/lib")],
+          //  modulesDirectories: ["node_modules", "bower_components", path.resolve(root_dir, "./app/dl/lib")],
+            modulesDirectories: ["node_modules"],
             fallback: [path.resolve(root_dir, "./node_modules")]
         },
         resolveLoader: {
@@ -112,14 +121,14 @@ module.exports = function(options) {
             typographer: true
         }
     };
-
+/*
     if(options.prod) config.entry.vendors = [
         "react", "classnames", "react-router", "counterpart", "react-translate-component",
-        "perfect-scrollbar", "jdenticon", "react-notification-system", "react-tooltip",
+        "jdenticon", "react-notification-system", "react-tooltip",
         "whatwg-fetch", "alt", "react-json-inspector",
         "immutable", "lzma",  "lodash"
     ];
-
+*/
     return config;
 
 }

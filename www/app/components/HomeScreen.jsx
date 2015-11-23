@@ -3,12 +3,19 @@ import Translate from "react-translate-component";
 
 import Transactions from "./Transactions";
 import Balances from "./Balances";
-import AccountImage from "./AccountImage";
+import AccountCard from "./AccountCard";
+
 
 import { Router, Route, Link, IndexRoute } from 'react-router';
-const DropDownMenu = require('material-ui/lib/drop-down-menu');
+const SelectField = require('material-ui/lib/select-field');
+import AccountActions from "actions/AccountActions";
+import AccountStore from "stores/AccountStore";
+import Immutable from "immutable";
+import ChainTypes from "./Utility/ChainTypes";
+import BindToChainState from "./Utility/BindToChainState";
 
 // Flux HomeScreen view
+
 class HomeScreen extends React.Component {
 
     constructor(props) {
@@ -32,16 +39,7 @@ class HomeScreen extends React.Component {
               <div className="code__item">
                 <div className="code__item__img"><img src="app/assets/img/QR.jpg" alt=""/></div>
                 <div className="code__item__data">
-                  <div className="profile">
-                    <AccountImage className="profile-icon" account={"delegate.kencode"} />
-                    <SelectField
-                    value={this.state.selectValue}
-                    onChange={this._handleSelectValueChange.bind(null, 'selectValue')}
-                    menuItems={[
-                       { payload: '1', text: 'delegate.kencode' },
-                       { payload: '2', text: 'delegate.kencode2' },
-                    ]} />
-                  </div>
+                    <AccountCard />
                   <div className="data-text">777BTSFwmiD9C7h7Q8fHU9y3fAb5JhLCPBEzRZW</div>
                 </div>
               </div>

@@ -58,7 +58,7 @@ function BindToChainState(options) {
         return class Wrapper extends React.Component {
 
             static contextTypes = {
-                router: React.PropTypes.func.isRequired
+           //     router: React.PropTypes.func.isRequired
             }
 
             constructor(props) {

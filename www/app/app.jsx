@@ -1,21 +1,19 @@
 import React from "react";
 import {PropTypes, Component} from "react";
 import { render } from 'react-dom';
-import { Router, Route, Link, IndexRoute, Redirect, RouteHandler} from 'react-router';
-
-
-require("whatwg-fetch");
-require("indexeddbshim");
-
+import { Router, Route, Link, IndexRoute, IndexLink} from 'react-router';
 import counterpart from "counterpart";
 import Apis from "rpc_api/ApiInstances";
-import { createHistory, useBasename } from 'history';
 import ReceiveScreen from './components/ReceiveScreen';
 import ContactsScreen from './components/ContactsScreen';
 import HomeScreen from './components/HomeScreen';
 import SendScreen from './components/SendScreen';
 import SettingsScreen from './components/SettingsScreen';
 import CreateAccount from "./components/CreateAccount";
+import ExistingAccount, {ExistingAccountOptions} from './components/ExistingAccount';
+import Backup, {BackupCreate, BackupVerify, BackupRestore} from "./components/Backup";
+import Brainkey from "./components/Brainkey";
+import ImportKeys from "./components/ImportKeys";
 import cookies from "cookies-js";
 
 import AccountStore from "stores/AccountStore";
@@ -26,9 +24,13 @@ import ChainStore from "api/ChainStore";
 import WalletManagerStore from "stores/WalletManagerStore";
 import PrivateKeyActions from "actions/PrivateKeyActions";
 import AccountRefsStore from "stores/AccountRefsStore";
+import ChainTypes from "./components/Utility/ChainTypes";
+import NotificationStore from "stores/NotificationStore";
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import If from './components/If';
+import createBrowserHistory from 'history/lib/createBrowserHistory'
+
 
 //Needed for React Developer Tools
 window.React = React;
@@ -46,12 +48,32 @@ require("dl_cli_index").init(window) // Adds some object refs to the global wind
 // Main app component
 class App extends React.Component {
 
+//    static contextTypes = { router: React.PropTypes.func.isRequired }
+
+    static propTypes = {
+   //    dynGlobalObject: ChainTypes.ChainObject.isRequired
+    //   synced: React.PropTypes.bool.isRequired
+    }
+
+    static defaultProps = {
+  //     dynGlobalObject: "2.1.0"
+    }
+
     constructor() {
         super();
         this.state = {loading: true, synced: false};
     }
-
+/*
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.dynGlobalObject !== this.props.dynGlobalObject ||
+            // nextProps.backup_recommended !== this.props.backup_recommended ||
+              nextProps.rpc_connection_status !== this.props.rpc_connection_status; //||
+               //nextProps.synced !== this.props.synced;
+    }
+*/
     componentDidMount() { try {
+
+        NotificationStore.listen(this._onNotificationChange.bind(this));
 
         // Try to retrieve locale from cookies
         let locale;
@@ -83,6 +105,15 @@ class App extends React.Component {
         //<Link className="back" onClick={history.goBack}></Link>
 
     } catch(e) { console.error(e) }}
+
+     /** Usage: NotificationActions.[success,error,warning,info] */
+    _onNotificationChange() {
+        let notification = NotificationStore.getState().notification;
+        if (notification.autoDismiss === void 0) {
+            notification.autoDismiss = 10;
+        }
+        if (this.refs.notificationSystem) this.refs.notificationSystem.addNotification(notification);
+    }
 
     static willTransitionTo(nextState, replaceState, callback)  {
         if (nextState.location.pathname === "/init-error") {
@@ -142,7 +173,7 @@ class App extends React.Component {
                 <div className="bg-logo"><img src="app/assets/img/bg-logo.svg" alt="" /></div>
                     <header className="header-inner">
                         <If condition={pathname != "/"}>
-                            <Link className="back" to="/"></Link>
+                            <IndexLink className="back" to="/"></IndexLink>
                         </If>
                       <div className="header__logo"><img src="app/assets/img/logo.svg" alt=""/></div>
                       <section className="utility">
@@ -162,19 +193,28 @@ var app = {
     initialize: function() {
 
         this.bindEvents();
-
-        render((
-          <Router>
-           <Route path="/" handler={App} onEnter={App.willTransitionTo}>
-            <IndexRoute component={HomeScreen}/>
-            <Route path="contacts" component={ContactsScreen}/>
-            <Route path="send" component={SendScreen}/>
-            <Route path="receive" component={ReceiveScreen}/>
-            <Route path="settings" component={SettingsScreen}/>
-            <Route name="create-account" path="create-account" component={CreateAccount}/>
+        this.onDeviceReady(); // TODO remove on device
+        let routes = (
+            <Route path="/" component={App} onEnter={App.willTransitionTo}>
+                <IndexRoute component={HomeScreen}/>
+                <Route path="contacts" component={ContactsScreen}/>
+                <Route path="send" component={SendScreen}/>
+                <Route path="receive" component={ReceiveScreen}/>
+                <Route path="settings" component={SettingsScreen}/>
+                <Route path="create-account" component={CreateAccount} onEnter={App.willTransitionTo}/>
+                <Route path="existing-account" component={ExistingAccount}>
+                    <IndexRoute component={ExistingAccountOptions}/>
+                    <Route path="import-backup" component={BackupRestore}/>
+                    <Route path="import-keys" component={ImportKeys}/>
+                    <Route path="brainkey" component={Brainkey}/>
+                </Route>
             </Route>
-          </Router>
-        ), document.body);
+        )
+
+      //  let history = createBrowserHistory();
+ 
+        render((<Router>{routes}</Router>), document.getElementById("content"));
+
     },
     // Bind Event Listeners
     //
@@ -183,7 +223,7 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
-    
+
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
