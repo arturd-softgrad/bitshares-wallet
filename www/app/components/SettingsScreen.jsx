@@ -22,6 +22,11 @@ const RadioButton = require('material-ui/lib/radio-button');
 const RadioButtonGroup = require('material-ui/lib/radio-button-group');
 import _ from "lodash";
 
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
+
+
+
 // Flux SettingsScreen view
 class SettingsScreen extends React.Component {
 
@@ -105,6 +110,19 @@ class SettingsScreen extends React.Component {
   {
     this.refs.switchTimezoneWindow.refs.dialog.show();
   }
+
+  _redirectToBackup()
+  {
+    //Router.navigate('backup');
+    //this.transitionTo('backup');
+    history.pushState(null, 'backup');
+  }
+  _redirectToChangePin()
+  {
+    history.pushState(null, 'changepin');
+  }
+
+
 
 
   // Render SettingsScreen view
@@ -197,8 +215,13 @@ class SettingsScreen extends React.Component {
             <div><Translate content="wallet.settings.q_searchTransaction" /></div>
             <div><Translate content="wallet.settings.a_searchTransaction" /></div>
           </section>
-            <section className="qa">
-             
+          <section className="setting-item">
+            <RaisedButton label={translate("settings.backup")}
+              onTouchTap={this._redirectToBackup.bind(this)}    />
+          </section>
+          <section className="setting-item">
+            <RaisedButton label={translate("settings.editPin")}
+              onTouchTap={this._redirectToChangePin.bind(this)}    />
           </section>
         </main>
       </section>

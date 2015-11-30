@@ -52,11 +52,7 @@ class FormattedAsset extends React.Component {
         return (
                 <span className={colorClass}  >
                 {!hide_amount ?
-                  <FormattedNumber
-                    value={this.props.exact_amount ? amount : amount / precision}
-                    minimumFractionDigits={0}
-                    maximumFractionDigits={decimals}
-                    />
+                   <span>{this.props.exact_amount ? amount : amount / precision}</span>
                 : null}
                 {hide_asset ? null : <span className="currency">{"\u00a0" + asset.symbol}</span>}
                 </span>

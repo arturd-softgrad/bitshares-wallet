@@ -1,35 +1,36 @@
 import React from "react";
+import {PropTypes, Component} from "react";
 import BalanceComponent from "./Utility/BalanceComponent";
 import AccountImage from "./AccountImage";
 import {Link} from "react-router";
 import ChainTypes from "./Utility/ChainTypes";
+import Immutable from "immutable";
+const DropDownMenu = require('material-ui/lib/drop-down-menu');
+import AccountActions from "actions/AccountActions";
 import BindToChainState from "./Utility/BindToChainState";
-import AccountStore from "stores/AccountStore";
-import ChainStore from "api/ChainStore";
-
-/**
- *  @brief displays the summary of a given account in a condenced view (for the dashboard)
- *
- *  This card has the following properties:
- *
- *  { account: ${name_or_id} }
- */
 
 @BindToChainState()
-class AccountCard extends React.Component {
+class AccountCard extends Component {
 
-    componentWillMount() {
-
-        var accounts = AccountStore.getState().linkedAccounts;
-
+    static propTypes = {
+       account: ChainTypes.ChainAccount.isRequired
     }
 
+    static defaultProps = {
+      account: "props.params.account_name"
+    }
 
     render() {
 
+        if (!this.props.account) {
+            return null;
+        }
+
         return (
             <div className="profile">
-                  
+                    <AccountImage className="profile-icon" account={this.props.account.get("name")} />
+                    <span>{this.props.account.get("name")}</span>
+                    <span></span>
             </div>
         );
     }

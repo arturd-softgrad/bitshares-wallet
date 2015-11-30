@@ -29,6 +29,17 @@ languages: {
   wallet: {
 
 	switch_language: 'Switch Language: ',
+	// additional
+	existing_password: "Existing PIN",   
+	verify: "Verify",	
+	enter_password: "Enter Password",	
+    reset: "Reset",
+	//change_password: "Change PIN",
+	accept: "Accept",
+
+	
+	
+	
 
 home: {
 		balances: 'BALANCES',
@@ -111,8 +122,83 @@ home: {
 		confirmSendAmount: 'Are you sure you want to send nn XX',
 		confirmSendAmountRecipient: 'to yy?',
 		continue: 'Continue',
-		cancel: 'Cancel'
+		cancel: 'Cancel',		
 	}, 
+	backup:{		
+		create_backup: "Create Backup",
+        reset: "Reset",
+        download: "Download",
+		createBackupPrompt: 'Please make backup of your wallet to continue',
+
+	},
+	
+	
+	unused: {		
+        import_backup: "Import Backup",
+        restore_backup: "Restore Backup",
+		create_backup_of: "Create Backup (%(name)s Wallet)",
+        title: "Wallet",
+        confirm: "Password (confirm)",
+        password: "Password",
+        change_wallet: "Change Wallet",
+        wallet_created: "Wallet Created",
+        create_wallet: "Create Wallet",
+        import_bts1: "Import from BitShares 0.9.3c",
+        setup_wallet: "Setup your wallet",
+        delete_wallet: "Delete Wallet",
+        delete_confirm_line1: "Are you ABSOLUTELY sure?",
+        delete_confirm_line2: "Unexpected bad things will happen if you don’t read this!",
+        delete_confirm_line3: "This action CANNOT be undone.",
+        delete_wallet_name: "Delete Wallet (%(name)s)",
+        balance_claims: "Balance Claims",
+        name: "Wallet Name",
+        create: "Create",
+        console: "Wallet Management Console",
+        create_backup: "Create Backup",
+        backup_brainkey: "Backup Brainkey",
+        import_keys: "Import Keys",
+        import_keys_tool: "Key Import Tool",
+        brainkey: "Brainkey",
+        new_wallet: "New Wallet",
+        active_wallet: "Active Wallet",
+        verified: "Verified",
+        verify_prior_backup: "Verify Prior Backup",
+        brainkey_not_verified: "This Brainkey is not verified",
+        cancel: "Cancel",
+        done: "Done",        
+        invalid_format: "Invalid Format",        
+        downoad: "Download",
+        new_wallet_name: "New Wallet Name",
+        wallet_exist: "Wallet exists, choose a new name",
+        wallet_exist_with_name: "Wallet (%(name)s) exists, please change the name",
+       
+        ready_to_restore: "Ready to Restore",
+        restore_wallet_of: "Restore (%(name)s Wallet)",
+        restore_success: "Successfully restored (%(name)s) wallet",
+        change: "Change (%(name)s Wallet)",
+        import_20_notice1: "Import your BTS 2.0+ BACKUP first",
+        import_20_notice2: "(if you have one)",
+        loading_balances: "Loading balance claims",
+        no_balance: "No balance claims",
+        claim_balance: "Claim Balance",
+        claim_balances: "Claim Balances",
+        balance_claim_lookup: "Lookup balances",
+        unclaimed: "Unclaimed",
+        unclaimed_vesting: "Unclaimed (vesting)",
+        no_accounts: "No Accounts",
+        brainkey_no_match: "Brainkey does not match, keep going",
+        reenter_brainkey: "Re-Enter Brainkey",
+        pwd4brainkey: "Enter password to show your brainkey",
+        show_brainkey: "Show Brainkey",
+        brainkey_w1: "WARNING: Print this out, or write it down.",
+        brainkey_w2: "Anyone with access to your recovery key will",
+        brainkey_w3: "have access to funds within this wallet.",
+        custom_brainkey: "Custom Brainkey (advanced)",
+        last_backup: "Last backup",
+        never_backed_up: "This Wallet has never been backed up",
+        need_backup: "This Wallet needs a backup",
+        noneed_backup: "No backup is needed"
+	},	
 	dialog: {
 		enterPin: 'Enter PIN',
 		incorrectPin: 'Incorrect PIN',

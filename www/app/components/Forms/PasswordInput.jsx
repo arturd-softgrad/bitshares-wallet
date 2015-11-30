@@ -13,7 +13,7 @@ class PasswordInput extends Component {
     childContextTypes: {
       muiTheme: React.PropTypes.object,
     }
-    
+
     static propTypes = {
         onChange: PropTypes.func,
         onEnter: PropTypes.func,
@@ -24,7 +24,7 @@ class PasswordInput extends Component {
     getChildContext() {
         muiTheme: this.state.muiTheme
     }
-    
+
     constructor() {
         super();
         this.handleChange = this.handleChange.bind(this);
@@ -37,9 +37,11 @@ class PasswordInput extends Component {
         accent1Color: Colors.deepOrange500,
       });
 
-      this.setState({muiTheme: newMuiTheme});
+      this.setState({muiTheme: newMuiTheme, watermark: this.props.watermark});
     }
-    
+
+
+
     value() {
         let node = this.state.passwordValue;
         return node ? node.value : "";
@@ -85,7 +87,7 @@ class PasswordInput extends Component {
         if (e.target.name === "password") {
             password = e.target.value;
         }
-        
+
 
         if(this.props.confirmation) this.checkPasswordConfirmation();
         let state = {
@@ -115,29 +117,33 @@ class PasswordInput extends Component {
         return (
             <div>
                 <div>
-                    <TextField 
+                    <TextField
                       name="password"
                       ref="password"
-                      floatingLabelText="6-digit PIN"
+                      floatingLabelText={this.state.watermark || "6-digits PIN"}
                       type="password"
                       value={this.state.passwordValue}
-                      onChange={this.handleChange} 
+                      onChange={this.handleChange}
                       errorText={password_error}
+                      underlineFocusStyle={{borderColor: "#009FE3"}}
+                      underlineStyle={{borderColor: "#72BAD9"}}
                       onEnterKeyDown={this.onKeyDown}/>
-                </div>        
+                </div>
                 {this.props.confirmation ?
                     <div>
-                    <TextField 
+                    <TextField
                       name="confirm_password"
-                      floatingLabelText="6-digit PIN confirm" 
+                      floatingLabelText="6-digits PIN confirm"
                       type="password"
                       value={this.state.confirmPasswordValue}
-                      onChange={this.handleChange} 
+                      underlineFocusStyle={{borderColor: "#009FE3"}}
+                      underlineStyle={{borderColor: "#72BAD9"}}
+                      onChange={this.handleChange}
                       errorText=  {confirmation_error}/>
                     </div>
                 : null}
             </div>
-            
+
         );
     }
 }

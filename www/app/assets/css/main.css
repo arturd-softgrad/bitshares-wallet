@@ -315,7 +315,7 @@ header .utility {
   content: '';
   width: 6px;
   height: 6px;
-  background: url("../img/arrow-profile-down.svg");
+ /* background: url("../img/arrow-profile-down.svg");*/
   background-size: cover;
   position: absolute;
   top: 50%;
@@ -979,10 +979,10 @@ header:after {
 }
 
 /*# sourceMappingURL=main.css.map */
-
+/*
 select {
   display: none; }
-
+*/
 .nice-select {
   -webkit-tap-highlight-color: transparent;
   background-color: #fff;
@@ -1183,3 +1183,13 @@ select {
 .fade-leave.fade-leave-active {
   opacity: 0.01;
 }
+.account-image {
+  padding: 15px;
+  float: left;
+}
+
+.account-image canvas {
+  border: solid 1px #00BCD4;
+}
+
+    

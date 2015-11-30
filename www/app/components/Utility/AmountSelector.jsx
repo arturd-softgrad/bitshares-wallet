@@ -1,10 +1,12 @@
 import React from "react";
 import Translate from "react-translate-component";
 import ChainStore from "api/ChainStore";
-import ChainTypes from "../Utility/ChainTypes";
-import BindToChainState from "../Utility/BindToChainState";
+import ChainTypes from "./ChainTypes";
+import BindToChainState from "./BindToChainState";
 import FormattedAsset from "./FormattedAsset";
-import utils from "common/utils";
+import counterpart from "counterpart";
+//import utils from "common/utils";
+const TextField = require('material-ui/lib/text-field');
 
 @BindToChainState()
 class AssetOption extends React.Component {
@@ -18,7 +20,6 @@ class AssetOption extends React.Component {
         let symbol = this.props.asset ? this.props.asset.get("symbol") : this.props.asset_id;
         return (<option value={this.props.asset_id}>{symbol}</option>);
     }
-
 }
 
 class AssetSelector extends React.Component {
@@ -38,7 +39,7 @@ class AssetSelector extends React.Component {
     }
 
     render() {
-        if(this.props.assets.length === 0) return null;
+       
         var options = this.props.assets.map(function (value) {
             return <AssetOption key={value} asset={value} asset_id={value}/>
         });
@@ -47,28 +48,26 @@ class AssetSelector extends React.Component {
            return ( <FormattedAsset asset={this.props.assets[0]} amount={0} hide_amount={true}/> )
 
         } else {
-            return (
+
+            return (                
                 <select defaultValue={this.props.value} className="form-control" onChange={this.onChange.bind(this)}>
-                {options}
+                    {options}
                 </select>
-                );
+            )
         }
-
     }
-
 }
 
-@BindToChainState() class AmountSelector extends React.Component {
+@BindToChainState()
+class AmountSelector extends React.Component {
 
     static propTypes = {
-        label: React.PropTypes.string, // a translation key for the label
+//        label: React.PropTypes.string, // a translation key for the label
         asset: ChainTypes.ChainAsset.isRequired, // selected asset by default
         assets: React.PropTypes.array,
         amount: React.PropTypes.string,
-        placeholder: React.PropTypes.string,
         onChange: React.PropTypes.func.isRequired,
-        display_balance: React.PropTypes.object,
-        tabIndex: React.PropTypes.number
+        display_balance: React.PropTypes.object
     };
 
     formatAmount(v) {
@@ -109,22 +108,22 @@ class AssetSelector extends React.Component {
         let value = this.formatAmount(this.props.amount);
         
         return (
-            <div className="amount-selector" style={this.props.style}>
-                <div className="float-right">{this.props.display_balance}</div>
-                <Translate component="label" content={this.props.label}/>
-                <div className="inline-label">
-                    <input type="text"
-                           value={value}
-                           placeholder={this.props.placeholder}
-                           onChange={this._onChange.bind(this) }
-                           tabIndex={this.props.tabIndex}/>
+                <div>
+                    <TextField
+                          floatingLabelText={counterpart.translate("wallet.home.amount")}
+                          hintText={counterpart.translate("wallet.home.amount")}
+                          value={value}
+                          underlineFocusStyle={{borderColor: "#009FE3"}}
+                          underlineStyle={{borderColor: "#72BAD9"}}
+                          type="text"
+                          onChange={this._onChange.bind(this) }/>
+
                    <span className="form-label select">
                        <AssetSelector
                            assets={this.props.assets}
                            onChange={this.onAssetChange.bind(this)}/>
                    </span>
                 </div>
-            </div>
         )
     }
 

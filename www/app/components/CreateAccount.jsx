@@ -20,10 +20,13 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
 const RaisedButton = require('material-ui/lib/raised-button');
+import { createHashHistory, useBasename } from 'history';
+import BackupActions, {backup, restore, decryptWalletBackup} from "actions/BackupActions"
+
+const history = useBasename(createHashHistory)({})
 
 @connectToStores
 class CreateAccount extends React.Component {
-
     static getStores() {
         return [AccountStore]
     }
@@ -32,7 +35,7 @@ class CreateAccount extends React.Component {
         return {}
     }
 
-    //static contextTypes = {router: React.PropTypes.func.isRequired};
+//    static contextTypes = {router: React.PropTypes.object.isRequired};
 
     constructor() {
         super();
@@ -42,7 +45,7 @@ class CreateAccount extends React.Component {
             validAccountName: false,
             accountName: "",
             validPassword: false,
-            registrar_account: "bitshares-munich",
+            registrar_account: null,
             loading: false,
             hide_refcode: true,
             show_identicon: true
@@ -59,7 +62,7 @@ class CreateAccount extends React.Component {
             nextState.hide_refcode !== this.state.hide_refcode ||
             nextState.show_identicon !== this.state.show_identicon;
     }
-
+    
     isValid() {
         let first_account = AccountStore.getMyAccounts().length === 0;
         let valid = this.state.validAccountName;
@@ -101,10 +104,13 @@ class CreateAccount extends React.Component {
                     this.setState({loading: false});
                     TransactionConfirmStore.listen(this.onFinishConfirm);
                 } else {
-                    this.context.router.transitionTo("/", {account_name: name});
+
+                    history.pushState('/', {account_name: name});
+                   // this.context.router.transitionTo("/", {account_name: name});
                 }
             }).catch(error => {
                 console.log("ERROR AccountActions.createAccount", error);
+                   history.pushState(null, '/');
                 let error_msg = error.base && error.base.length && error.base.length > 0 ? error.base[0] : "unknown error";
                 if (error.remote_ip) error_msg = error.remote_ip[0];
                 notify.addNotification({
@@ -114,7 +120,7 @@ class CreateAccount extends React.Component {
                 });
                 this.setState({loading: false});
             });
-       // }); 
+       // });
     }
 
     createWallet(password) {
@@ -123,6 +129,7 @@ class CreateAccount extends React.Component {
             password
         ).then(()=> {
             console.log("Congratulations, your wallet was successfully created.");
+            BackupActions.requireBackup();
         }).catch(err => {
             console.log("CreateWallet failed:", err);
             notify.addNotification({
@@ -191,7 +198,7 @@ class CreateAccount extends React.Component {
                                         <br/>
                                     </div>
                                 }
-                                {this.state.loading ?  <LoadingIndicator type="circle"/> :<RaisedButton type="submit" label="Secondary" secondary={true} />}
+                                {this.state.loading ?  <LoadingIndicator type="circle"/> :<RaisedButton type="submit" label="Create" secondary={true} />}
                                 <br/>
                                 <br/>
                                 <label className="inline"><Link to="existing-account">Existing account</Link></label>
