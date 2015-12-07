@@ -12,6 +12,7 @@ import ChainTypes from "components/Utility/ChainTypes"
 import BrainkeyInput from "components/BrainkeyInput"
 import _ from "lodash"
 import Translate from "react-translate-component";
+const RaisedButton = require('material-ui/lib/raised-button');
 
 class BrainkeyBaseComponent extends Component {
     static getStores() {
@@ -32,7 +33,7 @@ export default class Brainkey extends BrainkeyBaseComponent {
     render() {
         return (
             <span>
-                <h3><Translate content="wallet.brainkey" /></h3>
+                <h3>Brainkey</h3>
                 <BrainkeyInputAccept>
                     <ViewBrainkey/>
                 </BrainkeyInputAccept>
@@ -51,7 +52,7 @@ class ViewBrainkey extends BrainkeyBaseComponent {
             <p></p>
             {this.props.account_ids.size?
             <BrainkeyAccounts accounts={Immutable.List(this.props.account_ids.toArray())}/>:
-            <h5><Translate content="wallet.no_accounts" /></h5>}
+            <h5>No accounts</h5>}
         </span>
     }
 }
@@ -91,8 +92,10 @@ export class BrainkeyInputAccept extends Component {
                 <div style={{width: '400px'}}>
                     <BrainkeyInput onChange={this.onBrainkeyChange.bind(this)}/>
                 </div>
-                <div className={cname("button success", {disabled: ! ready})}
-                    onClick={this.onAccept.bind(this)}><Translate content="wallet.accept" /></div>
+
+                <RaisedButton label="download"
+                    disabled= {!ready}
+                    onTouchTap={this.onAccept.bind(this)} />
             </span>
         )
     }

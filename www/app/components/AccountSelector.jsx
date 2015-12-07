@@ -9,7 +9,7 @@ import BindToChainState from "./Utility/BindToChainState";
 import classnames from "classnames";
 import counterpart from "counterpart";
 import PublicKey from "ecc/key_public";
-import Icon from "../Icon/Icon";
+const TextField = require('material-ui/lib/text-field');
 
 /**
  * @brief Allows the user to enter an account by name or #ID
@@ -100,40 +100,34 @@ class AccountSelector extends React.Component {
             member_status = counterpart.translate("account.member." + ChainStore.getAccountMemberStatus(this.props.account));
 
         let action_class = classnames("button", {"disabled" : !(this.props.account || type === "pubkey") || error || this.props.disableActionButton});
+       
+   //     let member_label = member_status + '&nbsp' + lookup_display;
+        let label = this.props.label || counterpart.translate("wallet.home.to");
 
         return (
             <div className="account-selector no-overflow" style={this.props.style}>
-                {type === "pubkey" ? <div className="account-image"><Icon name="key" size="4x"/></div> :
-                <AccountImage size={{height: 80, width: 80}}
+                {type === "pubkey" ? <div className="account-image"></div> :
+                <AccountImage size={{height: 35, width: 35}}
                               account={this.props.account ? this.props.account.get('name') : null} custom_image={null}/>}
-
-                <div className="content-area">
-                    <div className="header-area">
-                        {error ? null : <div className="right-label"><span>{member_status}</span> &nbsp; <span>{lookup_display}</span></div>}
-                        <Translate component="label" content={this.props.label}/>
-                    </div>
-                    <div className="input-area">
-                      <span className="inline-label">
-                      <input type="text"
+                      <TextField type="text"
                              value={this.props.accountName}
+                             floatingLabelText={label}                  
                              defaultValue={this.props.accountName}
-                             placeholder={this.props.placeholder || counterpart.translate("account.name")}
+                             hintText="Accoun name"
                              ref="user_input"
                              onChange={this.onInputChanged.bind(this)}
                              onKeyDown={this.onKeyDown.bind(this)}
-                             tabIndex={this.props.tabIndex}/>
+                             tabIndex={this.props.tabIndex}
+                             underlineFocusStyle={{borderColor: "#009FE3"}}
+                             underlineStyle={{borderColor: "#72BAD9"}}
+                             errortext={error}/>
+
                           { this.props.children }
                           { this.props.onAction ? (
                               <button className={action_class}
                                       onClick={this.onAction.bind(this)}>
                                   <Translate content={this.props.action_label}/></button>
                           ) : null }
-                      </span>
-                    </div>
-                    <div className="error-area">
-                        <span>{error}</span>
-                    </div>
-                </div>
             </div>
         )
 

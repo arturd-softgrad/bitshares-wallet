@@ -3,41 +3,55 @@ import {PropTypes, Component} from "react";
 
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-import TransactionItem from "./TransactionItem"
+import RecentTransactions from "./RecentTransactions";
+import BindToChainState from "./Utility/BindToChainState";
+import ChainTypes from "./Utility/ChainTypes";
+import Immutable from "immutable";
 
 // Flux Transactions view to display the list of transactions
+@BindToChainState({keep_updating: true})
 class Transactions extends React.Component{
+
+  static propTypes = {
+      account: ChainTypes.ChainAccount.isRequired
+  }
 
   constructor(props) {
     super(props);
+    this.state = {show: false}
+  }
+
+  shouldComponentUpdate(nextProps) {
+      return this.props.account !== nextProps.account
+  }
+
+  _handleToogle() {
+      
+      let show = this.state.show;
+      this.setState({ show: !show });
   }
 
   render() {
+
+    let account = this.props.account;
+    if (!account) {
+        return null;
+    }
+
     return (
       <section className="transactions">
-        <div className="section-header">
-          <h2><i className="expand"></i><Translate content="wallet.home.transactions" /></h2>
+        <div className="section-header transactions">
+          <h2 className="toogle-header" onTouchTap={this._handleToogle.bind(this)}><i className="expand"></i> <Translate content="wallet.home.transactions" /></h2>
         </div>
-        <div className="transactions__content">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>|All|</th>
-                <th>To/From</th>
-                <th>Amount assets</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tr className="rec-color">
-              <td>17.10.2015<span className="table-span">14:32 CET</span></td>
-              <td> <span className="sent-color table-span">|Sent|</span><span className="rec-color table-span">|Recd|</span></td>
-              <td> <span className="table-span">To: delegate.kencode</span><span className="table-span">From: anon</span><span className="table-span">Memo: hey ken, great job on the ATM’s!</span></td>
-              <td>+ 20.00 EUR</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+
+          { this.state.show ? 
+          ( <div className="balances__content toogle-panel">
+              <ul className="balances">
+                <RecentTransactions accountsList={Immutable.fromJS([account.get("id")])}
+                            compactView={false}   showMore={true}/>
+              </ul>
+            </div>
+          ) : null }
       </section>
     );
   }

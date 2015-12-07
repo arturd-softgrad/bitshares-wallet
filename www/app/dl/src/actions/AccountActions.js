@@ -108,8 +108,16 @@ class AccountActions {
         this.dispatch(name);
     }
 
+    linkContact(contact) {
+        this.dispatch(contact);
+    }
+
     unlinkAccount(name) {
         this.dispatch(name);
+    }
+
+    unlinkContact(contact) {
+        this.dispatch(contact);
     }
 }
 

@@ -14,9 +14,18 @@ import ExistingAccount, {ExistingAccountOptions} from './components/ExistingAcco
 import Backup, {BackupCreate, BackupVerify, BackupRestore} from "./components/Backup";
 import Brainkey from "./components/Brainkey";
 import ImportKeys from "./components/ImportKeys";
+import WalletChangePassword from "./components/WalletChangePassword";
+import WalletUnlockModal from "./components/WalletUnlockModal";
+import AddContact from "./components/AddContact";
+import ContactOverview from './components/ContactOverview';
 import cookies from "cookies-js";
+import Translate from "react-translate-component";
 
 import AccountStore from "stores/AccountStore";
+import SettingsStore from "stores/SettingsStore";
+import WalletUnlockStore from "stores/WalletUnlockStore";
+
+import BackupActions from "actions/BackupActions";
 import IntlActions from "actions/IntlActions";
 import iDB from "idb-instance";
 import WalletDb from "stores/WalletDb";
@@ -27,10 +36,14 @@ import AccountRefsStore from "stores/AccountRefsStore";
 import ChainTypes from "./components/Utility/ChainTypes";
 import NotificationStore from "stores/NotificationStore";
 
+import AltContainer from "alt/AltContainer";
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import If from './components/If';
-import createBrowserHistory from 'history/lib/createBrowserHistory'
 
+import { createHashHistory, useBasename } from 'history';
+
+const history = useBasename(createHashHistory)({});
 
 //Needed for React Developer Tools
 window.React = React;
@@ -50,27 +63,19 @@ class App extends React.Component {
 
 //    static contextTypes = { router: React.PropTypes.func.isRequired }
 
-    static propTypes = {
-   //    dynGlobalObject: ChainTypes.ChainObject.isRequired
-    //   synced: React.PropTypes.bool.isRequired
-    }
-
-    static defaultProps = {
-  //     dynGlobalObject: "2.1.0"
-    }
-
     constructor() {
         super();
         this.state = {loading: true, synced: false};
     }
 /*
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.dynGlobalObject !== this.props.dynGlobalObject ||
+      //  return nextProps.dynGlobalObject !== this.props.dynGlobalObject ||
             // nextProps.backup_recommended !== this.props.backup_recommended ||
-              nextProps.rpc_connection_status !== this.props.rpc_connection_status; //||
+      //        nextProps.rpc_connection_status !== this.props.rpc_connection_status; //||
                //nextProps.synced !== this.props.synced;
     }
 */
+
     componentDidMount() { try {
 
         NotificationStore.listen(this._onNotificationChange.bind(this));
@@ -86,7 +91,8 @@ class App extends React.Component {
 
         Promise.all([
             localePromise, // Non API
-            AccountStore.loadDbData()
+            AccountStore.loadDbData(),
+            AccountStore.loadContactsDbData()
         ]).then(() => {
             AccountStore.tryToSetCurrentAccount();
             this.setState({loading: false});
@@ -116,6 +122,7 @@ class App extends React.Component {
     }
 
     static willTransitionTo(nextState, replaceState, callback)  {
+
         if (nextState.location.pathname === "/init-error") {
             var db = iDB.init_instance(window.openDatabase ? (shimIndexedDB || indexedDB) :  indexedDB).init_promise
             db.then(() => {
@@ -131,7 +138,7 @@ class App extends React.Component {
                     PrivateKeyActions.loadDbData().then(()=>AccountRefsStore.loadDbData()),
                     WalletDb.loadDbData().then(() => {
                         if (!WalletDb.getWallet() && nextState.location.pathname  !== "/create-account") {
-
+                            //BackupActions.resetBackedUpFlag();
                             replaceState({
                               nextPathname: nextState.location.pathname
                             }, '/create-account');
@@ -166,26 +173,75 @@ class App extends React.Component {
 
     render() {
         const { pathname } = this.props.location;
-        //var History = Router.History;
 
-        return (
+        const active_link = {color: '#000', 'border-bottom': '1px solid #009012'}
+
+        var unlockTime = SettingsStore.getSetting("walletUnlockTime");
+        var locked = false;
+        if (unlockTime)
+            if (unlockTime > new Date().getTime())
+                locked = true;
+            else
+                SettingsStore.changeSetting({setting: "walletUnlockTime", value: null});
+        return  locked ? (
+                <section className="code">
+                    <Link to="/" className="active"><Translate content="wallet.fraudAttemptMessage" /></Link>
+                </section>
+             ):(
             <section>
                 <div className="bg-logo"><img src="app/assets/img/bg-logo.svg" alt="" /></div>
                     <header className="header-inner">
                         <If condition={pathname != "/"}>
-                            <IndexLink className="back" to="/"></IndexLink>
+                             <a className="back" onClick={history.goBack}></a>
                         </If>
                       <div className="header__logo"><img src="app/assets/img/logo.svg" alt=""/></div>
                       <section className="utility">
                         <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
                         <a href="#"><i className="check"></i></a><span>block #43182</span>
                       </section>
+                        <If condition={pathname === "/" || pathname === "/contacts"}>
+                             <nav className="main-nav">
+                              <ul>
+                                <li><Link activeStyle={active_link} to="/"><Translate content="wallet.home.balances" /></Link></li>
+                                <li><Link activeStyle={active_link} to="contacts"><Translate content="wallet.home.contacts" /></Link></li>
+                                <li><a className="is-disabled" href="#"><Translate content="wallet.home.finder" /></a></li>
+                                <li><a className="is-disabled" href="#"><Translate content="wallet.home.exchange" /></a></li>
+                              </ul>
+                            </nav>
+                        </If>
                     </header>
-                {this.props.children}
+                     <AltContainer
+                          stores={
+                            {
+                              accounts: () => { // props is the property of AltContainer
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getMyAccounts()
+                                };
+                              },
+                              account: () => { // props is the property of AltContainer
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getState().currentAccount
+                                };
+                              },
+                              linkedAccounts: () => {
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getState().linkedAccounts
+                                }
+                              }
+                            }
+                          }
+                        >      
+                        {this.props.children}
+                    </AltContainer>
+                    <WalletUnlockModal />
             </section>
         )
     }
 }
+
 
 var app = {
 
@@ -194,13 +250,18 @@ var app = {
 
         this.bindEvents();
         this.onDeviceReady(); // TODO remove on device
+
         let routes = (
             <Route path="/" component={App} onEnter={App.willTransitionTo}>
-                <IndexRoute component={HomeScreen}/>
-                <Route path="contacts" component={ContactsScreen}/>
+                <IndexRoute component={HomeScreen} onEnter={App.willTransitionTo}/>
+                <Route path="contacts" component={ContactsScreen} onEnter={App.willTransitionTo}/>
+                <Route path="add-contact" component={AddContact}/>
+                <Route path="contact-overview" component={ContactOverview}/>
                 <Route path="send" component={SendScreen}/>
                 <Route path="receive" component={ReceiveScreen}/>
                 <Route path="settings" component={SettingsScreen}/>
+                <Route path="backup" component={BackupCreate}/>
+                <Route path="changepin" component={WalletChangePassword}/>
                 <Route path="create-account" component={CreateAccount} onEnter={App.willTransitionTo}/>
                 <Route path="existing-account" component={ExistingAccount}>
                     <IndexRoute component={ExistingAccountOptions}/>
@@ -211,9 +272,7 @@ var app = {
             </Route>
         )
 
-      //  let history = createBrowserHistory();
- 
-        render((<Router>{routes}</Router>), document.getElementById("content"));
+        render((<Router history={history}>{routes}</Router>), document.getElementById("content"));
 
     },
     // Bind Event Listeners

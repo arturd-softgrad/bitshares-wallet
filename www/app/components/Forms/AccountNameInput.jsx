@@ -148,6 +148,8 @@ class AccountNameInput extends BaseComponent {
                   defaultValue={this.props.initial_value}
                   onEnterKeyDown={this.onKeyDown}
                   value={this.state.account_name}
+                  underlineFocusStyle={{borderColor: "#009FE3"}}
+                  underlineStyle={{borderColor: "#72BAD9"}}
                   errorText={error ? error : warning}/>
         );
     }

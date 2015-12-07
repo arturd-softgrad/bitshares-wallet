@@ -1,5 +1,5 @@
 ﻿module.exports = {
-timezones: [
+timezones_brief: [
 {abbr:'ACDT', name: 'Australian Central Daylight Savings Time', offset: 'UTC+10:30'},
 {abbr:'ACST', name: 'Australian Central Standard Time', offset: 'UTC+09:30'},
 {abbr:'ACT', name: 'Acre Time', offset: 'UTC-05'},
@@ -16,7 +16,7 @@ timezones: [
 {abbr:'YEKT', name: 'Yekaterinburg Time', offset: 'UTC+05'},
 {abbr:'Z', name: 'Zulu Time (Coordinated Universal Time)', offset: 'UTC'}
 ],
-timezones_full: [
+timezones: [
 {abbr:'ACDT', name: 'Australian Central Daylight Savings Time', offset: 'UTC+10:30'},
 {abbr:'ACST', name: 'Australian Central Standard Time', offset: 'UTC+09:30'},
 {abbr:'ACT', name: 'Acre Time', offset: 'UTC-05'},

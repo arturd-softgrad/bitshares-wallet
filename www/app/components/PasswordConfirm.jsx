@@ -5,12 +5,12 @@ import cname from "classnames"
 const TextField = require('material-ui/lib/text-field');
 
 export default class PasswordConfirm extends Component {
-    
+
     static propTypes = {
         // Called everytime a valid password is provided and matches a confirmed password
         onValid: PropTypes.func.isRequired
     }
-    
+
     constructor() {
         super()
         this.state = {
@@ -21,13 +21,20 @@ export default class PasswordConfirm extends Component {
             valid: false
         }
     }
-    
+
+
+//    <PasswordInput ref="verifyPassword" confirmation={false} onEnter={this.onAccept.bind(this)}/>
+
+
     render() {
         var {password, confirm, valid, errors} = this.state
+
+
+
         return <div className={cname(
             "grid-content", "no-overflow", {"has-error": errors.size})}>
             <div>
-              <TextField 
+              <TextField
                   name="password"
                   id="password"
                   ref="password"
@@ -37,7 +44,7 @@ export default class PasswordConfirm extends Component {
                   onChange={this.formChange.bind(this)} />
             </div>
             <div>
-                <TextField 
+                <TextField
                   name="password"
                   id="confirm"
                   ref="password"
@@ -50,29 +57,29 @@ export default class PasswordConfirm extends Component {
             <br/>
         </div>
     }
-    
+
     formChange(event) {
         var state = this.state
         state[event.target.id] = event.target.value
         this.setState(state)
         this.validate(state)
     }
-    
+
     validate(state) {
         var {password, confirm} = state
         confirm = confirm.trim()
         password = password.trim()
-        
+
         var errors = Immutable.Map()
         // Don't report until typing begins
         if(password.length !== 6)
             errors = errors.set("password_length", "PIN must be 6 characters")
-        
+
         // Don't report it until the confirm is populated
         if( password !== "" && confirm !== "" && password !== confirm)
             errors = errors.set("password_match", "PIN do not match")
-        
-        var valid = password.length >= 8 && password === confirm
+
+        var valid = password.length == 6 && password === confirm
         this.setState({errors, valid})
         this.props.onValid(valid ? password : null)
     }

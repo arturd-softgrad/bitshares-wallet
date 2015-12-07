@@ -31,7 +31,7 @@ class IntlStore extends BaseStore {
         });
 
         this._export("getCurrentLocale", "translate" ,"hasLocale", "getLanguages", "getCurrencies", "getCurrencyById",
-            "getTimezones", "getCurrentTimeZone", "formatNow",
+            "getTimezones", "getCurrentTimeZone", "formatNow", "formatTime", "formatTimeSeparated",
             "getCurrency","formatCurrency");
     }
 
@@ -168,6 +168,20 @@ class IntlStore extends BaseStore {
         var formatted = new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs);
         return formatted + ' ' + tz.abbr;
     }
+    formatTimeSeparated(utcTime)
+    {
+        var locale = this.getCurrentLocale();
+        var options =   { year: 'numeric', month: 'short', day:"numeric" }
+        options.timeZone = 'UTC';
+        //{hour: "numeric", minute: "numeric", second: "numeric", timeZoneName: "short"}
+        var tz = this.getCurrentTimeZone();
+        var formatted = [];
+        formatted.push(new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs));
+        options =  {hour: "numeric", minute: "numeric"};
+        formatted.push(new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs)+ ' ' + tz.abbr);
+        return formatted;
+    }
+
     formatLocalDate(localDate, options)
     {
         var utcTime = localDate.getTime() + localDate.getTimezoneOffset() * 60000;

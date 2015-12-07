@@ -7,6 +7,10 @@ class QrCode extends React.Component {
       super(props);
     }
 
+    shouldComponentUpdate(nextProps) {
+      return this.props.data !== nextProps.data
+    }
+
     render() {
         var svg_string = qr.imageSync(this.props.data, { type: 'svg' })
         return <div>

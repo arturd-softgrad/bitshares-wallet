@@ -85,6 +85,7 @@ class ApplicationApi {
         sign = true,
         propose_account = null
     }) {
+
         var memo_sender = propose_account || from_account
         var memo_from_public, memo_to_public
         if( memo && encrypt_memo  ) {
@@ -158,7 +159,11 @@ class ApplicationApi {
                 broadcast,
                 sign
             )
-        })
+        }).catch(error => {
+            console.log("[AplicationApi] ----- transfer error ----->", error);
+            return false;
+        });
+    
     }
 
 }

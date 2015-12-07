@@ -1,6 +1,6 @@
 import React from "react";
 import {FormattedRelative} from "react-intl";
-
+import IntlStore from   "dl/src/stores/IntlStore"
 class TimeAgo extends React.Component {
 
     static propTypes = {
@@ -71,14 +71,20 @@ class TimeAgo extends React.Component {
         if (!time) {
             return null;
         }
-        
+
         if (typeof time === "string" && time.indexOf("+") === -1) {
             time += "+00:00";
         }
 
         component = component ? component : "span";
 
-        let timeAgo = <span ref={"timeago_ttip_" + time} data-tip={new Date(time)} data-place="top" data-type="light"><FormattedRelative value={new Date(time).getTime() + offset_mills}/></span>
+        let formattedTime = IntlStore.formatTimeSeparated(new Date(time).getTime() + offset_mills);
+
+
+        //console.log('$$offset_mills = ', offset_mills);
+        let timeAgo = [<div ref={"timeago_ttip_" + time} data-tip={new Date(time)} data-place="top" data-type="light">{formattedTime[0]}</div>,
+            <div className="timetime">{formattedTime[1]}</div>]
+        //let timeAgo = <span ref={"timeago_ttip_" + time} data-tip={new Date(time)} data-place="top" data-type="light"><FormattedRelative value={new Date(time).getTime() + offset_mills}/></span>
         return React.createElement(component, {className: this.props.className}, timeAgo);
     }
 }

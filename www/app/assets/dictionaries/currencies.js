@@ -1,6 +1,6 @@
 ﻿module.exports = {
 
-currencies:[
+currencies1:[
 
 {id:1, iso: '', state: 'Abkhazia', symbol: '', fractional: '', name: 'Abkhazian apsar[D]', ratio: ''},
 {id:2, iso: 'RUB', state: 'Abkhazia', symbol: 'p', fractional: 'Kopek', name: 'Russian ruble', ratio: '100'},
@@ -13,8 +13,7 @@ currencies:[
 {id:146, iso: 'MGA', state: 'Madagascar', symbol: 'Ar', fractional: 'Iraimbilanja', name: 'Malagasy ariary', ratio: '5'},
 {id:114, iso: 'IQD', state: 'Iraq', symbol: '', fractional: 'Fils', name: 'Iraqi dinar', ratio: '1000'}
 ],
-currencies_full: [
-
+currencies: [
 {id:1, iso: '', state: 'Abkhazia', symbol: '', fractional: '', name: 'Abkhazian apsar[D]', ratio: ''},
 {id:2, iso: 'RUB', state: 'Abkhazia', symbol: '?', fractional: 'Kopek', name: 'Russian ruble', ratio: '100'},
 {id:3, iso: 'AFN', state: 'Afghanistan', symbol: '', fractional: 'Pul', name: 'Afghan afghani', ratio: '100'},

@@ -5,7 +5,7 @@ import iDBRoot from "idb-root"
 const DB_VERSION = 2 // Initial value was 1
 const DB_PREFIX = "graphene_v2"
 const WALLET_BACKUP_STORES = [
-    "wallet", "private_keys", "linked_accounts"
+    "wallet", "private_keys", "linked_accounts", "linked_contacts"
 ]
 
 var current_wallet_name = "default"
@@ -16,6 +16,8 @@ var upgrade = function(db, oldVersion) {
         db.createObjectStore("wallet", { keyPath: "public_name" })
         idb_helper.autoIncrement_unique(db, "private_keys", "pubkey")
         db.createObjectStore("linked_accounts", { keyPath: "name" })
+        db.createObjectStore("linked_contacts", { keyPath: "contact" })
+        
     }
     if (oldVersion < 2) {
         // Cache only, do not backup...

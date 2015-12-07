@@ -66,10 +66,10 @@ module.exports = function(options) {
             path: outputPath,
             filename: "app.js",
             pathinfo: !options.prod,
-            sourceMapFilename: "[name].js.map"
+            sourceMapFilename: "[name].js.map"			
         },
-        devtool: options.prod ? "source-map" : "source-map",
         debug: options.prod ? false : true,
+        devtool: "source-map",
         module: {
             loaders: [
                 { 

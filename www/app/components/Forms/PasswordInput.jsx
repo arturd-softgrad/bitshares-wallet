@@ -13,7 +13,7 @@ class PasswordInput extends Component {
     childContextTypes: {
       muiTheme: React.PropTypes.object,
     }
-    
+
     static propTypes = {
         onChange: PropTypes.func,
         onEnter: PropTypes.func,
@@ -24,12 +24,12 @@ class PasswordInput extends Component {
     getChildContext() {
         muiTheme: this.state.muiTheme
     }
-    
+
     constructor() {
         super();
         this.handleChange = this.handleChange.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
-        this.state = {muiTheme: ThemeManager.getMuiTheme(LightRawTheme), value: "", error: null, wrong: false, doesnt_match: false, passwordValue: ""};
+        this.state = {muiTheme: ThemeManager.getMuiTheme(LightRawTheme), value: "", error: null, wrong: false, doesnt_match: false, passwordValue: "", confirmPasswordValue: ""};
     }
 
     componentWillMount() {
@@ -37,9 +37,9 @@ class PasswordInput extends Component {
         accent1Color: Colors.deepOrange500,
       });
 
-      this.setState({muiTheme: newMuiTheme});
+      this.setState({muiTheme: newMuiTheme, watermark: this.props.watermark});
     }
-    
+
     value() {
         let node = this.state.passwordValue;
         return node ? node.value : "";
@@ -61,42 +61,45 @@ class PasswordInput extends Component {
         return !(this.state.error || this.state.wrong || this.state.doesnt_match) && this.state.value.length === 6;
     }
 
-    checkPasswordConfirmation() {
-        let confirmation = this.state.confirmPasswordValue;
-        let password = this.state.passwordValue;
-        this.state.doesnt_match = confirmation && password !== confirmation;
+    checkPasswordConfirmation(password, confirmPassword) {
+        this.state.doesnt_match = password !== confirmPassword;
         this.setState({doesnt_match: this.state.doesnt_match});
     }
 
     handleChange(e) {
-     //   e.preventDefault();
+
+        if(/^\d*$/.test(e.target.value)) {
+               //   e.preventDefault();
      //   e.stopPropagation();
-        let confirmation =  true;
+            let confirmation =  true;
 
-        if (e.target.name === "confirm_password") {
+            let password = this.state.passwordValue;
+            let confirmPassword = this.state.confirmPasswordValue;
 
-            confirmation = this.props.confirmation ? e.target.value : true
-        } else {
-            confirmation = this.props.confirmation ? this.state.confirmPasswordValue : true
+            if (e.target.name === "confirm_password") {
+                confirmation = this.props.confirmation ? e.target.value : true;
+                confirmPassword = e.target.value;
+            } else {
+                confirmation = this.props.confirmation ? this.state.confirmPasswordValue : true;
+                password = e.target.value;
+            }
+
+             this.checkPasswordConfirmation(password, confirmPassword);
+
+            let state = {
+                valid: !this.state.error && !this.state.wrong
+                && !(this.props.confirmation && this.state.doesnt_match)
+                && confirmation && password.length === 6,
+                confirmPasswordValue: confirmPassword,
+                passwordValue: password,
+                value: password
+            };
+
+            if (this.props.onChange) this.props.onChange(state);
+            this.setState(state);
+
         }
-
-        let password = this.state.passwordValue;
-
-        if (e.target.name === "password") {
-            password = e.target.value;
-        }
-        
-
-        if(this.props.confirmation) this.checkPasswordConfirmation();
-        let state = {
-            valid: !this.state.error && !this.state.wrong
-            && !(this.props.confirmation && this.state.doesnt_match)
-            && confirmation && password.length === 6,
-            passwordValue: password,
-            value: password
-        };
-        if (this.props.onChange) this.props.onChange(state);
-        this.setState(state);
+  
     }
 
     onKeyDown(e) {
@@ -115,29 +118,37 @@ class PasswordInput extends Component {
         return (
             <div>
                 <div>
-                    <TextField 
+                    <TextField
                       name="password"
                       ref="password"
-                      floatingLabelText="6-digit PIN"
+                      floatingLabelText={this.state.watermark || "6-digits PIN"}
                       type="password"
+                      pattern="[0-9]*" 
+                      inputmode="numeric"
                       value={this.state.passwordValue}
-                      onChange={this.handleChange} 
+                      onChange={this.handleChange}
                       errorText={password_error}
+                      underlineFocusStyle={{borderColor: "#009FE3"}}
+                      underlineStyle={{borderColor: "#72BAD9"}}
                       onEnterKeyDown={this.onKeyDown}/>
-                </div>        
+                </div>
                 {this.props.confirmation ?
                     <div>
-                    <TextField 
+                    <TextField
                       name="confirm_password"
-                      floatingLabelText="6-digit PIN confirm" 
+                      floatingLabelText="6-digits PIN confirm"
                       type="password"
+                      pattern="[0-9]*" 
+                      inputmode="numeric"
                       value={this.state.confirmPasswordValue}
-                      onChange={this.handleChange} 
+                      underlineFocusStyle={{borderColor: "#009FE3"}}
+                      underlineStyle={{borderColor: "#72BAD9"}}
+                      onChange={this.handleChange}
                       errorText=  {confirmation_error}/>
                     </div>
                 : null}
             </div>
-            
+
         );
     }
 }

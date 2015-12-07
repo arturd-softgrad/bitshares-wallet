@@ -10,19 +10,19 @@ import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 
 const Checkbox = require('material-ui/lib/checkbox');
-const Dialog = require('material-ui/lib/dialog');
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
-import LanguageSwitcher from "./LanguageSwitcher";
-import CurrencySwitcher from "./CurrencySwitcher";
-import TimezoneSwitcher from "./TimezoneSwitcher";
 const RaisedButton = require('material-ui/lib/raised-button');
 const RadioButton = require('material-ui/lib/radio-button');
 const RadioButtonGroup = require('material-ui/lib/radio-button-group');
 import _ from "lodash";
 
-// Flux SettingsScreen view
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
+import Select  from "react-select";
+
+
 class SettingsScreen extends React.Component {
 
 
@@ -50,20 +50,17 @@ class SettingsScreen extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
         return true;
   }
-  _updateComponent(){
-      //console.log("$$$settings screen - _updateComponent() triggered");
-      this.setState({rerender: true});
-      //this.forceUpdate();
+  _displayFormatSamples(){
       console.log('$$$formattedNow', IntlStore.formatNow(null));
       console.log('$$$formatted currency:-4624.6', IntlStore.formatCurrency(-4624.6));
       console.log('$$$formatted currency:14624.92', IntlStore.formatCurrency(14624.92));
       console.log('$$$formatted currency:24500', IntlStore.formatCurrency(24500));
       console.log('$$$formatted currency:3433.02', IntlStore.formatCurrency(3433.02));
       console.log('$$$formatted currency:5555.004', IntlStore.formatCurrency(5555.004));
-
   }
 
   componentWillMount() {
+    this._displayFormatSamples();
     let newMuiTheme = ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
       accent1Color: Colors.deepOrange500,
     });
@@ -72,8 +69,64 @@ class SettingsScreen extends React.Component {
       this.setState({muiTheme: newMuiTheme})
     else
       this.setState({muiTheme: newMuiTheme, advancedSettings: advancedSettings});
-
+    // currencies
+    var currencies = IntlStore.getCurrencies();
+    var rows = [];
+    for (var i=0; i<currencies.length; i++) {
+          var currency = currencies[i];
+          var label = currency.state + ' (' + (currency.iso || '(none)') + ' - '  + (currency.name ||'') +')';
+          rows.push({value:currency.id, label: label});
+        }
+    this.currencyEntries = rows;
+    let currencyId = IntlStore.getCurrency().id;
+    this.setState({currencyId: currencyId});
+    // languages
+    let locale = IntlStore.getCurrentLocale();
+    this.setState({currentLocale: locale});
+    var langs = IntlStore.getLanguages();
+    rows = [];
+    for (var key in langs)
+    {
+      if (langs.hasOwnProperty(key))
+        rows.push({value: key, label:langs[key]});
+    }
+    this.languageEntries = rows;
+    // timezones
+    let currentTz = IntlStore.getCurrentTimeZone().abbr;
+    this.setState({ currentTimeZone: currentTz});
+    var timezones = IntlStore.getTimezones();
+    rows = [];
+    for (var i=0; i<timezones.length; i++) {
+        var timezone = timezones[i];
+        //  (  ) ACDT - Australian Central Daylight Savings Time (UTC+10:30)
+        // {abbr:'ACT', name: 'Acre Time', offset: 'UTC−05'},
+        var label = timezone.abbr + ' - ' + timezone.name + ' (' + timezone.offset+')';
+        rows.push({value:timezone.abbr, label:label});
+    }
+    this.timezoneEntries = rows;
   }
+  _switchCurrency(value)
+  {
+    IntlActions.switchCurrency(value);
+  }
+  _switchLanguage(value)
+  {
+    let locale = IntlStore.getCurrentLocale();
+    if (value !== locale) {
+        IntlActions.switchLocale(value);
+    }
+    //this.setState({ currentLocale: value});
+  }
+  _switchTimezone(value)
+  {
+    let tz = IntlStore.getCurrentTimeZone().abbr;
+    if (value !== tz) {
+        IntlActions.switchTimezone(value);
+    }
+    //this.setState({ currentTimeZone: value});
+  }
+
+
   _handleAdvancedSettingsUpdate()
   {
       //console.log("$$$settings screen - _handleAdvancedSettingsUpdate() triggered");
@@ -91,19 +144,15 @@ class SettingsScreen extends React.Component {
 
   }
 
-
-  _handleSwitchLocation() {
-    this.refs.switchCurrencyWindow.refs.dialog.show();
-  }
-
-  _handleSwitchLanguageWindow()
+  _redirectToBackup()
   {
-    this.refs.switchLanguageWindow.refs.dialog.show();
+    //Router.navigate('backup');
+    //this.transitionTo('backup');
+    history.pushState(null, 'backup');
   }
-
-  _handleSwitchTimezone()
+  _redirectToChangePin()
   {
-    this.refs.switchTimezoneWindow.refs.dialog.show();
+    history.pushState(null, 'changepin');
   }
 
 
@@ -117,71 +166,72 @@ class SettingsScreen extends React.Component {
     let settings = this.state.advancedSettings;
 
     return (
-      <section>
+
+      <section className="content">
         <main className="no-nav" ref="settingsScreenRef">
 
           <section className="setting-item">
-            <CurrencySwitcher actions={okActions} ref="switchCurrencyWindow" fnDismiss={this._updateComponent.bind(this)}/>
-          </section>
-
-          <section className="setting-item">
-          <RaisedButton label={translate("settings.taxableCountry")}
-            onTouchTap={this._handleSwitchLocation.bind(this)}   />
-          </section>
-
-
-          <section className="setting-item">
-            <LanguageSwitcher actions={okActions} ref="switchLanguageWindow" fnDismiss={this._updateComponent.bind(this)} />
-          </section>
-
-          <section className="setting-item">
-          <RaisedButton label={translate("settings.preferredLanguage")}
-            onTouchTap={this._handleSwitchLanguageWindow.bind(this)}   />
+            <div className="code__item"><Translate content="wallet.settings.taxableCountry" /></div>
+            <Select name="test-selectbox"    value={this.state.currencyId}
+                options={this.currencyEntries} clearable={false}
+                onChange={this._switchCurrency}   />
           </section>
 
 
           <section className="setting-item">
-            <TimezoneSwitcher actions={okActions} ref="switchTimezoneWindow" fnDismiss={this._updateComponent.bind(this)}/>
+            <div className="code__item"><Translate content="wallet.settings.preferredLanguage" /></div>
+            <Select name="test-selectbox1"    value={this.state.currentLocale}
+                options={this.languageEntries} clearable={false}
+                onChange={this._switchLanguage}   />
           </section>
 
           <section className="setting-item">
-          <RaisedButton label={translate("settings.displayDtAs")}
-            onTouchTap={this._handleSwitchTimezone.bind(this)}  />
+            <div className="code__item"><Translate content="wallet.settings.displayDtAs" /></div>
+            <Select name="test-selectbox2"    value={this.state.currentTimeZone}
+                options={this.timezoneEntries} clearable={false}
+                onChange={this._switchTimezone}   />
           </section>
-
         <section className="setting-item">
           <Checkbox ref="chkCheckUpdatesStartup"
                 value="checkboxValue1"
-                label={translate("settings.checkUpdatesStartup")}
+                label={<Translate content="wallet.settings.checkUpdatesStartup" />}
                 defaultChecked={settings.checkUpdatesStartup} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           <Checkbox ref="chkAutoInstallMajorVer"
             name="chkAutoInstallMajorVer"
             value="checkboxValue2"
-            label={translate("settings.autoInstallMajorVer")}
+            label={<Translate content="wallet.settings.autoInstallMajorVer" />}
             defaultChecked={settings.autoInstallMajorVer} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
               <Checkbox  ref="chkRequirePinToSend"
                 name="chkRequirePinToSend"
                 value="checkboxValue2"
-                label={translate("settings.requirePinToSend")}
+                label={<Translate content="wallet.settings.requirePinToSend" />}
                 defaultChecked={settings.requirePinToSend} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
               <Checkbox  ref="chkAutoCloseWalletAfterInactivity"
                 name="chkAutoCloseWalletAfterInactivity"
                 value="checkboxValue3"
-                label={translate("settings.autoCloseWalletAfterInactivity")}
+                label={<Translate content="wallet.settings.autoCloseWalletAfterInactivity" />}
                 defaultChecked={settings.autoCloseWalletAfterInactivity} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
            </section>
            <section className="setting-item">
                <Checkbox  ref="chkAlwaysDonateDevsMunich"
                 name="chkAlwaysDonateDevsMunich"
                 value="checkboxValue3"
-                label={translate("settings.alwaysDonateDevsMunich")}
+                label={<Translate content="wallet.settings.alwaysDonateDevsMunich" />}
                 defaultChecked={settings.alwaysDonateDevsMunich}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
-         <section className="setting-item">
+          <section className="setting-item">
+            <RaisedButton label={<Translate content="wallet.settings.backup" />}
+              onTouchTap={this._redirectToBackup.bind(this)}    />
+          </section>
+          <section className="setting-item">
+            <RaisedButton label={<Translate content="wallet.settings.editPin" />}
+              onTouchTap={this._redirectToChangePin.bind(this)}    />
+          </section>
+          <section className="setting-item">
             <div><Translate content="wallet.settings.q_sharePublicAddress" /></div>
             <div><Translate content="wallet.settings.a_sharePublicAddress" /></div>
           </section>
@@ -196,9 +246,6 @@ class SettingsScreen extends React.Component {
           <section className="setting-item">
             <div><Translate content="wallet.settings.q_searchTransaction" /></div>
             <div><Translate content="wallet.settings.a_searchTransaction" /></div>
-          </section>
-            <section className="qa">
-             
           </section>
         </main>
       </section>

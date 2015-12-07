@@ -13,7 +13,7 @@ import WalletActions from "actions/WalletActions"
 import WalletDb from "stores/WalletDb"
 
 class BackupActions {
-    
+
     incommingWebFile(file) {
         var reader = new FileReader()
         reader.onload = evt => {
@@ -24,12 +24,16 @@ class BackupActions {
         }
         reader.readAsBinaryString(file)
     }
-    
+
     incommingBuffer(params) {
         this.dispatch(params)
     }
-    
+
     reset() {
+        this.dispatch()
+    }
+
+    requireBackup(){
         this.dispatch()
     }
 
@@ -56,10 +60,10 @@ export function backup(backup_pubkey) {
 //         var name = iDB.getCurrentWalletName() + ".bin"
 //         var blob = new Blob([ contents ], {
 //             type: "application/octet-stream; charset=us-ascii"})
-//         
+//
 //         if(blob.size !== contents.length)
 //             throw new Error("Invalid backup to download conversion")
-//         
+//
 //         saveAsCallback(blob, name);
 //         WalletActions.setBackupDate()
 //     })
@@ -90,7 +94,7 @@ export function createWalletBackup(
             var backup_buffer =
                 Aes.encrypt_with_checksum(onetime_private_key, public_key,
                     null/*nonce*/, compressedWalletBytes)
-            
+
             var onetime_public_key = onetime_private_key.toPublicKey()
             var backup = Buffer.concat([ onetime_public_key.toBuffer(), backup_buffer ])
             resolve(backup)
@@ -102,7 +106,7 @@ export function decryptWalletBackup(backup_wif, backup_buffer) {
     return new Promise( (resolve, reject) => {
         if( ! Buffer.isBuffer(backup_buffer))
             backup_buffer = new Buffer(backup_buffer, 'binary')
-        
+
         var private_key = PrivateKey.fromWif(backup_wif)
         var public_key
         try {
@@ -111,7 +115,7 @@ export function decryptWalletBackup(backup_wif, backup_buffer) {
             console.error(e, e.stack)
             throw new Error("Invalid backup file")
         }
-        
+
         backup_buffer = backup_buffer.slice(33)
         try {
             backup_buffer = Aes.decrypt_with_checksum(
@@ -121,7 +125,7 @@ export function decryptWalletBackup(backup_wif, backup_buffer) {
             reject("invalid_decryption_key")
             return
         }
-        
+
         try {
             lzma.decompress(backup_buffer, wallet_string => {
                 try {

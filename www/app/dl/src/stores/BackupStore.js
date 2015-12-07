@@ -2,20 +2,22 @@ import alt from "alt-instance"
 import BackupActions from "actions/BackupActions"
 import BaseStore from "stores/BaseStore"
 import hash from "common/hash"
+var SettingsStore = require("./SettingsStore");
 
 class BackupStore extends BaseStore {
-    
+
     constructor() {
         super()
         this.state = this._getInitialState()
         this.bindListeners({
             onIncommingFile: BackupActions.incommingWebFile,
             onIncommingBuffer: BackupActions.incommingBuffer,
-            onReset: BackupActions.reset
+            onReset: BackupActions.reset,
+            onRequireBackup: BackupActions.requireBackup
         })
-        this._export("setWalletObjct")
+        this._export("setWalletObjct", "isBackupRequired")
     }
-    
+
     _getInitialState() {
         return {
             name: null,
@@ -27,30 +29,43 @@ class BackupStore extends BaseStore {
             wallet_object: null
         }
     }
-    
+
+    isBackupRequired ()
+    {
+        var is = SettingsStore.getSetting("requireBackup");
+        return !!is;
+    }
+    onRequireBackup()
+    {
+        SettingsStore.changeSetting({setting: "requireBackup", value: true });
+    }
+
+
+
     setWalletObjct(wallet_object) {
         this.setState({wallet_object})
     }
-    
+
     onReset() {
         this.setState(this._getInitialState())
     }
-    
+
     onIncommingFile({name, contents, last_modified}) {
         var sha1 = hash.sha1(contents).toString('hex')
         var size = contents.length
         var public_key = getBackupPublicKey(contents)
         this.setState({ name, contents, sha1, size, last_modified, public_key })
     }
-    
+
     onIncommingBuffer({name, contents, public_key}) {
         this.onReset()
         var sha1 = hash.sha1(contents).toString('hex')
         var size = contents.length
         if( ! public_key) public_key = getBackupPublicKey(contents)
+        SettingsStore.changeSetting({setting: "requireBackup", value: false });
         this.setState({name, contents, sha1, size, public_key})
     }
-    
+
 }
 
 export var BackupStoreWrapped = alt.createStore(BackupStore, "BackupStore");

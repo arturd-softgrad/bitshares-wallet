@@ -80,7 +80,7 @@ export default class ImportKeys extends Component {
         if( ! WalletDb.getWallet()) return <WalletCreate hideTitle={true}/>
         if( this.props.importing ) {
             return <div>
-                <h3><Translate content="wallet.import_keys" /></h3>
+                <h3>Import keys</h3>
                 <div className="center-content">
                     <LoadingIndicator type="circle"/>
                 </div>
@@ -121,7 +121,7 @@ export default class ImportKeys extends Component {
         }
         return (
             <div>
-                <h3><Translate content="wallet.import_keys" /></h3>
+                <h3>Import keys</h3>
                 {/* Key file upload */}
                 <div>
                     <span>{this.state.key_text_message ?
@@ -130,7 +130,9 @@ export default class ImportKeys extends Component {
                     }</span>
                     { ! import_ready ? 
                         null :
-                        <span> (<a onClick={this.reset.bind(this)}>reset</a>)</span>
+                        <span> (<RaisedButton label="Reset"
+                                    primary={true}
+                                    onTouchTap={this.reset.bind(this)} />)</span>
                     }
                 </div>
                 { account_rows ? 
@@ -160,7 +162,9 @@ export default class ImportKeys extends Component {
                             <div>
                                 <label>BTS 0.9.x key export file
                                 {this.state.no_file ? null : <span>&nbsp;
-                                    (<a onClick={this.reset.bind(this)}>Reset</a>)</span>}
+                                    (<RaisedButton label="Reset"
+                                        primary={true}
+                                        onTouchTap={this.reset.bind(this)} />)</span>}
                                 </label>
                                 <input
                                     type="file" id="file_input"
@@ -196,8 +200,9 @@ export default class ImportKeys extends Component {
                                 <div>{this.state.import_password_message}</div>
                             </div>) : null}
                         <br/>
-                        <a href className="button success" onClick={this.onBack.bind(this)}>
-                            Cancel </a>
+                        <RaisedButton label="Cancel"
+                            secondary={true}
+                            onTouchTap={this.onBack.bind(this)} />
                     </div>
                 </div> : null}
                 
@@ -218,14 +223,14 @@ export default class ImportKeys extends Component {
                     <br/>
 
                     <div className="center-content" style={{width: "100%"}}>
-                        <div className="button-group content-block">
-                            <a href className={cname("button success", {disabled:!import_ready})}
-                               onClick={this._saveImport.bind(this)} >
-                                Import
-                            </a>
-                            <a href className="button secondary" onClick={this.reset.bind(this)}>
-                                Cancel
-                            </a>
+                        <div>
+                        <RaisedButton label="Import"
+                            disabled= {!import_ready}
+                            primary={true}
+                            onTouchTap={this._saveImport.bind(this)} />
+                        <RaisedButton label="Cancel"
+                            secondary={true}
+                            onTouchTap={this.reset.bind(this)} />
                         </div>
                     </div>
                 </div> : null}
@@ -666,7 +671,6 @@ export default class ImportKeys extends Component {
         this.state.key_text_message = null
         return count
     }
-
 }
 
 class KeyCount extends Component {

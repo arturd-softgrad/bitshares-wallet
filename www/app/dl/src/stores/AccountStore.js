@@ -22,11 +22,13 @@ class AccountStore extends BaseStore {
             onSetCurrentAccount: AccountActions.setCurrentAccount,
             onCreateAccount: AccountActions.createAccount,
             onLinkAccount: AccountActions.linkAccount,
+            onLinkContact: AccountActions.linkContact,
             onUnlinkAccount: AccountActions.unlinkAccount,
+            onUnlinkContact: AccountActions.unlinkContact,
             onAccountSearch: AccountActions.accountSearch,
             // onNewPrivateKeys: [ PrivateKeyActions.loadDbData, PrivateKeyActions.addKey ]
         });
-        this._export("loadDbData", "tryToSetCurrentAccount", "onCreateAccount",
+        this._export("loadDbData", "loadContactsDbData", "tryToSetCurrentAccount", "onCreateAccount",
             "getMyAccounts", "isMyAccount", "getMyAuthorityForAccount");
     }
     
@@ -37,6 +39,7 @@ class AccountStore extends BaseStore {
             update: false,
             currentAccount: null,
             linkedAccounts: Immutable.Set(),
+            contacts: Immutable.Set(),
             searchAccounts: Immutable.Map(),
             searchTerm: ""
         }
@@ -47,6 +50,15 @@ class AccountStore extends BaseStore {
         return iDB.load_data("linked_accounts").then(data => {
             for (let a of data) { linkedAccounts.add(a.name); }
             this.setState({ linkedAccounts: linkedAccounts.asImmutable() })
+        })
+    }
+
+    loadContactsDbData() {
+
+        var contacts = Immutable.Set().asMutable()
+        return iDB.load_data("linked_contacts").then(data => {
+            for (let a of data) { contacts.add(a.contact); }
+            this.setState({ contacts: contacts.asImmutable() })
         })
     }
     
@@ -232,6 +244,21 @@ class AccountStore extends BaseStore {
         }
     }
 
+    onLinkContact(contact) {
+
+        if( ! validation.is_account_name(contact.name, true))
+            throw new Error("Invalid account name: " + contact.name)
+
+        contact = JSON.stringify(contact);
+        
+        iDB.add_to_store("linked_contacts", {
+            contact
+        });
+        this.state.contacts = this.state.contacts.add(contact);
+    }
+
+    // TODO implemented Unlink contact
+
     onUnlinkAccount(name) {
         if( ! validation.is_account_name(name, true))
             throw new Error("Invalid account name: " + name)
@@ -242,7 +269,14 @@ class AccountStore extends BaseStore {
             this.setCurrentAccount(null);
         }
     }
-    
+
+    onUnlinkContact(contact) {
+
+        contact = JSON.stringify(contact);
+
+        iDB.remove_from_store("linked_contacts", contact);
+        this.state.contacts = this.state.contacts.delete(contact);
+    }
 }
 
 module.exports = alt.createStore(AccountStore, "AccountStore");

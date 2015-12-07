@@ -12,6 +12,7 @@ class WalletUnlockStore {
     onUnlock({resolve, reject}) {
         //DEBUG console.log('... onUnlock setState', WalletDb.isLocked())
         if( ! WalletDb.isLocked()) {
+      //  if(true) { // TODO for test
             resolve()
             return
         }

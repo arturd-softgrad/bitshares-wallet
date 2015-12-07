@@ -20,7 +20,7 @@ class ExistingAccount extends ExistingAccountBaseComponent {
     render() {
         var has_wallet = this.props.wallet.wallet_names.count() != 0
         return (
-            <div className="grid-block vertical">
+            <div className="grid-block vertical content">
                 <div className="grid-content">
                     <div className="content-block center-content">
                         <div className="content-block" style={{width: '24em'}}>

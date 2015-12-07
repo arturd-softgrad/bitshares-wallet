@@ -30,7 +30,7 @@ class Identicon extends Component {
       if(this.props.account) jdenticon.updateById(this.canvas_id);
       else {
           let ctx = ReactDOM.findDOMNode(this.refs.canvas).getContext('2d');
-          ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+          ctx.fillStyle = "#00BCD4";
           let size = ctx.canvas.width;
           ctx.clearRect(0, 0, size, size);
           ctx.fillRect(0, 0, size, size);

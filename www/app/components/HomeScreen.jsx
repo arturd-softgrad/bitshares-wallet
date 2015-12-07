@@ -1,55 +1,95 @@
 import React from "react";
 import Translate from "react-translate-component";
-
 import Transactions from "./Transactions";
-import Balances from "./Balances";
 import AccountCard from "./AccountCard";
-
-
+import Balances from "./Balances";
+import RecentTransactions from "./RecentTransactions";
+import AltContainer from "alt/AltContainer";
+import BindToChainState from "./Utility/BindToChainState";
 import { Router, Route, Link, IndexRoute } from 'react-router';
 const SelectField = require('material-ui/lib/select-field');
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
+import SettingsStore from "stores/SettingsStore";
+import WalletUnlockStore from "stores/WalletUnlockStore";
+import BackupStore from "stores/BackupStore";
 import Immutable from "immutable";
 import ChainTypes from "./Utility/ChainTypes";
-import BindToChainState from "./Utility/BindToChainState";
-
-// Flux HomeScreen view
+import KeyGenComponent from  "./KeyGenComponent"
+import WalletDb from "stores/WalletDb";
 
 class HomeScreen extends React.Component {
 
     constructor(props) {
       super(props);
+
     }
 
-    // Render HomeScreen view
+
     render() {
 
-       return (
-         <section>
-            <nav className="main-nav">
-              <ul>
-                <li className="active"><a href="#"><Translate content="wallet.home.balances" /></a></li>
-                <li><Link to="contacts"><Translate content="wallet.home.contacts" /></Link></li>
-                <li><a href="#"><Translate content="wallet.home.finder" /></a></li>
-                <li><a href="#"><Translate content="wallet.home.exchange" /></a></li>
-              </ul>
-            </nav>
-            <section className="code">
+      var isBackupRequired = BackupStore.isBackupRequired();
+      var qrcontent = KeyGenComponent.getComponents();
+
+      WalletDb.unlock();
+
+      var isLocked = WalletDb.isLocked();
+      console.log('$$$isLocked', isLocked);
+
+      var contents = isBackupRequired ?        <section className="code content-home">
+        <Link to="backup" className="active"><Translate content="wallet.backup.createBackupPrompt" /></Link>
+      </section> :       [
+            <section className="code content-home">
               <div className="code__item">
-                <div className="code__item__img"><img src="app/assets/img/QR.jpg" alt=""/></div>
+                <div className="code__item__img">{qrcontent.qr}</div>
+
                 <div className="code__item__data">
-                    <AccountCard />
-                  <div className="data-text">777BTSFwmiD9C7h7Q8fHU9y3fAb5JhLCPBEzRZW</div>
+                      <AltContainer
+                          stores={
+                            {
+                              account: () => { // props is the property of AltContainer
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getState().currentAccount
+                                };
+                              },
+                              linkedAccounts: () => {
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getState().linkedAccounts
+                                }
+                              }
+                            }
+                          }
+                        >
+                         <AccountCard/>
+                    </AltContainer>
                 </div>
               </div>
-            </section>
+              <div className="data-text">{qrcontent.privateKey}</div>
+            </section>,
             <section className="code-buttons">
               <Link to="receive" className="btn btn-receive">receive</Link>
               <Link to="send" className="btn btn-send">send</Link>
-            </section>
-            <Balances />
-            <Transactions />
+            </section>,
+                      <AltContainer
+                          stores={
+                            {
+                              account: () => { // props is the property of AltContainer
+                                return {
+                                  store: AccountStore,
+                                  value: AccountStore.getState().currentAccount
+                                };
+                              }
+                            }
+                          }>
+                       <Balances />
+                       <Transactions  />
+                    </AltContainer>]
+
+       return (
+         <section>
+            {contents}
         </section>
        );
     }

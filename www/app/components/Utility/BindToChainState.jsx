@@ -336,13 +336,15 @@ function BindToChainState(options) {
             render() {
                 const props = _.omit(this.props, this.all_chain_props);
                 //console.log("----- Wrapper render ----->", this.componentName(), this.props, this.state);
-                for(let prop of this.required_props) if(!this.state[prop]) {
-                    if (typeof options !== "undefined" && options.show_loader) {
-                        return <LoadingIndicator />
-                    } else {
-                        return null;
+                for(let prop of this.required_props) 
+                    
+                    if(!this.state[prop]) {
+                        if (typeof options !== "undefined" && options.show_loader) {
+                            return <LoadingIndicator />
+                        } else {
+                            return null;
+                        }
                     }
-                }
                 //return <span className={this.state.resolved ? "resolved":"notresolved"}><Component {...props} {...this.state}/></span>;
                 return <Component {...props} {...this.state}/>;
             }
