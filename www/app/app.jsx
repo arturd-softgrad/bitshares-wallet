@@ -18,6 +18,7 @@ import WalletChangePassword from "./components/WalletChangePassword";
 import WalletUnlockModal from "./components/WalletUnlockModal";
 import AddContact from "./components/AddContact";
 import ContactOverview from './components/ContactOverview';
+import Syncer from './components/Syncer';
 import cookies from "cookies-js";
 import Translate from "react-translate-component";
 
@@ -40,6 +41,8 @@ import AltContainer from "alt/AltContainer";
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import If from './components/If';
+import TransactionConfirm from './components/TransactionConfirm';
+
 
 import { createHashHistory, useBasename } from 'history';
 
@@ -121,6 +124,11 @@ class App extends React.Component {
         if (this.refs.notificationSystem) this.refs.notificationSystem.addNotification(notification);
     }
 
+    _goToHomepage()
+    {
+        history.pushState(null, '/')
+    }
+
     static willTransitionTo(nextState, replaceState, callback)  {
 
         if (nextState.location.pathname === "/init-error") {
@@ -194,10 +202,10 @@ class App extends React.Component {
                         <If condition={pathname != "/"}>
                              <a className="back" onClick={history.goBack}></a>
                         </If>
-                      <div className="header__logo"><img src="app/assets/img/logo.svg" alt=""/></div>
+                      <div className="header__logo" onClick={this._goToHomepage.bind(this)}><img src="app/assets/img/logo.svg" alt=""/></div>
                       <section className="utility">
                         <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
-                        <a href="#"><i className="check"></i></a><span>block #43182</span>
+                        <Syncer synced={this.state.synced}/>
                       </section>
                         <If condition={pathname === "/" || pathname === "/contacts"}>
                              <nav className="main-nav">
@@ -233,9 +241,10 @@ class App extends React.Component {
                               }
                             }
                           }
-                        >      
+                        >
                         {this.props.children}
                     </AltContainer>
+                    <TransactionConfirm />
                     <WalletUnlockModal />
             </section>
         )
@@ -249,7 +258,7 @@ var app = {
     initialize: function() {
 
         this.bindEvents();
-        this.onDeviceReady(); // TODO remove on device
+    //    this.onDeviceReady(); // TODO remove on device
 
         let routes = (
             <Route path="/" component={App} onEnter={App.willTransitionTo}>

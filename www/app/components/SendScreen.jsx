@@ -46,7 +46,8 @@ class SendScreen extends React.Component {
             memo: "",
             error: null,
             propose: false,
-            propose_account: ""
+            propose_account: "",
+            to_account_valid: false
         };
 
          let { query } = this.props.location;
@@ -83,7 +84,8 @@ class SendScreen extends React.Component {
 */
 
     onToAccountChanged(to_account) {
-        this.setState({to_account, error: null})
+        //console.log("$$$onToAccountChanged, to_account=", to_account);
+        this.setState({to_account, error: null, to_account_valid: !!to_account})
     }
 
     onAmountChanged({amount, asset}) {
@@ -127,6 +129,11 @@ class SendScreen extends React.Component {
     }
 
     onSubmit(e) {
+        if (!this.state.to_account_valid)
+        {
+          console.log("SendScreen.submit - no recipient account");
+          return;
+        }
         e.preventDefault();
         this.setState({error: null});
         let asset = this.state.asset;
@@ -141,7 +148,7 @@ class SendScreen extends React.Component {
         AccountActions.transfer(
             this.state.from_account.get("id"),
             this.state.to_account.get("id"),
-            parseInt(amount * precision, 10),
+            parseInt(this.state.amount * precision, 10),
             asset.get("id"),
             this.state.memo,
             this.state.propose ? this.state.propose_account : null
@@ -230,7 +237,7 @@ class SendScreen extends React.Component {
                     label="Donate 2 BTS to the Support Developers at BitShares Munich"
                     defaultChecked={true}/>
               </div>
-              <button className="btn btn-send-big" type="submit" value="Submit">
+              <button className={"btn btn-send-big"+ (this.state.to_account_valid? "": " disabled")} type="submit" value="Submit">
                   <span>send</span>
               </button>
             </form>

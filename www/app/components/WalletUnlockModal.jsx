@@ -33,13 +33,16 @@ class WalletUnlockModal extends React.Component {
     _getInitialState() {
         return {
             password_error: null,
-            password_input_reset: Date.now(),
+            password_input_reset: Date.now()
+
         }
     }
 
     reset() {
         this.setState(this._getInitialState())
     }
+
+
 
     _handleShow() {
 
@@ -66,7 +69,10 @@ class WalletUnlockModal extends React.Component {
                 this.refs.unlockDialog.show() // MODAL open
             else
                 this.props.resolve()
+            return;
         }
+        if (this.props.forceLock)
+            this.refs.unlockDialog.show();
     }
 
     onPasswordEnter(e) {
@@ -86,10 +92,14 @@ class WalletUnlockModal extends React.Component {
                 var unlockTime = new Date().getTime() + 15*60000;
                 SettingsStore.changeSetting({setting: "walletUnlockTime", value: unlockTime });
                 console.log("Invalid pin was entered 3 times, locking for 15 minutes until ", new Date(unlockTime))
-                if (navigator.app === undefined)
-                    history.pushState(null, '/');
-                else
+                if(navigator.app){
                     navigator.app.exitApp();
+                }
+                else if(navigator.device){
+                    navigator.device.exitApp();
+                }
+                else
+                    history.pushState(null, '/');
             }
             return false
         }
@@ -98,7 +108,8 @@ class WalletUnlockModal extends React.Component {
             SettingsStore.changeSetting({setting: "walletUnlockTime", value: null});
             this.refs.password_input.clear()
             this.refs.unlockDialog.dismiss();
-            this.props.resolve()
+            if (!this.props.forceLock)
+                this.props.resolve()
             SessionActions.onUnlock()
             WalletUnlockActions.change()
             this.setState({password_input_reset: Date.now(), password_error: false})
@@ -137,7 +148,7 @@ class WalletUnlockModal extends React.Component {
 
                         <RaisedButton label="Cancel"
                             secondary={true}
-                            onTouchTap={this._handleClose} />
+                            onTouchTap={this._handleClose.bind(this)} />
                     </div>
                 </form>
            </Dialog>

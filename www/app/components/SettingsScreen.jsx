@@ -8,6 +8,8 @@ import IntlActions from "actions/IntlActions";
 import IntlStore from "stores/IntlStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
+import WalletUnlockActions from "actions/WalletUnlockActions"
+
 
 const Checkbox = require('material-ui/lib/checkbox');
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
@@ -21,8 +23,9 @@ import _ from "lodash";
 import { createHashHistory, useBasename } from 'history';
 const history = useBasename(createHashHistory)({});
 import Select  from "react-select";
+import BindToChainState from "./Utility/BindToChainState";
 
-
+@BindToChainState()
 class SettingsScreen extends React.Component {
 
 
@@ -48,6 +51,7 @@ class SettingsScreen extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+        console.log('$$$settingsscreen -  shouldComponentUpdate, nextState=', nextState);
         return true;
   }
   _displayFormatSamples(){
@@ -127,19 +131,43 @@ class SettingsScreen extends React.Component {
   }
 
 
-  _handleAdvancedSettingsUpdate()
+  _handleAdvancedSettingsUpdate(e)
   {
+
+    //e.preventDefault();
       //console.log("$$$settings screen - _handleAdvancedSettingsUpdate() triggered");
+      let resettingPin = this.state.advancedSettings && this.state.advancedSettings.requirePinToSend   && !this.refs.chkRequirePinToSend.isChecked()
+
 
       var advancedSettings =  {
           checkUpdatesStartup: this.refs.chkCheckUpdatesStartup.isChecked(),
           autoInstallMajorVer: this.refs.chkAutoInstallMajorVer.isChecked(),
-          requirePinToSend: this.refs.chkRequirePinToSend.isChecked(),
+          requirePinToSend: resettingPin? true: this.refs.chkRequirePinToSend.isChecked(),
           autoCloseWalletAfterInactivity: this.refs.chkAutoCloseWalletAfterInactivity.isChecked(),
           alwaysDonateDevsMunich: this.refs.chkAlwaysDonateDevsMunich.isChecked()
       }
+      if (resettingPin)
+      {
+        //WalletUnlockActions.forceLock(); //
+        e.preventDefault();
+        WalletUnlockActions.lock();
+        //advancedSettings.requirePinToSend = true;
+        WalletUnlockActions.unlock().then( () => {
+            advancedSettings.requirePinToSend = false;
+            SettingsStore.changeSetting({setting: "advancedSettings", value: advancedSettings });
+            this.setState({advancedSettings: advancedSettings})
+            this.forceUpdate();
+        }).catch(
+          () => {
+            console.log('$$$settingsscreen - force update', this.state);
+            this.forceUpdate();
+          }
+        );
+        return;
+      }
       SettingsStore.changeSetting({setting: "advancedSettings", value: advancedSettings });
       this.setState({advancedSettings: advancedSettings});
+
       //console.log("$$$settings screen - advanced settings updated", advancedSettings);
 
   }
@@ -193,6 +221,7 @@ class SettingsScreen extends React.Component {
           </section>
         <section className="setting-item">
           <Checkbox ref="chkCheckUpdatesStartup"
+                name="cchkCheckUpdatesStartup"
                 value="checkboxValue1"
                 label={<Translate content="wallet.settings.checkUpdatesStartup" />}
                 defaultChecked={settings.checkUpdatesStartup} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
@@ -205,21 +234,21 @@ class SettingsScreen extends React.Component {
           <section className="setting-item">
               <Checkbox  ref="chkRequirePinToSend"
                 name="chkRequirePinToSend"
-                value="checkboxValue2"
+                value="checkboxValue3"
                 label={<Translate content="wallet.settings.requirePinToSend" />}
-                defaultChecked={settings.requirePinToSend} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+                checked={settings.requirePinToSend} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
               <Checkbox  ref="chkAutoCloseWalletAfterInactivity"
                 name="chkAutoCloseWalletAfterInactivity"
-                value="checkboxValue3"
+                value="checkboxValue4"
                 label={<Translate content="wallet.settings.autoCloseWalletAfterInactivity" />}
                 defaultChecked={settings.autoCloseWalletAfterInactivity} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
            </section>
            <section className="setting-item">
                <Checkbox  ref="chkAlwaysDonateDevsMunich"
                 name="chkAlwaysDonateDevsMunich"
-                value="checkboxValue3"
+                value="checkboxValue5"
                 label={<Translate content="wallet.settings.alwaysDonateDevsMunich" />}
                 defaultChecked={settings.alwaysDonateDevsMunich}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>

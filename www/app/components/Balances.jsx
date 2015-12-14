@@ -7,8 +7,9 @@ import BindToChainState from "./Utility/BindToChainState";
 import BalanceComponent from "./Utility/BalanceComponent";
 //import {BalanceValueComponent} from "./Utility/EquivalentValueComponent";
 import Immutable from "immutable";
+import If from "./If"
 
-// A component for displaying the wallet balance 
+// A component for displaying the wallet balance
 @BindToChainState({keep_updating: true})
 class Balances extends React.Component {
 
@@ -16,18 +17,18 @@ class Balances extends React.Component {
       account: ChainTypes.ChainAccount.isRequired
   }
 
-  constructor(props) 
+  constructor(props)
   {
      super(props)
      this.state = {show: false}
   }
 
-  shouldComponentUpdate(nextProps) {
+  /*shouldComponentUpdate(nextProps) {
       return this.props.account !== nextProps.account
-  }
+  }*/
 
   _handleToogle() {
-      
+
       let show = this.state.show;
       this.setState({ show: !show });
   }
@@ -55,16 +56,15 @@ class Balances extends React.Component {
     return (
       <section className="balances">
         <div className="section-header active">
-          <h2 className="toogle-header" onTouchTap={this._handleToogle.bind(this)}><i className="expand"></i><Translate content="wallet.home.balances" /></h2>
+          <h2 className="toogle-header"><i  onClick={this._handleToogle.bind(this)} className="expand"></i><Translate content="wallet.home.balances" /></h2>
         </div>
-        { this.state.show ? 
-          ( <div className="balances__content toogle-panel">
+            <If condition={this.state.show}>
+            <div className="balances__content toogle-panel">
               <ul className="balances">
                     {balances}
               </ul>
             </div>
-          ) : null }
-        
+            </If>
       </section>
     );
   }

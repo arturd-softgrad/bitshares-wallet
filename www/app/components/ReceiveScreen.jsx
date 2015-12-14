@@ -39,8 +39,9 @@ class ReceiveScreen extends React.Component {
          if (query.hasOwnProperty("contact")) {
             let current_contact = JSON.parse(query.contact);
             this.state.to_name= current_contact.name;
+            console.log("$$$ receive screen contact ", current_contact);
          }
-   
+
     }
 
   // Render ReceiveScreen view
@@ -57,7 +58,12 @@ class ReceiveScreen extends React.Component {
       <div className="amount">
         <h2>Request a specific Amount (optional)</h2>
         <form action="#">
-          <input type="submit"/>
+          <input type="text" placeholder="5000.00"/>
+          <select name="currency">
+            <option value="bts">BTS</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+          </select>
         </form>
       </div>
       <div className="clearfix"></div>

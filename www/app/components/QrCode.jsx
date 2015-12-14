@@ -3,7 +3,7 @@ import qr from "common/qr-image";
 
 class QrCode extends React.Component {
 
-	constructor(props) {
+    constructor(props) {
       super(props);
     }
 
@@ -14,7 +14,7 @@ class QrCode extends React.Component {
     render() {
         var svg_string = qr.imageSync(this.props.data, { type: 'svg' })
         return <div>
-            <img dangerouslySetInnerHTML={{__html: svg_string}} />
+            <img  onClick={this.props.onClick.bind(null, this)} dangerouslySetInnerHTML={{__html: svg_string}} />
         </div>
     }
 }

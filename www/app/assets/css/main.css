@@ -873,6 +873,12 @@ textarea {
   margin: 0 auto;
   background: #d34b4d;
 }
+.btn-send-big.disabled {
+  background: none;
+}
+
+
+
 .btn-send-big span {
   display: inline-block;
   background: url("../img/arrow-up-white.svg") left center no-repeat;
@@ -1307,6 +1313,13 @@ select {
 .content-contacts {
     margin-top: 140px;
 }
+
+
+.op-table > tbody > tr > td:first-child {
+  min-width: 12rem;
+}
+
+
 
 /**
  * React Select

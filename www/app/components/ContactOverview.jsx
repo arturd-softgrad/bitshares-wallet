@@ -49,7 +49,7 @@ class ContactOverview extends React.Component {
         secondary={true}
         onTouchTap={this._handleDeleteContactCancel.bind(this)} />
     ];
- 
+
     return (
       <section className="content">
         <div className="header__links"><button className="contact-delet-btn"><i onTouchTap={this._handleConfirmDeleteContact.bind(this)} className="contact_delet"></i></button></div>
@@ -79,12 +79,12 @@ class ContactOverview extends React.Component {
           floatingLabelText="Notes"
           value={this.state.current_contact.notes}
           disabled={true}
-          multiLine={true} 
-          underlineStyle={{borderColor: "#009FE3"}} /> 
+          multiLine={true}
+          underlineStyle={{borderColor: "#009FE3"}} />
         </div>
         <section className="code-buttons">
             <div>
-              <Link to="receive" className="btn btn-receive">receive</Link>
+              <Link to="receive" className="btn btn-receive" query={{contact: JSON.stringify(this.state.current_contact)}}>receive</Link>
               <Link to="send"  query={{contact: JSON.stringify(this.state.current_contact)}} className="btn btn-send">send</Link>
             </div>
         </section>

@@ -23,7 +23,7 @@ class ExistingAccount extends ExistingAccountBaseComponent {
             <div className="grid-block vertical content">
                 <div className="grid-content">
                     <div className="content-block center-content">
-                        <div className="content-block" style={{width: '24em'}}>
+                        <div className="content-block  content-home" style={{width: '24em'}}>
                             {this.props.children}
                         </div>
                     </div>
@@ -36,15 +36,19 @@ class ExistingAccount extends ExistingAccountBaseComponent {
 @connectToStores
 export class ExistingAccountOptions extends ExistingAccountBaseComponent {
 
+//
+
+
     render() {
         var has_wallet = this.props.wallet.wallet_names.count() != 0
+
         return (
-            <span>
+            <section className="code content-home">
                 {!has_wallet ? <div>
-                    <Link to="existing-account/import-backup">IMPORT BACKUP</Link><br/><br/>
                     <Link to="existing-account/import-keys">Import from BitShares 0.9.3c</Link><br/><br/>
+                    <Link to="existing-account/import-backup">IMPORT BACKUP</Link><br/><br/>
                 </div>:null}
-            </span>
+            </section>
         )
     }
 }

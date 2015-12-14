@@ -5,7 +5,11 @@ import qr from "common/qr-image"
 import hash from "common/hash"
 import key from "common/key_utils"
 
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
+
 class KeyGenComponent extends React.Component {
+
 
     render() {
         var privkey = new BrainKeyUi().create()
@@ -15,16 +19,16 @@ class KeyGenComponent extends React.Component {
             {null/*<QrScan/>*/}
             <hr/>
             <ShowPrivateKey privkey={privkey}/>
-            {<QrCode data={wif}/>}
+            {<QrCode onClick={this.props.onClick.bind(null, this)}  data={wif}/>}
         </div>
     }
-    static getComponents() {
+    static getComponents(onQrClick) {
         var privkey = new BrainKeyUi().create()
         var private_key = PrivateKey.fromSeed(privkey || "")
         var wif = private_key.toWif()
         return {
             privateKey: wif,
-            qr: <QrCode data={wif}/>
+            qr: <QrCode  data={wif}/>
         };
 
     }
@@ -53,10 +57,19 @@ class QrScan extends React.Component {
 
 class QrCode extends React.Component {
 
+
+     _redirectToReceive()
+      {
+        console.log('$$$_redirectToReceive triggered!!!')
+        history.pushState(null, 'receive');
+      }
+      //onClick={this._redirectToReceive.bind(this)}
+
+
     render() {
         var svg_string = qr.imageSync(this.props.data, { type: 'svg' })
-        return <div>
-            <img dangerouslySetInnerHTML={{__html: svg_string}} />
+        return <div onClick={this._redirectToReceive}>
+            <img  dangerouslySetInnerHTML={{__html: svg_string}} />
         </div>
     }
 }

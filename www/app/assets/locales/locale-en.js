@@ -41,8 +41,13 @@ languages: {
 	transaction_op: "Operation",
 	transaction_info: "Info",
 	transaction_date: "Date",
+	transaction_fee: "Fee",
+	transaction_from: "From",
+	transaction_amount: "Amount",
 	was_reg_account: "registered by",
 	fraudAttemptMessage: 'Fraud Attempt! (on 3 consecutive incorrect PINs)',	
+	sync_block: "Block #",
+
 
 home: {
 		balances: 'BALANCES',

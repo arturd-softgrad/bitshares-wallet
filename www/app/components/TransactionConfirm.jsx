@@ -8,8 +8,10 @@ import TransactionConfirmActions from "actions/TransactionConfirmActions";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import BaseComponent from "./BaseComponent";
 
+import Transaction from "./Transaction";
+
 class TransactionConfirm extends BaseComponent {
-    
+
     constructor(props) {
         super(props, TransactionConfirmStore);
     }
@@ -39,6 +41,8 @@ class TransactionConfirm extends BaseComponent {
     render() {
         if ( !this.state.transaction || this.state.closed ) {return null; }
 
+        //console.log('$$$ this.state.transaction =', this.state.transaction);
+
         let button_group, header;
 
         if(this.state.error || this.state.included) {
@@ -49,6 +53,7 @@ class TransactionConfirm extends BaseComponent {
                "Success!"
             );
             button_group = (
+
                 <div className="button-group">
                     <RaisedButton label="Close"
                         secondary={true}
@@ -69,13 +74,18 @@ class TransactionConfirm extends BaseComponent {
                 </div>
             );
         }
-        
+
+
         return (
-            <div ref="transactionConfirm">                   
+            <div ref="transactionConfirm">
                  <Dialog title={header}
                      open={true}
                      autoScrollBodyContent={true}
                      ref="confirmModal">
+                   <div style={{maxHeight: "60vh", overflowY:'auto'}}>
+                            <Transaction key={Date.now()} trx={this.state.transaction.serialize()}
+                                index={0} no_links={true}/>
+                    </div>
                     <div className="grid-block shrink" style={{paddingTop: "1rem"}}>
                         {button_group}
                     </div>

@@ -4,8 +4,8 @@ class WalletUnlockActions {
 
     /** If you get resolved then the wallet is or was just unlocked.  If you get
         rejected then the wallet is still locked.
-        
-        @return nothing .. Just test for resolve() or reject() 
+
+        @return nothing .. Just test for resolve() or reject()
     */
     unlock() {
         return new Promise( (resolve, reject) => {
@@ -16,7 +16,7 @@ class WalletUnlockActions {
                 WrappedWalletUnlockActions.change()
         })
     }
-    
+
     lock() {
         return new Promise( resolve => {
             this.dispatch({resolve})
@@ -25,15 +25,18 @@ class WalletUnlockActions {
                 WrappedWalletUnlockActions.change()
         })
     }
-    
+
     cancel() {
         this.dispatch()
     }
-    
+
     change() {
         this.dispatch()
     }
-    
+    forceLock() {
+        this.dispatch()
+    }
+
 }
 
 var WrappedWalletUnlockActions = alt.createActions(WalletUnlockActions)
