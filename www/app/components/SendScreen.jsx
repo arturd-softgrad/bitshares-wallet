@@ -143,7 +143,7 @@ class SendScreen extends React.Component {
         if (!advancedSettings || advancedSettings.requirePinToSend)
           WalletUnlockActions.lock();
         else
-          WalletDb.unlock();
+          WalletDb.tryUnlock();
 
         AccountActions.transfer(
             this.state.from_account.get("id"),

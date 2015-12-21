@@ -37,7 +37,6 @@ languages: {
 		exchange: ' ',
 		receive: ' ',
 		send: ' ',
-		balances: ' ',
 		transactions: ' ',
 		date: ' ',
 		all: ' ',

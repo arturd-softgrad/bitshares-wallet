@@ -269,6 +269,12 @@ body {
   text-decoration: underline;
   padding-top: 10px;
 }
+
+.contacts-table tr:focus {
+  background-color: rbga(255,255,255, 0.4);
+}
+
+
 .contacts-table td:first-child,
 .contacts-table td:nth-child(3) {
   text-align: center;

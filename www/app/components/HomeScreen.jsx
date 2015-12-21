@@ -25,13 +25,32 @@ class HomeScreen extends React.Component {
 
     }
 
+    _shareBTSAddress()
+    {
+
+      console.log(window.plugins);
+
+      //onclick="window.plugins.socialsharing.share({qrcontent.privateKey})"
+        if (window.plugins && window.plugins.socialsharing)
+        {
+            var qrcontent = KeyGenComponent.getComponents();
+
+            window.plugins.socialsharing.share(
+                qrcontent.privateKey,
+                'BTS address',
+                null, // images
+                'http://www.bitshares.openledger.info');
+        }
+        else
+            console.log('BTS address share: social network sharing plugin is not available');
+    }
 
     render() {
 
       var isBackupRequired = BackupStore.isBackupRequired();
       var qrcontent = KeyGenComponent.getComponents();
 
-      WalletDb.unlock();
+      //WalletDb.unlock();
 
       var isLocked = WalletDb.isLocked();
       console.log('$$$isLocked', isLocked);
@@ -66,7 +85,7 @@ class HomeScreen extends React.Component {
                     </AltContainer>
                 </div>
               </div>
-              <div className="data-text">{qrcontent.privateKey}</div>
+              <div className="data-text"  onTouchTap = {this._shareBTSAddress.bind(this)} >{qrcontent.privateKey}</div>
             </section>,
             <section className="code-buttons">
               <Link to="receive" className="btn btn-receive">receive</Link>

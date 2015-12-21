@@ -37,7 +37,6 @@ languages: {
 		exchange: 'РАЗМЕНА',
 		receive: 'РЕЦЕИВЕ',
 		send: 'СЕНД',
-		balances: 'Ваге',
 		transactions: 'Трансакције',
 		date: 'датум',
 		all: 'сви',

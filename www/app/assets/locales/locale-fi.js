@@ -37,7 +37,6 @@ languages: {
 		exchange: 'VAIHTO',
 		receive: 'SAAT',
 		send: 'LÄHETÄ',
-		balances: 'Talletukset',
 		transactions: 'Liiketoimet',
 		date: 'Päivämäärä',
 		all: 'Kaikki',

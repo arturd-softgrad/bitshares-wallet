@@ -51,7 +51,7 @@ class SettingsScreen extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-        console.log('$$$settingsscreen -  shouldComponentUpdate, nextState=', nextState);
+        //console.log('$$$settingsscreen -  shouldComponentUpdate, nextState=', nextState);
         return true;
   }
   _displayFormatSamples(){

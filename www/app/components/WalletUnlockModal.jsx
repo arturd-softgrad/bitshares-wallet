@@ -14,6 +14,7 @@ import WalletUnlockActions from "actions/WalletUnlockActions"
 import Apis from "rpc_api/ApiInstances"
 const Dialog = require('material-ui/lib/dialog');
 const RaisedButton = require('material-ui/lib/raised-button');
+import If from "./If";
 
 import SettingsStore from "stores/SettingsStore";
 
@@ -30,6 +31,12 @@ class WalletUnlockModal extends React.Component {
         this.pin_attempts = 0;
     }
 
+    componentWillReceiveProps(next_props) {
+        if(next_props.unclosable !== this.props.unclosable) {
+            this.forceUpdate();
+        }
+    }
+
     _getInitialState() {
         return {
             password_error: null,
@@ -44,8 +51,8 @@ class WalletUnlockModal extends React.Component {
 
 
 
-    _handleShow() {
-
+    _show() {
+        this.refs.unlockDialog.setState({open:true});
         this.refs.password_input.clear()
         if(Apis.instance().chain_id !== WalletDb.getWallet().chain_id) {
             notify.error("This wallet was intended for a different block-chain; expecting " +
@@ -66,13 +73,13 @@ class WalletUnlockModal extends React.Component {
         //DEBUG console.log('... componentDidUpdate this.props.resolve', this.props.resolve)
         if(this.props.resolve) {
             if (WalletDb.isLocked())
-                this.refs.unlockDialog.show() // MODAL open
+                this._show();
             else
                 this.props.resolve()
             return;
         }
-        if (this.props.forceLock)
-            this.refs.unlockDialog.show();
+        if (this.props.unclosable)
+            this._show();
     }
 
     onPasswordEnter(e) {
@@ -92,23 +99,28 @@ class WalletUnlockModal extends React.Component {
                 var unlockTime = new Date().getTime() + 15*60000;
                 SettingsStore.changeSetting({setting: "walletUnlockTime", value: unlockTime });
                 console.log("Invalid pin was entered 3 times, locking for 15 minutes until ", new Date(unlockTime))
-                if(navigator.app){
+                WalletUnlockActions.quitApp();
+                /*if(navigator.app){
                     navigator.app.exitApp();
                 }
                 else if(navigator.device){
                     navigator.device.exitApp();
                 }
                 else
+                {
+                    console.log('No device detected, redirecting to homepage instead of quit app');
                     history.pushState(null, '/');
+                }*/
             }
             return false
         }
         else {
             this.pin_attempts = 0;
             SettingsStore.changeSetting({setting: "walletUnlockTime", value: null});
+            SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
             this.refs.password_input.clear()
-            this.refs.unlockDialog.dismiss();
-            if (!this.props.forceLock)
+            this.refs.unlockDialog.setState({open:false});
+            if (!this.props.unclosable)
                 this.props.resolve()
             SessionActions.onUnlock()
             WalletUnlockActions.change()
@@ -117,7 +129,8 @@ class WalletUnlockModal extends React.Component {
         return false
     }
     _handleClose() {
-        this.refs.unlockDialog.dismiss();
+        if (!this.props.unclosable)
+            this.refs.unlockDialog.setState({open:false});
     }
 
     render() {
@@ -131,9 +144,8 @@ class WalletUnlockModal extends React.Component {
 
             <Dialog title="Unlock Wallet"
               actions={this.props.actions} autoScrollBodyContent={true}
-              ref="unlockDialog"
-              onShow={this._handleShow.bind(this)}
-              onDismiss={this._handleDismiss.bind(this)}>
+              ref="unlockDialog" open={false}
+              onRequestClose={this._handleDismiss.bind(this)}>
 
                 <form onSubmit={this.onPasswordEnter} noValidate>
                     <PasswordInput ref="password_input"
@@ -142,13 +154,14 @@ class WalletUnlockModal extends React.Component {
                         wrongPassword={this.state.password_error}/>
                     <div className="button-group">
 
-                        <RaisedButton label="Unlock"
+                        <RaisedButton label="Unlock" //errors
                             primary={true}
                             type="submit" />
-
+                        <If condition={!this.props.unclosable}>
                         <RaisedButton label="Cancel"
                             secondary={true}
                             onTouchTap={this._handleClose.bind(this)} />
+                        </If>
                     </div>
                 </form>
            </Dialog>

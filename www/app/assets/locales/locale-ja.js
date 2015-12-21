@@ -37,7 +37,6 @@ languages: {
 		exchange: '交換',
 		receive: 'RECEIVE',
 		send: 'SEND',
-		balances: '残高',
 		transactions: '取引',
 		date: '期日',
 		all: 'オール',

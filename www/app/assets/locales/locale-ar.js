@@ -37,7 +37,6 @@ languages: {
 		exchange: 'EXCHANGE',
 		receive: 'تسلم',
 		send: 'أرسل',
-		balances: 'أرصدة',
 		transactions: 'المعاملات',
 		date: 'تاريخ',
 		all: 'كل',

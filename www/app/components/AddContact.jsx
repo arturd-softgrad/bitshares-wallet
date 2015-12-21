@@ -36,13 +36,10 @@ class AddContact extends React.Component {
     // TODO add validate account name
       AccountActions.linkContact({name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes});
       history.pushState(null, 'contacts');
-    //  this.refs.addContactModal.dismiss();
-    // TODO Add contact in table
   }
 
   _handleOnLinkCancel(e) {
       history.pushState(null, 'contacts');
-  //  this.refs.addContactModal.dismiss();
   }
 
   // Render ContactsScreen view

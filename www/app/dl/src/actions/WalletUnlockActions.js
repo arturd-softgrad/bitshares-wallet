@@ -36,6 +36,9 @@ class WalletUnlockActions {
     forceLock() {
         this.dispatch()
     }
+    quitApp(){
+       this.dispatch()
+    }
 
 }
 

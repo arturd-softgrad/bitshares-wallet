@@ -17,6 +17,7 @@ import ImportKeys from "./components/ImportKeys";
 import WalletChangePassword from "./components/WalletChangePassword";
 import WalletUnlockModal from "./components/WalletUnlockModal";
 import AddContact from "./components/AddContact";
+import InviteFriend from "./components/InviteFriend";
 import ContactOverview from './components/ContactOverview';
 import Syncer from './components/Syncer';
 import cookies from "cookies-js";
@@ -25,6 +26,7 @@ import Translate from "react-translate-component";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import WalletUnlockStore from "stores/WalletUnlockStore";
+import WalletUnlockActions from "actions/WalletUnlockActions";
 
 import BackupActions from "actions/BackupActions";
 import IntlActions from "actions/IntlActions";
@@ -32,6 +34,7 @@ import iDB from "idb-instance";
 import WalletDb from "stores/WalletDb";
 import ChainStore from "api/ChainStore";
 import WalletManagerStore from "stores/WalletManagerStore";
+
 import PrivateKeyActions from "actions/PrivateKeyActions";
 import AccountRefsStore from "stores/AccountRefsStore";
 import ChainTypes from "./components/Utility/ChainTypes";
@@ -103,6 +106,10 @@ class App extends React.Component {
             console.log("[app.jsx] ----- ERROR ----->", error, error.stack);
             this.setState({loading: false});
         });
+
+        //WalletDb.onLock();//$$$$ if (WalletDb.isLocked())
+        if (WalletDb.getWallet() != null && WalletDb.tryUnlock() != true)
+            WalletUnlockActions.forceLock();
 
         ChainStore.init().then(() => {
             this.setState({synced: true});
@@ -188,7 +195,10 @@ class App extends React.Component {
         var locked = false;
         if (unlockTime)
             if (unlockTime > new Date().getTime())
+            {
                 locked = true;
+                console.log('Application is locked, unlock time = ', new Date(unlockTime))
+            }
             else
                 SettingsStore.changeSetting({setting: "walletUnlockTime", value: null});
         return  locked ? (
@@ -258,13 +268,14 @@ var app = {
     initialize: function() {
 
         this.bindEvents();
-    //    this.onDeviceReady(); // TODO remove on device
+        this.onDeviceReady(); // TODO remove on device
 
         let routes = (
             <Route path="/" component={App} onEnter={App.willTransitionTo}>
                 <IndexRoute component={HomeScreen} onEnter={App.willTransitionTo}/>
                 <Route path="contacts" component={ContactsScreen} onEnter={App.willTransitionTo}/>
                 <Route path="add-contact" component={AddContact}/>
+                <Route path="invite-friend" component={InviteFriend}/>
                 <Route path="contact-overview" component={ContactOverview}/>
                 <Route path="send" component={SendScreen}/>
                 <Route path="receive" component={ReceiveScreen}/>
@@ -284,6 +295,7 @@ var app = {
         render((<Router history={history}>{routes}</Router>), document.getElementById("content"));
 
     },
+
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:

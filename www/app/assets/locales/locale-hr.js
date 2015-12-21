@@ -37,7 +37,6 @@ languages: {
 		exchange: 'RAZMJENA',
 		receive: 'PRIMATI',
 		send: 'POŠALJI',
-		balances: 'Vage',
 		transactions: 'promet',
 		date: 'rok',
 		all: 'svega',

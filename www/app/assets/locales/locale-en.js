@@ -56,7 +56,6 @@ home: {
 		exchange: 'EXCHANGE',
 		receive: 'RECEIVE',
 		send: 'SEND',
-		balances: 'Balances',
 		transactions: 'Transactions',
 		date: 'Date',
 		all: 'All',

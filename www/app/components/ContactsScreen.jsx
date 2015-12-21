@@ -15,24 +15,12 @@ class ContactsScreen extends React.Component {
     super(props);
   }
 
-  _handleShareInvite() {
-    /*
-    cordova.plugins.email.open({
-        to:      'max@mustermann.de',
-        cc:      'erika@mustermann.de',
-        bcc:     ['john@doe.com', 'jane@doe.com'],
-        subject: 'Greetings',
-        body:    'How are you? Nice greetings from Leipzig'
-    });
-*/
-  }
-
   // Render ContactsScreen view
   render() {
 
     return (
       <section className="content-contacts">
-        <div className="header__links contacts-nav"><Link to="add-contact"><i className="add-user"></i></Link><i onTouchTap={this._handleShareInvite.bind(this)} className="invite"></i></div>
+        <div className="header__links contacts-nav"><Link to="add-contact"><i className="add-user"></i></Link><Link to="invite-friend"><i className="invite"></i></Link></div>
         <main>
            <AltContainer
                   stores={

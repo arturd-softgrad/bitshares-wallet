@@ -37,7 +37,6 @@ languages: {
 		exchange: 'RAZMJENA',
 		receive: 'PRIMAJU',
 		send: 'POŠALJI',
-		balances: 'salda',
 		transactions: 'transakcije',
 		date: 'datum',
 		all: 'sve',

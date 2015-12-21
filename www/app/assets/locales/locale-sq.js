@@ -37,7 +37,6 @@ languages: {
 		exchange: 'SHKEMBIM',
 		receive: 'MARRIN',
 		send: 'SEND',
-		balances: 'bilancet',
 		transactions: 'transaksionet',
 		date: 'data',
 		all: 'të gjithë',

@@ -37,7 +37,6 @@ languages: {
 		exchange: 'БОРСА',
 		receive: 'ПОЛУЧИ',
 		send: 'ИЗПРАТИ',
-		balances: 'Салда',
 		transactions: 'Сделки',
 		date: 'Дата',
 		all: 'всички',

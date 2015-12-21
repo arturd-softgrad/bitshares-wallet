@@ -37,7 +37,6 @@ languages: {
 		exchange: 'CSERE',
 		receive: 'VÉTEL',
 		send: 'KÜLDJE',
-		balances: 'egyenlegek',
 		transactions: 'tranzakciók',
 		date: 'Dátum',
 		all: 'Minden',

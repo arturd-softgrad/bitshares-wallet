@@ -191,7 +191,7 @@ export default class ImportKeys extends Component {
                         { ! this.state.no_file ?
                             (<div>
                                 <TextField 
-                                      type="password" ref="password" autoComplete="off"
+                                      ref="password" autoComplete="off"
                                       key={this.state.reset_password}
                                       floatingLabelText={password_placeholder}
                                       type="password"

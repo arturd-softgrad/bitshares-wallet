@@ -37,7 +37,6 @@ languages: {
 		exchange: 'VÝMENA',
 		receive: 'PRÍJEM',
 		send: 'SEND',
-		balances: 'Váhy',
 		transactions: 'Transakcie',
 		date: 'Dátum',
 		all: 'Všetci',

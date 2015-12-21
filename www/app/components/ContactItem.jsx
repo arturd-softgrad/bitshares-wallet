@@ -26,11 +26,11 @@ class ContactItem extends React.Component {
 
     return (
       <Link to="contact-overview" query={{contact: current_contact_json}}>
-      <tr onTouchTap={this.props.tapHandler}>
-  		  <td><AccountImage className="profile-icon" account={this.props.contact_name} size={{height: 45, width: 45}}/></td>
-  		  <td> <b>{this.props.friendly_name}</b>{this.props.notes}</td>
-  		  <td>{this.props.contact_name}</td>
-  		</tr>
+      <div onTouchTap={this.props.tapHandler} className="infinite-list-item">
+  		  <div><AccountImage className="profile-icon" account={this.props.contact_name} size={{height: 45, width: 45}}/></div>
+  		  <div> <b>{this.props.friendly_name}</b>{this.props.notes}</div>
+  		  <div>{this.props.contact_name}</div>
+  		</div>
       </Link>
     );
   }

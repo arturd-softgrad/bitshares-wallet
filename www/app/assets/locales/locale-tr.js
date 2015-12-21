@@ -37,7 +37,6 @@ languages: {
 		exchange: 'DÖVİZ',
 		receive: 'AL',
 		send: 'GÖNDER',
-		balances: 'Dengeler',
 		transactions: 'İşlemler',
 		date: 'Tarih',
 		all: 'hepsi',

@@ -37,7 +37,6 @@ languages: {
 		exchange: 'WYMIANA',
 		receive: 'OTRZYMASZ',
 		send: 'SKONTAKTUJ',
-		balances: 'salda',
 		transactions: 'transakcje',
 		date: 'data',
 		all: 'wszystko',

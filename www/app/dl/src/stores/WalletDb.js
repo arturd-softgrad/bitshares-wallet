@@ -39,7 +39,7 @@ class WalletDb extends BaseStore {
         // for now many methods need to be exported...
         this._export(
             "checkNextGeneratedKey","getWallet","onLock","isLocked","decryptTcomb_PrivateKey","getPrivateKey","process_transaction","transaction_update","transaction_update_keys","getBrainKey","getBrainKeyPrivate","onCreateWallet","validatePassword","changePassword","generateNextKey","incrementBrainKeySequence","saveKeys","saveKey","setWalletModified","setBackupDate","setBrainkeyBackupDate","_updateWallet","loadDbData",
-            "importKeysWorker", "unlock"
+            "importKeysWorker", "tryUnlock"
         )
     }
 
@@ -255,35 +255,27 @@ class WalletDb extends BaseStore {
     }
 
 
-    unlock() // requires saved aes
+    tryUnlock() // requires saved aes
     {
         if(!aes_private)
         {
-             //this.validatePassword("123456", true )
-             var pw = SettingsStore.getSetting("currentAction");
-             if (pw)
-                this.validatePassword(atob(pw), true)
-            else
-               console.log("walletDb.unlock - cannot restore");
-        }
-
-        /*if(!aes_private)
-        {
-            var encryption_buffer = SettingsStore.getSetting("encryption_buffer");
-            if (!encryption_buffer)
+            var pw = SettingsStore.getSetting("currentAction");
+            if (pw)
             {
-                console.log("walletDb.unlock - aes_private was not saved");
-                return false;
+                this.validatePassword(atob(pw), true)
+                if (this.isLocked())
+                {
+                    console.log("walletDb.unlock - tried to unlock, but password is not valid");
+                    return false;
+                }
+                return true;
             }
-            aes_private = Aes.fromSeed( encryption_buffer )
-            console.log("$$$aes_private restored, encryption_buffer=", encryption_buffer);
+            else
+            {
+               console.log("walletDb.unlock - cannot restore");
+               return false;
+            }
         }
-        if(!aes_private)
-        {
-            console.log("walletDb.unlock - unable to restore aes_private");
-            return false;
-        }*/
-
     }
 
     /** This also serves as 'unlock' */

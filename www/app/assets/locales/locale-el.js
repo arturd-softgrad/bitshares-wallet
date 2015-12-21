@@ -37,7 +37,6 @@ languages: {
 		exchange: 'ΑΝΤΑΛΛΑΓΗ',
 		receive: 'ΛΑΒΕΤΕ',
 		send: 'ΑΠΟΣΤΟΛΗ',
-		balances: 'Υπόλοιπα',
 		transactions: 'συναλλαγές',
 		date: 'ημερομηνία',
 		all: 'Όλα',

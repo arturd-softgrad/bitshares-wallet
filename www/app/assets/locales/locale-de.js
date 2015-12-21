@@ -37,7 +37,6 @@ languages: {
 		exchange: 'BÖRSE',
 		receive: 'EMPFANGEN',
 		send: 'SENDEN',
-		balances: 'Umsätze',
 		transactions: 'Transaktion',
 		date: 'Datum',
 		all: 'Alle',

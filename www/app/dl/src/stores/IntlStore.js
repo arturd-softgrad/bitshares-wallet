@@ -42,7 +42,22 @@ class IntlStore extends BaseStore {
     getCurrentLocale() {
         if (this.currentLocale == null)
         {
-            var locale = SettingsStore.getSetting("currentlocale") || "en";
+            var locale =   SettingsStore.getSetting("currentlocale");
+            if (locale)
+            {
+                console.log("Locale is initialized from settings store: ", locale);
+            }
+            else if (navigator && navigator.language)
+            {
+                locale = navigator.language.substring(0,2);
+                //SettingsStore.changeSetting({setting: "currentlocale", value: locale });
+                console.log("Locale is initialized from navigator settings: ", locale);
+            }
+            else
+            {
+                locale = en;
+                console.log("Locale is not initialized, assigned EN by default");
+            }
             this.onSwitchLocale(locale);
         }
         return this.currentLocale;

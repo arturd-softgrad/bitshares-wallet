@@ -37,7 +37,6 @@ languages: {
 		exchange: 'ÉCHANGE',
 		receive: 'RECEVOIR',
 		send: 'ENVOYER',
-		balances: 'Soldes',
 		transactions: 'Transaction',
 		date: 'Date',
 		all: 'Tous',

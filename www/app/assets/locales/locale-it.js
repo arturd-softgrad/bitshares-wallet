@@ -37,7 +37,6 @@ languages: {
 		exchange: 'SCAMBIO',
 		receive: 'RICEVERE',
 		send: 'INVIA',
-		balances: 'Bilance',
 		transactions: 'Operazioni',
 		date: 'data',
 		all: 'Tutti',

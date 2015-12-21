@@ -37,7 +37,6 @@ languages: {
 		exchange: 'SCHIMB',
 		receive: 'PRIMI',
 		send: 'TRIMITE',
-		balances: 'solduri',
 		transactions: 'Tranzacții',
 		date: 'data',
 		all: 'Toate',

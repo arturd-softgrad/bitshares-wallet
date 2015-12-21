@@ -1,12 +1,16 @@
 import alt from "alt-instance"
 import WalletUnlockActions from "actions/WalletUnlockActions"
 import WalletDb from "stores/WalletDb"
+import SettingsStore from "stores/SettingsStore"
+
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
 
 class WalletUnlockStore {
 
     constructor() {
         this.bindActions(WalletUnlockActions)
-        this.state = {locked: true, forceLock: false}
+        this.state = {locked: true, unclosable:false}
     }
 
     onUnlock({resolve, reject}) {
@@ -20,8 +24,9 @@ class WalletUnlockStore {
     }
 
     onForceLock(){
+        SettingsStore.changeSetting({setting: "currentAction", value: "" });
         WalletDb.onLock()
-        this.setState({forceLock:true});
+        this.setState({unclosable:true});
     }
 
 
@@ -44,7 +49,23 @@ class WalletUnlockStore {
 
     onChange() {
         var locked = WalletDb.isLocked();
-        this.setState({locked: locked, forceLock: locked});
+        this.setState({locked: locked, unclosable: locked});
+    }
+
+    onQuitApp(){
+        WalletDb.onLock();
+        SettingsStore.changeSetting({setting: "currentAction", value: "" });
+        if(navigator.app){
+                navigator.app.exitApp();
+            }
+            else if(navigator.device){
+                navigator.device.exitApp();
+            }
+            else
+            {
+                console.log('No device detected, redirecting to homepage instead of quit app');
+                history.pushState(null, '/');
+            }
     }
 }
 

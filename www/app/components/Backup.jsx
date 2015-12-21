@@ -414,7 +414,7 @@ class DecryptBackup extends BackupBaseComponent {
         var contents = this.props.backup.contents
         decryptWalletBackup(private_key.toWif(), contents).then( wallet_object => {
             this.setState({verified: true})
-            SettingsStore.changeSetting({setting: "currentAction", value: btoa(this.state.backup_password) });
+            //SettingsStore.changeSetting({setting: "currentAction", value: btoa(this.state.backup_password) });
             if(this.props.saveWalletObject)
                 BackupStore.setWalletObjct(wallet_object)
 
