@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Automatikusan telepíti nagy verziókiadásoknak',
 		requirePinToSend: 'PIN-kód küldése alapok',
 		autoCloseWalletAfterInactivity: 'Automatikusan közel BitShares Pénztárca után 3 percig nem',
-		alwaysDonateDevsMunich: 'Mindig adományozni 2 BTS a Támogatási fejlesztők a BitShares München (bitshares-München)',
+		alwaysDonateDevsMunich: 'Mindig adományozni 2 BTS a Támogatási fejlesztők a BitShares München (BitShares-München)',
 		allowUse_GpsToFind: 'Hagyja, hogy a Finder (v2.0) használni a GPS, hogy megtalálják a legközelebbi ATM-ek, az emberek és a POS rendszerek Smartcoins',
 		allowReportPosition : 'Hagyja, hogy a Finder (v2.0) jelenteni a pozícióját, hogy mások is vásárolni vagy eladni Smartcoins veled',
 		pinNumber: 'Pinkód',

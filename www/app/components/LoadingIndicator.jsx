@@ -10,7 +10,9 @@ class LoadingIndicator extends React.Component {
 
     render() {
         return (
-            <CircularProgress mode="indeterminate" />
+        <div className="preloader">
+            <CircularProgress mode="indeterminate" color={"rgb(16, 150, 208)"} size={1.5}/>
+        </div>
         );
     }
 

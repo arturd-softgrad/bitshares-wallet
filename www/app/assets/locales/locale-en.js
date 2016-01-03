@@ -32,25 +32,34 @@ languages: {
 	// additional
 	existing_password: "Existing PIN",   
 	verify: "Verify",	
-	enter_password: "Enter Password",	
+	enter_password: "Enter PIN",	
     reset: "Reset",
 	//change_password: "Change PIN",
 	accept: "Accept",
 	transaction_sent: "sent",
 	transaction_to: "to",
-	transaction_op: "Operation",
+	transaction_op: "All",
 	transaction_info: "Info",
 	transaction_date: "Date",
 	transaction_fee: "Fee",
 	transaction_from: "From",
 	transaction_amount: "Amount",
 	was_reg_account: "registered by",
-	fraudAttemptMessage: 'Fraud Attempt! (on 3 consecutive incorrect PINs)',	
+	fraudAttemptMessage: 'Fraud Attempt! (on 3 consecutive incorrect PINs)',	 //duplicate
 	sync_block: "Block #",
+	transfer_available: 'is available',
+	settings_hideDonations : 'Hide Donations from homescreen Transactions list',
+	account_name : 'Account name',
+	account_name_is_taken: 'Account name is already taken',
+	account_not_found: 'Account_not_found',
+	enter_valid_account_name : "Please enter valid account name",
+	account_premium_name_warn: "This is a premium name. Premium names are more expensive and can't be registered for free by faucet. Try to select another name containing at least one dash, number or no vowels.",
+	reset: 'Reset',
+	done: 'Done',
 
 
 home: {
-		balances: 'BALANCES',
+		balances: 'Balances',
 		contacts: 'CONTACTS',
 		finder: 'FINDER',
 		exchange: 'EXCHANGE',
@@ -84,7 +93,7 @@ home: {
 		publicKey: 'Public Key',
 		privateKey: 'Private Key',
 		yes: 'Yes',
-		no: 'No',
+		no: 'No'	
 				
 
 
@@ -100,7 +109,7 @@ home: {
 		autoInstallMajorVer: 'Automatically install major version releases',
 		requirePinToSend: 'Require PIN to Send funds',
 		autoCloseWalletAfterInactivity: 'Automatically close BitShares Wallet after 3 minutes of inactivity',
-		alwaysDonateDevsMunich: 'Always donate 2 BTS to the Support Developers at BitShares Munich (bitshares-munich)',
+		alwaysDonateDevsMunich: 'Always donate 2 BTS to the Support Developers at BitShares Munich (BitShares-munich)',
 		allowUse_GpsToFind: 'Allow the Finder (v2.0) to use GPS to find nearest ATM’s, Humans and POS systems with Smartcoins',
 		allowReportPosition : 'Allow the Finder (v2.0) to report your position so that others can buy or sell Smartcoins with you',
 		pinNumber: 'PIN number',

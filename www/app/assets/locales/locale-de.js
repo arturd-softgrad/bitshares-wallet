@@ -28,8 +28,36 @@ languages: {
 
   wallet: {
 
-	switch_language: 'Switch Language: ',
+  	switch_language: 'Switch Language: ',
+	// additional
+	existing_password: "Existing PIN",   
+	verify: "Verify",	
+	enter_password: "Enter PIN",	
+    reset: "Reset",
+	//change_password: "Change PIN",
+	accept: "Accept",
+	transaction_sent: "sent",
+	transaction_to: "to",
+	transaction_op: "Operation",
+	transaction_info: "Info",
+	transaction_date: "Date",
+	transaction_fee: "Fee",
+	transaction_from: "From",
+	transaction_amount: "Amount",
+	was_reg_account: "registered by",
+	fraudAttemptMessage: 'Fraud Attempt! (on 3 consecutive incorrect PINs)',	
+	sync_block: "Block #",
+	transfer_available: 'is available',
+	settings_hideDonations : 'Hide Donations from homescreen Transactions list',
+	account_name : 'Account name',
+	account_name_is_taken: 'Account name is already taken',
+	account_not_found: 'Account_not_found',
+	enter_valid_account_name : "Please enter valid account name",
+	account_premium_name_warn: "This is a premium name. Premium names are more expensive and can't be registered for free by faucet. Try to select another name containing at least one dash, number or no vowels.",
+	reset: 'Reset',
+	done: 'Done',
 
+	
 	home: {
 		balances: 'UMSÄTZE',
 		contacts: 'KONTAKTE',
@@ -78,7 +106,7 @@ languages: {
 		autoInstallMajorVer: 'Automatische Updates',
 		requirePinToSend: 'Pineingabe vor jeder Überweisung erforderlich',
 		autoCloseWalletAfterInactivity: 'Schließe das BitShares Wallet automatisch nach 3 Minuten inaktivität',
-		alwaysDonateDevsMunich: 'Unterstütze immer das BitShares Munich Entwickler Team und spende 2 BTS an (bitshares-munich)',
+		alwaysDonateDevsMunich: 'Unterstütze immer das BitShares Munich Entwickler Team und spende 2 BTS an (BitShares-munich)',
 		allowUse_GpsToFind: 'Standortfreigabe für Finder (v2.0) finde den nächsten Geldauotmaten, Mensch oder EC-Karten Gerät mit Smartcoins',
 		allowReportPosition : 'Gib deine Standort für den Finder frei (v2.0) damit andere Smartcoin nutzer mit dir Tauschen können',
 		pinNumber: 'Pin Nummer',
@@ -112,6 +140,13 @@ languages: {
 		continue: 'Weiter',
 		cancel: 'Abbruch'
 	}, 
+	backup:{		
+		create_backup: "Create Backup",
+        reset: "Reset",
+        download: "Download",
+		createBackupPrompt: 'Please make backup of your wallet to continue',
+
+	},
 	dialog: {
 		enterPin: 'Bitte geben Sie den PIN ein',
 		incorrectPin: 'Falscher PIN',

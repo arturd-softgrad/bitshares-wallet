@@ -11,17 +11,17 @@ import BackupStore from "stores/BackupStore"
 import WalletDb from "stores/WalletDb"
 import BackupActions, {backup, restore, decryptWalletBackup} from "actions/BackupActions"
 import notify from "actions/NotificationActions"
-import {saveAs} from "common/filesaver.js"
 import cname from "classnames"
 import hash from "common/hash"
 import Translate from "react-translate-component";
 import chain_config from "chain/config";
-const FlatButton = require('material-ui/lib/flat-button');
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 const RaisedButton = require('material-ui/lib/raised-button');
 import IntlStore from "stores/IntlStore";
 import SettingsStore from "stores/SettingsStore";
 import { createHashHistory, useBasename } from 'history';
+import counterpart from "counterpart";
+import PasswordInput from "./Forms/PasswordInput";
 
 const history = useBasename(createHashHistory)({})
 
@@ -42,29 +42,22 @@ class BackupBaseComponent extends Component {
 @connectToStores
 export class BackupCreate extends BackupBaseComponent {
     render() {
-        return <span>
+        return <span className="content_block">
             <h3><Translate content="wallet.backup.create_backup" /></h3>
-
             <Create>
                 <NameSizeModified/>
                 <Sha1/>
                 <Download/>
                 <Reset/>
-            </Create>
-
-        </span>
+            </Create></span>
     }
 }
-
-
 
 @connectToStores
 export class BackupVerify extends BackupBaseComponent {
     render() {
         return <span>
-
             <h3><Translate content="wallet.backup.verify_prior_backup" /></h3>
-
             <Upload>
                 <NameSizeModified/>
                 <DecryptBackup saveWalletObject={true}>
@@ -106,8 +99,7 @@ export class BackupRestore extends BackupBaseComponent {
         var has_new_wallet = this.props.wallet.wallet_names.has(new_wallet)
         var restored = has_new_wallet
 
-        return <div className="content">
-
+        return <div>
             <h3>Import backup</h3>
             {(new FileReader).readAsBinaryString ? null : <p className="error">Warning! You browser doesnt support some some file operations required to restore backup, we recommend you to use Chrome or Firefox browsers to restore your backup.</p>}
             <Upload>
@@ -117,7 +109,7 @@ export class BackupRestore extends BackupBaseComponent {
                         <Restore/>
                     </NewWalletName>
                 </DecryptBackup>
-                <Reset label={restored ? <Translate content="wallet.backup.done" /> : <Translate content="wallet.backup.reset" />}/>
+                <Reset label={restored ? <Translate content="wallet.done" /> : <Translate content="wallet.reset" />}/>
             </Upload>
         </div>
     }
@@ -148,7 +140,7 @@ class Restore extends BackupBaseComponent {
                 <div>{this.props.children}</div>
             </div>
 
-        return <div className="content">
+        return <div>
             <h3>Ready to restore</h3>
             <RaisedButton label={"restore wallet of " + new_wallet}
                     onTouchTap={this.onRestore.bind(this)} />
@@ -161,7 +153,6 @@ class Restore extends BackupBaseComponent {
             this.props.backup.wallet_object
         )
     }
-
 }
 
 @connectToStores
@@ -248,25 +239,56 @@ class Download extends BackupBaseComponent {
         /*return <span className="button success"
             onClick={this.onDownload.bind(this)}><Translate content="wallet.backup.download" /></span>*/
         return   <section className="setting-item">
-              <RaisedButton label={translate("backup.download")}
-                onTouchTap={this._onDownload.bind(this)}   />
+                  <RaisedButton label="Download"
+                    onTouchTap={this._onDownload.bind(this)}   />
           </section>
     }
 
     _onDownload() {
-        var blob = new Blob([ this.props.backup.contents ], {
-            type: "application/octet-stream; charset=us-ascii"})
 
-        if(blob.size !== this.props.backup.size)
-            throw new Error("Invalid backup to download conversion")
+        var errorHandler = function(e) {
+            console.log(error);
+        }
 
-        saveAs(blob, this.props.backup.name);
-        WalletActions.setBackupDate()
+        var fileName = this.props.backup.name;
 
-        history.pushState(null, '/');
+        var contents = this.props.backup.contents;
 
+        var blob_size = this.props.backup.size;
+
+         window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
+            directoryEntry.getFile(fileName, { create: true }, function (fileEntry) {
+                fileEntry.createWriter(function (fileWriter) {
+                    fileWriter.onwriteend = function (e) {
+
+                        WalletActions.setBackupDate()
+
+                        history.pushState(null, '/');
+                    };
+
+                    fileWriter.onerror = function (e) {
+                        // you could hook this up with our global error handler, or pass in an error callback
+                        console.log('Write failed: ' + e.toString());
+                    };
+
+                    console.log(contents, 'contents');
+
+                    var blob = new Blob([ contents ], {
+                        type: "application/octet-stream; charset=us-ascii"})
+
+                    if(blob.size !== blob_size)
+                        throw new Error("Invalid backup to download conversion")
+
+                    fileWriter.write(blob);
+                }, errorHandler.bind(null, fileName));
+            }, errorHandler.bind(null, fileName));
+        }, errorHandler.bind(null, fileName));
+
+      
     }
 }
+
+
 
 @connectToStores
 class Create extends BackupBaseComponent {
@@ -392,32 +414,39 @@ class DecryptBackup extends BackupBaseComponent {
         }
     }
 
+    onPasswordChange() {
+    }
+
+
     render() {
         if(this.state.verified) return <span>{this.props.children}</span>
         return <div className="content">
-            <TextField
-                  name="password"
-                  ref="password"
-                  id="backup_password"
-                  floatingLabelText="enter password"
-                  type="password"
-                  value={this.state.backup_password}
-                  onChange={this.formChange.bind(this)}
-                  onEnterKeyDown={this.onKeyDown}/>
+
+          <span className="label bold">{counterpart.translate("wallet.enter_password")}</span>
+            <PasswordInput ref="password" confirmation={false} onChange={this.onPasswordChange.bind(this)}/>
             <Sha1/>
-            <FlatButton label="Verify" secondary={true} onTouchTap={this.onPassword.bind(this)}/>
+            <div>
+            <RaisedButton label="Verify" secondary={true} onTouchTap={this.onPassword.bind(this)}/>
+            </div>
         </div>
     }
 
     onPassword() {
-        var private_key = PrivateKey.fromSeed(this.state.backup_password || "")
-        var contents = this.props.backup.contents
+
+        let backup_password = this.refs.password.state.value;
+
+        console.log(backup_password, 'this.state.backup_password');
+
+        var private_key = PrivateKey.fromSeed(backup_password || "")
+     
+        var contents = this.props.backup.contents;
+
         decryptWalletBackup(private_key.toWif(), contents).then( wallet_object => {
+       //     console.log(private_key.toWif(), 'wallet_object');
             this.setState({verified: true})
             //SettingsStore.changeSetting({setting: "currentAction", value: btoa(this.state.backup_password) });
             if(this.props.saveWalletObject)
                 BackupStore.setWalletObjct(wallet_object)
-
 
         }).catch( error => {
             console.error("Error verifying wallet " + this.props.backup.name,
@@ -451,25 +480,18 @@ export class Sha1 extends BackupBaseComponent {
 class Reset extends BackupBaseComponent {
 
     // static contextTypes = {router: React.PropTypes.func.isRequired}
-
     render() {
 
-        //var label = this.props.label || IntlStore.translate("backup.reset");
-        var label = this.props.label || 'reset'
+        var label = this.props.label || <Translate content="wallet.reset" />
 
-        return <section className="setting-item">
-          <RaisedButton label={label}
-            onTouchTap={this._onReset.bind(this)}   />
-          </section>
-
-        /*
-        var label = this.props.label || <Translate content="wallet.backup.reset" />
-
-        return <FlatButton label={label} secondary={true} onTouchTap={this.onReset.bind(this)}/>*/
+        return <div className="setting-item">
+                  <RaisedButton label={label}
+                    onTouchTap={this._onReset.bind(this)}   />
+                </div>
     }
 
     _onReset() {
         BackupActions.reset()
-        window.history.back()
+        history.pushState(null, '/');
   }
 }

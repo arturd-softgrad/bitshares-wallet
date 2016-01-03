@@ -20,7 +20,6 @@ class ContactsScreen extends React.Component {
 
     return (
       <section className="content-contacts">
-        <div className="header__links contacts-nav"><Link to="add-contact"><i className="add-user"></i></Link><Link to="invite-friend"><i className="invite"></i></Link></div>
         <main>
            <AltContainer
                   stores={

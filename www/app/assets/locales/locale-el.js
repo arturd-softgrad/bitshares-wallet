@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Αυτόματη εγκατάσταση σημαντικές νέες εκδόσεις',
 		requirePinToSend: 'Απαιτείται το PIN για την αποστολή χρημάτων',
 		autoCloseWalletAfterInactivity: 'Αυτόματη κοντά BitShares Πορτοφόλι μετά από 3 λεπτά αδράνειας',
-		alwaysDonateDevsMunich: 'Πάντα δωρίσει 2 BTS για τους προγραμματιστές Υποστήριξη σε BitShares Μόναχο (bitshares-Μόναχο)',
+		alwaysDonateDevsMunich: 'Πάντα δωρίσει 2 BTS για τους προγραμματιστές Υποστήριξη σε BitShares Μόναχο (BitShares-Μόναχο)',
 		allowUse_GpsToFind: 'Αφήστε το Finder (v2.0) για να χρησιμοποιήσετε το GPS για να βρείτε το πλησιέστερο ΑΤΜ, οι άνθρωποι και τα συστήματα POS με Smartcoins',
 		allowReportPosition : 'Αφήστε το Finder (v2.0) να αναφέρει την θέση σας, έτσι ώστε οι άλλοι μπορούν να αγοράζουν ή να πωλούν Smartcoins μαζί σας',
 		pinNumber: 'Τον αριθμό PIN',

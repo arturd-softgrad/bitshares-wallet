@@ -2,7 +2,7 @@ import React, {PropTypes, Component} from "react"
 import Translate from "react-translate-component"
 import Immutable from "immutable"
 import cname from "classnames"
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 
 export default class PasswordConfirm extends Component {
 

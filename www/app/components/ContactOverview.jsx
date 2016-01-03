@@ -4,7 +4,7 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import AccountImage from "./AccountImage";
 import AccountActions from "actions/AccountActions";
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 import { Router, Route, Link, IndexRoute } from 'react-router';
 const RaisedButton = require('material-ui/lib/raised-button');
 const Dialog = require('material-ui/lib/dialog');
@@ -59,33 +59,32 @@ class ContactOverview extends React.Component {
               style={{width: '90%'}}
               ref="delete_confirm" autoScrollBodyContent={true}>
         </Dialog>
-        <AccountImage className="profile-icon" account={this.state.current_contact.name} size={{height: 45, width: 45}}/>
+        <div style={{"height": "50px"}}>
+        <AccountImage className="contact-image" account={this.state.current_contact.name} size={{height: 45, width: 45}}/>
+        </div>
         <div>
         <TextField
           floatingLabelText={counterpart.translate("wallet.home.account")}
           value={this.state.current_contact.name}
-          disabled={true}
-          underlineStyle={{borderColor: "#009FE3"}} />
+          disabled={true} />
         </div>
         <div>
         <TextField
           floatingLabelText="Friendly name"
           value={this.state.current_contact.friendly_name}
-          disabled={true}
-          underlineStyle={{borderColor: "#009FE3"}} />
+          disabled={true} />
         </div>
         <div>
         <TextField
           floatingLabelText="Notes"
           value={this.state.current_contact.notes}
           disabled={true}
-          multiLine={true}
-          underlineStyle={{borderColor: "#009FE3"}} />
+          multiLine={true} />
         </div>
         <section className="code-buttons">
             <div>
-              <Link to="receive" className="btn btn-receive" query={{contact: JSON.stringify(this.state.current_contact)}}>receive</Link>
-              <Link to="send"  query={{contact: JSON.stringify(this.state.current_contact)}} className="btn btn-send">send</Link>
+              <Link to="receive upper" className="btn btn-receive" query={{contact: JSON.stringify(this.state.current_contact)}}>receive</Link>
+              <Link to="send upper"  query={{contact: JSON.stringify(this.state.current_contact)}} className="btn btn-send">send</Link>
             </div>
         </section>
       </section>

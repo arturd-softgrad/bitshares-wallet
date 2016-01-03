@@ -19,7 +19,7 @@ class Transactions extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state = {show: false}
+    this.state = {show: true}
   }
 
   /*shouldComponentUpdate(nextProps) {
@@ -40,10 +40,16 @@ class Transactions extends React.Component{
         return null;
     }
 
+    let expand_class = "expanded";
+
+    if (this.state.show === true) {
+      expand_class = "expand";
+    }
+
     return (
       <section className="transactions">
-        <div className="section-header transactions">
-          <h2 className="toogle-header"><i  onClick={this._handleToogle.bind(this)} className="expand"></i> <Translate content="wallet.home.transactions" /></h2>
+        <div className="section-header transactions"> 
+          <h2 className="toogle-header"><i onClick={this._handleToogle.bind(this)} className={expand_class}></i><span>{counterpart.translate("wallet.home.transactions")}</span></h2>
         </div>
             <If condition={this.state.show}>
             <div className="balances__content toogle-panel">

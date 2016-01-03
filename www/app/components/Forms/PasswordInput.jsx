@@ -6,7 +6,7 @@ import Translate from "react-translate-component";
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "../Utility/TextField";
 
 class PasswordInput extends Component {
 
@@ -97,13 +97,14 @@ class PasswordInput extends Component {
 
             if (this.props.onChange) this.props.onChange(state);
             this.setState(state);
-
         }
-  
     }
 
     onKeyDown(e) {
-        if(this.props.onEnter && e.keyCode === 13) this.props.onEnter(e);
+        if (e.keyCode >= 48 && e.keyCode <= 57) {
+        } else {
+          return false;
+        }
     }
 
     render() {
@@ -120,17 +121,15 @@ class PasswordInput extends Component {
                 <div>
                     <TextField
                       name="password"
-                      ref="password"
+                      ref={this.props.ref}
                       floatingLabelText={this.state.watermark || "6-digits PIN"}
                       type="password"
-                      pattern="[0-9]*" 
+                      pattern="[0-9]" 
                       inputmode="numeric"
                       value={this.state.passwordValue}
                       onChange={this.handleChange}
                       errorText={password_error}
-                      underlineFocusStyle={{borderColor: "#009FE3"}}
-                      underlineStyle={{borderColor: "#72BAD9"}}
-                      onEnterKeyDown={this.onKeyDown}/>
+                      onKeyDown={this.onKeyDown}/>
                 </div>
                 {this.props.confirmation ?
                     <div>
@@ -138,13 +137,12 @@ class PasswordInput extends Component {
                       name="confirm_password"
                       floatingLabelText="6-digits PIN confirm"
                       type="password"
-                      pattern="[0-9]*" 
+                      pattern="[0-9]" 
                       inputmode="numeric"
                       value={this.state.confirmPasswordValue}
-                      underlineFocusStyle={{borderColor: "#009FE3"}}
-                      underlineStyle={{borderColor: "#72BAD9"}}
+                      onKeyDown={this.onKeyDown}
                       onChange={this.handleChange}
-                      errorText=  {confirmation_error}/>
+                      errorText= {confirmation_error}/>
                     </div>
                 : null}
             </div>

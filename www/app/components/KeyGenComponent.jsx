@@ -22,8 +22,8 @@ class KeyGenComponent extends React.Component {
             {<QrCode onClick={this.props.onClick.bind(null, this)}  data={wif}/>}
         </div>
     }
-    static getComponents(onQrClick) {
-        var privkey = new BrainKeyUi().create()
+    static getComponents(seed) {
+        var privkey = new BrainKeyUi().create()+ " " + (seed||"")
         var private_key = PrivateKey.fromSeed(privkey || "")
         var wif = private_key.toWif()
         return {

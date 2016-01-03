@@ -49,8 +49,6 @@ class WalletUnlockModal extends React.Component {
         this.setState(this._getInitialState())
     }
 
-
-
     _show() {
         this.refs.unlockDialog.setState({open:true});
         this.refs.password_input.clear()
@@ -67,6 +65,7 @@ class WalletUnlockModal extends React.Component {
 
         if(this.props.reject) this.props.reject()
                 WalletUnlockActions.cancel()
+
     }
 
     componentDidUpdate() {
@@ -131,6 +130,7 @@ class WalletUnlockModal extends React.Component {
     _handleClose() {
         if (!this.props.unclosable)
             this.refs.unlockDialog.setState({open:false});
+         history.pushState(null, '/');
     }
 
     render() {
@@ -158,7 +158,7 @@ class WalletUnlockModal extends React.Component {
                             primary={true}
                             type="submit" />
                         <If condition={!this.props.unclosable}>
-                        <RaisedButton label="Cancel"
+                        <RaisedButton label={counterpart.translate("wallet.home.cancel")}
                             secondary={true}
                             onTouchTap={this._handleClose.bind(this)} />
                         </If>

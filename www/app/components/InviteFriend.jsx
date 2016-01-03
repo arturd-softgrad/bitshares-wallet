@@ -6,7 +6,6 @@ import AccountSelector from './AccountSelector';
 import AccountActions from "actions/AccountActions";
 const RaisedButton = require('material-ui/lib/raised-button');
 const Dialog = require('material-ui/lib/dialog');
-const TextField = require('material-ui/lib/text-field');
 import { createHashHistory, useBasename } from 'history';
 
 const history = useBasename(createHashHistory)({});
@@ -26,11 +25,7 @@ class InviteFriend extends React.Component {
 
   _handleShareInvite() {
 
-    if (this.state.emails != "") {
-      debugger;
       if (window.plugins && window.plugins.socialsharing) {
-
-          let to = this.state.emails.split(";");
 
           let onSuccess = function() {
             history.pushState(null, 'contacts');
@@ -41,9 +36,9 @@ class InviteFriend extends React.Component {
           }
              
           window.plugins.socialsharing.shareViaEmail(
-              'Message', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
-              'Subject',
-              to, // TO: must be null or an array
+              'Hi, I just found this awesome BitShares Wallet that allows you to send and receive Smartcons. Check it out! Cheers', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+              'Awesome BitShares',
+              null, // TO: must be null or an array
               null, // CC: must be null or an array
               null, // BCC: must be null or an array
               ['https://www.google.nl/images/srpr/logo4w.png','www/localimage.png'], // FILES: can be null, a string, or an array
@@ -52,13 +47,13 @@ class InviteFriend extends React.Component {
           );
 
       } else {
-         console.log('bitshares invite: social network sharing plugin is not available');
+         console.log('BitShares invite: social network sharing plugin is not available');
       }
-    } else {
+     
+  }
 
-      alert("Enter the recipient");
-    }
-
+  toChangedEmails(e) {
+      this.setState({emails: e.target.value});
   }
 
   // Render ContactsScreen view
@@ -66,21 +61,14 @@ class InviteFriend extends React.Component {
 
     return (
        <section className="content">
-           <TextField
-              floatingLabelText="The email list (via the separator ;)"
-              type="text"
-              onChange={this.toChangedNotes.bind(this)}
-              value={this.state.emails}
-              multiLine={true}/>
-          <div>
-           <RaisedButton
-            label="Send"
-            primary={true}
-            onTouchTap={this._handleShareInvite.bind(this)} />,
-            <RaisedButton
-            label="Cancel"
-            secondary={true}
-            onTouchTap={this._handleOnLinkCancel} />
+           <div style={{'text-align': 'center', 'padding': '5px'}}>
+           Invite one or more of your friends to try out the BitShares Wallet! Email addresses are not saved or collected by anyone so their privacy is assured.
+           </div>
+           <div style={{'text-align': 'center', 'padding': '20px 0px'}}>
+             <RaisedButton
+              label="Open email application"
+              primary={true}
+              onTouchTap={this._handleShareInvite.bind(this)} />
           </div>
          </section>
     );

@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Automatski instalirati glavna verzija za tisak',
 		requirePinToSend: 'Zahtijevaju PIN poslati sredstva',
 		autoCloseWalletAfterInactivity: 'Automatski blizu BitShares novčanik nakon 3 minute neaktivnosti',
-		alwaysDonateDevsMunich: 'Uvijek donirati 2 BTS na podršku programere na BitShares Münchenu (bitshares-Münchenu)',
+		alwaysDonateDevsMunich: 'Uvijek donirati 2 BTS na podršku programere na BitShares Münchenu (BitShares-Münchenu)',
 		allowUse_GpsToFind: 'Ostaviti Finder (v2.0) za korištenje GPS pronaći najbliži bankomata, ljudi i POS sustave s Smartcoins',
 		allowReportPosition : 'Ostaviti Finder (v2.0) prijaviti svoju poziciju, tako da i drugi mogu kupiti ili prodati Smartcoins s vama',
 		pinNumber: 'PIN broj',

@@ -106,7 +106,7 @@ class WalletActions {
                         "memo_key": active_private.private_key.toPublicKey().toPublicKeyString(),
                         //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
                         "refcode": refcode,
-                        "referrer": window && window.BTSW ? BTSW.referrer : ""
+                        "referrer": refcode // https://bitshares.openledger.info/?r=bitshares-munich#/
                     }
                 })
             }).then(r => r.json());

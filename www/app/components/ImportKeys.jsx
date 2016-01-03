@@ -23,7 +23,7 @@ import ImportKeysStore from "stores/ImportKeysStore"
 import PublicKey from "ecc/key_public";
 
 import GenesisFilter from "chain/GenesisFilter"
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 
 var import_keys_assert_checking = false
 

@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Installa automaticamente major release di versione',
 		requirePinToSend: 'Richiedi PIN per inviare fondi',
 		autoCloseWalletAfterInactivity: 'Chiudi automaticamente BitShares Portafoglio dopo 3 minuti di inattività',
-		alwaysDonateDevsMunich: "Sempre donare 2 BTS agli sviluppatori supporto all'indirizzo BitShares Monaco (bitshares-Monaco)",
+		alwaysDonateDevsMunich: "Sempre donare 2 BTS agli sviluppatori supporto all'indirizzo BitShares Monaco (BitShares-Monaco)",
 		allowUse_GpsToFind: 'Lasciare che il Finder (v2.0) per utilizzare il GPS per trovare più vicino ATM, gli esseri umani e sistemi POS con Smartcoins',
 		allowReportPosition : 'Lasciare che il Finder (v2.0) per segnalare la vostra posizione in modo che gli altri possono acquistare o vendere Smartcoins con te',
 		pinNumber: 'Codice PIN',

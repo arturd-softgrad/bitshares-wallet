@@ -3,7 +3,7 @@ import cname from "classnames"
 import hash from "common/hash"
 import Translate from "react-translate-component";
 import dictionary from "common/dictionary_en";
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 
 var dictionary_set = new Set(dictionary.split(','))
 

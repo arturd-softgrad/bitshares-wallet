@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Translate from "react-translate-component";
 import cookies from "cookies-js";
 import SettingsStore from "stores/SettingsStore";
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "../Utility/TextField";
 
 /**
  * @brief Allows the user to enter a referral code

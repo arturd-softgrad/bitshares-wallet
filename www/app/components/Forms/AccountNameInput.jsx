@@ -11,7 +11,7 @@ import counterpart from "counterpart";
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "../Utility/TextField"; //= require('material-ui/lib/text-field');
 
 class AccountNameInput extends BaseComponent {
 
@@ -92,10 +92,10 @@ class AccountNameInput extends BaseComponent {
         } else if (this.props.accountShouldExist || this.props.accountShouldNotExist) {
             let account = this.state.searchAccounts.find(a => a === this.state.value);
             if (this.props.accountShouldNotExist && account) {
-                error =  "Account name is already taken." //counterpart.translate("account.name_input.name_is_taken");
+                error =  counterpart.translate("wallet.account_name_is_taken");
             }
             if (this.props.accountShouldExist && !account) {
-                error = "Account not found." //counterpart.translate("account.name_input.not_found");
+                error = counterpart.translate("wallet.account_not_found");
             }
         }
         return error;
@@ -103,16 +103,16 @@ class AccountNameInput extends BaseComponent {
 
     validateAccountName(value) {
         this.state.error = value === "" ?
-            "Please enter valid account name" :
+            counterpart.translate("wallet.enter_valid_account_name") :
             validation.is_account_name_error(value)
 
         this.state.warning = null
         if(this.props.cheapNameOnly) {
             if( ! this.state.error && ! validation.is_cheap_name( value ))
-                this.state.error = "This is a premium name. Premium names are more expensive and can't be registered for free by faucet. Try to select another name containing at least one dash, number or no vowels."; // TODO neead add to locales counterpart.translate("account.name_input.premium_name_faucet");
+                this.state.error = counterpart.translate("wallet.account_premium_name_warn")//"This is a premium name. Premium names are more expensive and can't be registered for free by faucet. Try to select another name containing at least one dash, number or no vowels."; // TODO neead add to locales counterpart.translate("account.name_input.premium_name_faucet");
         } else {
             if( ! this.state.error && ! validation.is_cheap_name( value ))
-                this.state.warning = "Account name is already taken."; // TODO need add to locales counterpart.translate("account.name_input.premium_name_warning");
+                this.state.warning = counterpart.translate("wallet.account_name_is_taken");// TODO need add to locales counterpart.translate("account.name_input.premium_name_warning");
         }
         this.setState({value: value, error: this.state.error, warning: this.state.warning});
         if (this.props.onChange) this.props.onChange({value: value, valid: !this.getError()});
@@ -141,15 +141,13 @@ class AccountNameInput extends BaseComponent {
         return (
                 <TextField
                   hintText={this.props.placeholder}
-                  floatingLabelText="Account name name" 
+                  floatingLabelText= {counterpart.translate("wallet.account_name")}
                   ref="account_name"
                   onChange={this.handleChange}
                   type="text"
                   defaultValue={this.props.initial_value}
                   onEnterKeyDown={this.onKeyDown}
                   value={this.state.account_name}
-                  underlineFocusStyle={{borderColor: "#009FE3"}}
-                  underlineStyle={{borderColor: "#72BAD9"}}
                   errorText={error ? error : warning}/>
         );
     }

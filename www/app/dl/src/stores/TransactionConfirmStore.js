@@ -2,11 +2,12 @@ import alt from "alt-instance"
 import TransactionConfirmActions from "actions/TransactionConfirmActions"
 
 class TransactionConfirmStore {
-    
+
     constructor() {
         this.bindActions(TransactionConfirmActions);
         this.state = this.getInitialState();
-        this.exportPublicMethods({reset: this.reset.bind(this)});
+        this.exportPublicMethods({reset: this.reset.bind(this),
+            confirm: this.onConfirm.bind(this) });
     }
 
     getInitialState() {

@@ -11,6 +11,8 @@ class ContactItem extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {tapped: false}
   } 
 
   shouldComponentUpdate(nextProps) {
@@ -20,17 +22,31 @@ class ContactItem extends React.Component {
               this.props.friendly_name !== nextProps.friendly_name
   }
 
+  _tapHandler() {
+
+    this.setState({tapped: true})
+    setTimeout(() => {
+      this.setState({tapped: false});
+    }.bind(this), 500)
+
+  }
+
   render() {
 
     let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
+    let tapped = "no_tapped";
+
+    if (this.state.tapped === true) {
+      tapped = "tapped";
+    }
 
     return (
       <Link to="contact-overview" query={{contact: current_contact_json}}>
-      <div onTouchTap={this.props.tapHandler} className="infinite-list-item">
-  		  <div><AccountImage className="profile-icon" account={this.props.contact_name} size={{height: 45, width: 45}}/></div>
-  		  <div> <b>{this.props.friendly_name}</b>{this.props.notes}</div>
-  		  <div>{this.props.contact_name}</div>
-  		</div>
+      <tr onTouchTap={this._tapHandler.bind(this)} className={tapped}>
+  		  <td><AccountImage className="contact-image" account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
+  		  <td> <span className="b bold">{this.props.friendly_name}</span>{"Notes: " + this.props.notes}</td>
+  		  <td>{this.props.contact_name}</td>
+  		</tr>
       </Link>
     );
   }

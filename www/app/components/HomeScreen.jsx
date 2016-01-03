@@ -39,7 +39,7 @@ class HomeScreen extends React.Component {
                 qrcontent.privateKey,
                 'BTS address',
                 null, // images
-                'http://www.bitshares.openledger.info');
+                'http://bitshares-munich.evennode.com/');
         }
         else
             console.log('BTS address share: social network sharing plugin is not available');
@@ -83,13 +83,13 @@ class HomeScreen extends React.Component {
                         >
                          <AccountCard/>
                     </AltContainer>
+                    <div className="data-text"  onTouchTap = {this._shareBTSAddress.bind(this)} >{qrcontent.privateKey}</div>
                 </div>
               </div>
-              <div className="data-text"  onTouchTap = {this._shareBTSAddress.bind(this)} >{qrcontent.privateKey}</div>
             </section>,
             <section className="code-buttons">
-              <Link to="receive" className="btn btn-receive">receive</Link>
-              <Link to="send" className="btn btn-send">send</Link>
+              <Link to="receive" className="btn btn-receive upper">receive</Link>
+              <Link to="send" className="btn btn-send upper">send</Link>
             </section>,
                       <AltContainer
                           stores={

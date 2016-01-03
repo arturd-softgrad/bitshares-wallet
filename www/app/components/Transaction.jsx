@@ -13,6 +13,8 @@ import utils from "common/utils";
 import LinkToAccountById from "./LinkToAccountById";
 import LinkToAssetById from "./LinkToAssetById";
 import FormattedPrice from "./Utility/FormattedPrice";
+import SettingsStore from "stores/SettingsStore";
+
 
 //require("./operations.scss");
 //require("./json-inspector.scss");
@@ -97,6 +99,7 @@ class Transaction extends React.Component {
         let {trx} = this.props;
         let info = null;
         info = [];
+        let hideDonations = null;
 
         let opCount = trx.operations.length;
 
@@ -137,6 +140,20 @@ class Transaction extends React.Component {
                             console.log("transfer memo exception ...", e);
                             memo_text = "*";
                         }
+                    }
+
+                    if (op[1].to == "1.2.90200") // bitshares-munich
+                    {
+                        if (hideDonations == null)
+                        {
+                            var advancedSettings = SettingsStore.getSetting("advancedSettings");
+                            if (advancedSettings == null)
+                                hideDonations = false;
+                            else
+                                hideDonations = advancedSettings.hideDonations == true;
+                        }
+                        if (hideDonations == true)
+                            return null;
                     }
 
                     rows.push(

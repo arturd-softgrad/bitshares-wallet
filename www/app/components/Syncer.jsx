@@ -56,13 +56,11 @@ class Footer extends React.Component {
         let version_match = APP_VERSION.match(/2\.0\.(\d\w+)/);
         let version = version_match ? `.${version_match[1]}` : ` ${APP_VERSION}`;
 
-        let blockEl =  block_height ? <span ><Translate style={{float:"left"}} content="wallet.sync_block" />{block_height} </span> : null
+        let blockEl =  block_height ? <span ><span style={{float:"left"}}>Block #</span>{block_height} </span> : null
         let syncEl = this.props.synced ? <a href="#"><i className="check"></i></a>:
             this.props.rpc_connection_status === "closed" ? <span>No Blockchain connection</span>:
-            <span>Please wait until blockchain is synchronized</span>
+            <a href="#"><i className="sync"></i></a>
         return <span>{syncEl} {blockEl}</span>;
-
-
 
     }
 }

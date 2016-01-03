@@ -6,7 +6,7 @@ import BindToChainState from "./BindToChainState";
 import FormattedAsset from "./FormattedAsset";
 import counterpart from "counterpart";
 //import utils from "common/utils";
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./TextField";
 
 @BindToChainState()
 class AssetOption extends React.Component {
@@ -39,22 +39,16 @@ class AssetSelector extends React.Component {
     }
 
     render() {
-       
+
         var options = this.props.assets.map(function (value) {
             return <AssetOption key={value} asset={value} asset_id={value}/>
         });
 
-        if(this.props.assets.length == 1) {
-           return ( <FormattedAsset asset={this.props.assets[0]} amount={0} hide_amount={true}/> )
-
-        } else {
-
-            return (                
-                <select defaultValue={this.props.value} className="nice-select" onChange={this.onChange.bind(this)}>
-                    {options}
-                </select>
-            )
-        }
+        return (
+            <select defaultValue={this.props.value} className="nice-select" style={{"font-weight": "bold"}} onChange={this.onChange.bind(this)}>
+                {options}
+            </select>
+        )
     }
 }
 
@@ -93,6 +87,7 @@ class AmountSelector extends React.Component {
     }
 
     _onChange(event) {
+
         let amount = event.target.value
         this.setState({amount})
         this.props.onChange({amount: amount, asset: this.props.asset})
@@ -103,28 +98,27 @@ class AmountSelector extends React.Component {
         this.props.onChange({amount: this.props.amount, asset: selected_asset})
     }
 
+    onKeyDown(e) {
+        
+        if (e.keyCode >= 48 && e.keyCode <= 57) {
+        } else {
+          return false;
+        }
+    }
+
     render() {
 
         let value = this.formatAmount(this.props.amount);
-        
+
         return (
                 <div>
-                    <TextField
-                          floatingLabelText={counterpart.translate("wallet.home.amount")}
-                          hintText={counterpart.translate("wallet.home.amount")}
-                          value={value}
-                          underlineFocusStyle={{borderColor: "#009FE3"}}
-                          underlineStyle={{borderColor: "#72BAD9"}}
-                          type="text"
-                          id="amount"
-                          onChange={this._onChange.bind(this) }/>
-
-                   <span className="form-label select">
-                       <AssetSelector
+                   <span className="label-amount bold">{counterpart.translate("wallet.home.amount") + ": "} </span>
+                   <input onChange={this._onChange.bind(this)}  onKeyDown={this.onKeyDown} value={value}  type="text" pattern="[0-9]" className="text-field input-amount"></input>
+                    <AssetSelector
                            assets={this.props.assets}
                            onChange={this.onAssetChange.bind(this)}/>
-                   </span>
                 </div>
+
         )
     }
 

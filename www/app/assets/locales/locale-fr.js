@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Version installer automatiquement les versions majeures',
 		requirePinToSend: 'Code PIN requis pour envoyer des fonds',
 		autoCloseWalletAfterInactivity: "Fermer automatiquement BitShares Wallet après 3 minutes d'inactivité",
-		alwaysDonateDevsMunich: "Toujours faire un don de 2 BTS aux développeurs de soutien au BitShares Munich (bitshares-Munich)",
+		alwaysDonateDevsMunich: "Toujours faire un don de 2 BTS aux développeurs de soutien au BitShares Munich (BitShares-Munich)",
 		allowUse_GpsToFind: "Laisser le Finder (v2.0) pour utiliser le GPS pour trouver plus proches distributeurs automatiques de billets, les humains et les systèmes de point de vente avec Smartcoins",
 		allowReportPosition : "Laisser le Finder (v2.0) pour signaler votre position pour que d'autres puissent acheter ou vendre Smartcoins avec vous",
 		pinNumber: 'Code PIN',

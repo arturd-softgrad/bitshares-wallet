@@ -37,11 +37,12 @@ class SettingsScreen extends React.Component {
     super(props);
     this.state ={ muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       advancedSettings: {
-          checkUpdatesStartup: false,
+          checkUpdatesStartup: true,
           autoInstallMajorVer: false,
-          requirePinToSend: false,
-          autoCloseWalletAfterInactivity: false,
-          alwaysDonateDevsMunich: false
+          requirePinToSend: true,
+          autoCloseWalletAfterInactivity: true,
+          alwaysDonateDevsMunich: true,
+          hideDonations : false
       }
      }
   }
@@ -144,7 +145,8 @@ class SettingsScreen extends React.Component {
           autoInstallMajorVer: this.refs.chkAutoInstallMajorVer.isChecked(),
           requirePinToSend: resettingPin? true: this.refs.chkRequirePinToSend.isChecked(),
           autoCloseWalletAfterInactivity: this.refs.chkAutoCloseWalletAfterInactivity.isChecked(),
-          alwaysDonateDevsMunich: this.refs.chkAlwaysDonateDevsMunich.isChecked()
+          alwaysDonateDevsMunich: this.refs.chkAlwaysDonateDevsMunich.isChecked(),
+          hideDonations: this.refs.chkHideDonations.isChecked()
       }
       if (resettingPin)
       {
@@ -243,14 +245,21 @@ class SettingsScreen extends React.Component {
                 name="chkAutoCloseWalletAfterInactivity"
                 value="checkboxValue4"
                 label={<Translate content="wallet.settings.autoCloseWalletAfterInactivity" />}
-                defaultChecked={settings.autoCloseWalletAfterInactivity} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+                checked={settings.autoCloseWalletAfterInactivity} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
            </section>
            <section className="setting-item">
                <Checkbox  ref="chkAlwaysDonateDevsMunich"
                 name="chkAlwaysDonateDevsMunich"
                 value="checkboxValue5"
                 label={<Translate content="wallet.settings.alwaysDonateDevsMunich" />}
-                defaultChecked={settings.alwaysDonateDevsMunich}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+                checked={settings.alwaysDonateDevsMunich}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+          </section>
+           <section className="setting-item">
+               <Checkbox  ref="chkHideDonations"
+                name="chkHideDonations"
+                value="checkboxValue6"
+                label={<Translate content="wallet.settings_hideDonations" />}
+                checked={settings.hideDonations}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
             <RaisedButton label={<Translate content="wallet.settings.backup" />}

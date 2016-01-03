@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Asentaa automaattisesti merkittävä versiojulkaisuja',
 		requirePinToSend: 'Vaadi pin lähettää varoja',
 		autoCloseWalletAfterInactivity: 'Sulkeutuvat automaattisesti BitShares Lompakko jälkeen 3 minuutin toimettomuuden',
-		alwaysDonateDevsMunich: 'Aina lahjoittaa 2 BTS Tuki Kehittäjien klo BitShares München (bitshares-München)',
+		alwaysDonateDevsMunich: 'Aina lahjoittaa 2 BTS Tuki Kehittäjien klo BitShares München (BitShares-München)',
 		allowUse_GpsToFind: 'Salli Finder (v2.0) käyttää GPS löytää lähimmän pankkiautomaatteja, Ihmiset ja kassajärjestelmät kanssa Smartcoins',
 		allowReportPosition : 'Salli Finder (v2.0) ilmoittaa sijaintisi, jotta muut voivat ostaa tai myydä Smartcoins kanssasi',
 		pinNumber: 'PIN-koodi',

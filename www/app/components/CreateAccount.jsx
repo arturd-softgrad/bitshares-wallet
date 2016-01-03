@@ -47,9 +47,9 @@ class CreateAccount extends React.Component {
             validAccountName: false,
             accountName: "",
             validPassword: false,
-            registrar_account: null,
+            registrar_account: "",
             loading: false,
-            hide_refcode: true,
+            //hide_refcode: true,
             show_identicon: true,
             isDisclaimer: false
         };
@@ -62,7 +62,7 @@ class CreateAccount extends React.Component {
             nextState.validPassword !== this.state.validPassword ||
             nextState.registrar_account !== this.state.registrar_account ||
             nextState.loading !== this.state.loading ||
-            nextState.hide_refcode !== this.state.hide_refcode ||
+            //nextState.hide_refcode !== this.state.hide_refcode ||
             nextState.isDisclaimer !== this.state.isDisclaimer ||
             nextState.show_identicon !== this.state.show_identicon;
     }
@@ -101,19 +101,20 @@ class CreateAccount extends React.Component {
                 this.context.router.transitionTo("/", {account_name: this.state.accountName});
             }
         }
+
+        this.setState({loading: false});
     }
 
     createAccount(name) {
-        let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
-
-            this.setState({loading: true});
+        let refcode = 'bitshares-munich';//this.refs.refcode ? this.refs.refcode.value() : null;
             AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {
+             
                 if(this.state.registrar_account) {
-                    this.setState({loading: false});
                     TransactionConfirmStore.listen(this.onFinishConfirm);
                 } else {
 
                     history.pushState(null, '/');
+                    this.setState({loading: false});
                 }
             }).catch(error => {
                 console.log("ERROR AccountActions.createAccount", error);
@@ -127,7 +128,6 @@ class CreateAccount extends React.Component {
                 });
                 this.setState({loading: false});
             });
-
     }
 
     createWallet(password) {
@@ -136,6 +136,7 @@ class CreateAccount extends React.Component {
             password
         ).then(()=> {
              SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
+            this.setState({loading: false});
             console.log("Congratulations, your wallet was successfully created.");
             BackupActions.requireBackup();
         }).catch(err => {
@@ -150,7 +151,9 @@ class CreateAccount extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
+
         if (!this.isValid()) return;
+        this.setState({loading: true});
         let account_name = this.refs.account_name.value();
         if (WalletDb.getWallet()) {
             this.createAccount(account_name);
@@ -164,10 +167,10 @@ class CreateAccount extends React.Component {
         this.setState({registrar_account});
     }
 
-    showRefcodeInput(e) {
+    /*showRefcodeInput(e) {
         e.preventDefault();
         this.setState({hide_refcode: false});
-    }
+    }*/
 
     _handleDisclaimerAgree() {
         this.refs.disclaimer.dismiss();
@@ -199,23 +202,15 @@ class CreateAccount extends React.Component {
         let buttonClass = classNames("button", {disabled: !valid});
 
         let disclaimer_actions  = [
-          <RaisedButton
-            label="Cancel and Exit"
-            primary={true}
-            style={{'margin-right': '5px'}}
-            onTouchTap={this._handleDisclaimerCancel.bind(this)} />,
-          <RaisedButton
-            label="I Agree"
-            backgroundColor={"#008000"}
-            secondary={true}
-            onTouchTap={this._handleDisclaimerAgree.bind(this)} />
+         <button type="button" className="primary"  onTouchTap={this._handleDisclaimerCancel.bind(this)}>Cancel and Exit</button>,
+          <button type="button" className="secondary"  onTouchTap={this._handleDisclaimerAgree.bind(this)}>I Agree</button>
         ];
 
         if (this.state.isDisclaimer === true) {
 
-            return ( 
+            return (
                 <main className="no-nav content">
-                    <FlatButton label="To accept the agreement" 
+                    <FlatButton label="To accept the agreement"
                          onTouchTap={this._handleDisclaimerShow.bind(this)}
                          style={{width: '95%'}}
                         primary={true} />
@@ -226,7 +221,7 @@ class CreateAccount extends React.Component {
                           <div  style={{width: '95%'}}>
                             <p>BitShares Wallet Terms and Conditions of Use</p>
                             <p>The following terminology applies to these Terms and Conditions of Use (our “Terms”), the Privacy and Transparency
-                                Statement, and any and all other agreements between you and us: “Client”, “Customer”, “User”, “You” and “Your” refers to you, the person accessing the BitShares Wallet software application (“App”) and accepting our Terms. “The Company”, “BitShares”, “BitShares Munich”, “Our”, “Ourselves”, “We” and “Us” collectively refers to the App and to its owners, operators, developers, contractors, directors, officers, employees, agents, insurers, suppliers, and attorneys. “Party” refers to either you or Us. In these Terms, unless otherwise specified, words importing the singular include the plural and vice versa and words importing gender include all genders. “Digital asset”, “asset”, “coin”, “cryptocurrency”, “good”, “ledger entry”, “altcoin” and “token” refer to blockchain-based software ledger data entries. 
+                                Statement, and any and all other agreements between you and us: “Client”, “Customer”, “User”, “You” and “Your” refers to you, the person accessing the BitShares Wallet software application (“App”) and accepting our Terms. “The Company”, “BitShares”, “BitShares Munich”, “Our”, “Ourselves”, “We” and “Us” collectively refers to the App and to its owners, operators, developers, contractors, directors, officers, employees, agents, insurers, suppliers, and attorneys. “Party” refers to either you or Us. In these Terms, unless otherwise specified, words importing the singular include the plural and vice versa and words importing gender include all genders. “Digital asset”, “asset”, “coin”, “cryptocurrency”, “good”, “ledger entry”, “altcoin” and “token” refer to blockchain-based software ledger data entries.
                             </p>
                             <p>
                             By using the App, you represent and warrant that you are:
@@ -277,7 +272,7 @@ class CreateAccount extends React.Component {
                             transactions or assets in any way is futile. Law enforcement has full access to blockchain information that
                             goes in or out of the BitShares network.
                             You accept that We will comply willingly with all legal requests for information from it. We reserve the right to
-                            provide information to law enforcement personnel and other third parties to answer inquiries; to respond to legal process; to respond to the order of a court of competent jurisdiction and those exercising the court’s authority; and, to protect Ourselves and our users. 
+                            provide information to law enforcement personnel and other third parties to answer inquiries; to respond to legal process; to respond to the order of a court of competent jurisdiction and those exercising the court’s authority; and, to protect Ourselves and our users.
                             </p>
                             <p>If you agree to these terms and conditions, please tap on the green button below.</p>
                           </div>
@@ -288,6 +283,8 @@ class CreateAccount extends React.Component {
         } else {
 
             return (
+                    <section>
+                      {this.state.loading ?  <LoadingIndicator type="circle"/> : null}
                       <main className="no-nav content">
                         <Dialog title="Agreement"
                         actions={disclaimer_actions}
@@ -296,7 +293,7 @@ class CreateAccount extends React.Component {
                           <div  style={{width: '95%'}}>
                             <p>BitShares Wallet Terms and Conditions of Use</p>
                             <p>The following terminology applies to these Terms and Conditions of Use (our “Terms”), the Privacy and Transparency
-                                Statement, and any and all other agreements between you and us: “Client”, “Customer”, “User”, “You” and “Your” refers to you, the person accessing the BitShares Wallet software application (“App”) and accepting our Terms. “The Company”, “BitShares”, “BitShares Munich”, “Our”, “Ourselves”, “We” and “Us” collectively refers to the App and to its owners, operators, developers, contractors, directors, officers, employees, agents, insurers, suppliers, and attorneys. “Party” refers to either you or Us. In these Terms, unless otherwise specified, words importing the singular include the plural and vice versa and words importing gender include all genders. “Digital asset”, “asset”, “coin”, “cryptocurrency”, “good”, “ledger entry”, “altcoin” and “token” refer to blockchain-based software ledger data entries. 
+                                Statement, and any and all other agreements between you and us: “Client”, “Customer”, “User”, “You” and “Your” refers to you, the person accessing the BitShares Wallet software application (“App”) and accepting our Terms. “The Company”, “BitShares”, “BitShares Munich”, “Our”, “Ourselves”, “We” and “Us” collectively refers to the App and to its owners, operators, developers, contractors, directors, officers, employees, agents, insurers, suppliers, and attorneys. “Party” refers to either you or Us. In these Terms, unless otherwise specified, words importing the singular include the plural and vice versa and words importing gender include all genders. “Digital asset”, “asset”, “coin”, “cryptocurrency”, “good”, “ledger entry”, “altcoin” and “token” refer to blockchain-based software ledger data entries.
                             </p>
                             <p>
                             By using the App, you represent and warrant that you are:
@@ -347,17 +344,17 @@ class CreateAccount extends React.Component {
                             transactions or assets in any way is futile. Law enforcement has full access to blockchain information that
                             goes in or out of the BitShares network.
                             You accept that We will comply willingly with all legal requests for information from it. We reserve the right to
-                            provide information to law enforcement personnel and other third parties to answer inquiries; to respond to legal process; to respond to the order of a court of competent jurisdiction and those exercising the court’s authority; and, to protect Ourselves and our users. 
+                            provide information to law enforcement personnel and other third parties to answer inquiries; to respond to legal process; to respond to the order of a court of competent jurisdiction and those exercising the court’s authority; and, to protect Ourselves and our users.
                             </p>
                             <p>If you agree to these terms and conditions, please tap on the green button below.</p>
                           </div>
                     </Dialog>
                         <div className="page-header">
-                            <h3>"ACCOUNT CREATE/REGISTER OR IMPORT"</h3>
+                            <h3>ACCOUNT CREATE/REGISTER OR IMPORT</h3>
                         </div>
                             <form onSubmit={this.onSubmit.bind(this)} noValidate>
                                 <div className="form-group">
-                                    <AccountImage account={this.state.validAccountName ? this.state.accountName:null}/>
+                                    <AccountImage className="contact-image" account={this.state.validAccountName ? this.state.accountName:null}/>
                                 </div>
                                 <AccountNameInput ref="account_name" cheapNameOnly={first_account}
                                                   onChange={this.onAccountNameChange.bind(this)}
@@ -375,25 +372,17 @@ class CreateAccount extends React.Component {
                                                 onChange={this.onRegistrarAccountChange.bind(this)}/>
                                         </div>)
                                 }
-                                {this.state.hide_refcode ? null :
-                                    <div>
-                                        <RefcodeInput ref="refcode" label="refcode.refcode_optional" expandable={true}/>
-                                        <br/>
-                                    </div>
-                                }
-                                {this.state.loading ?  <LoadingIndicator type="circle"/> :<RaisedButton type="submit" label="Create" secondary={true} />}
+                                <RaisedButton type="submit" label="Create" secondary={true} />
                                 <br/>
                                 <br/>
                                 <label className="inline"><Link to="existing-account">Existing account</Link></label>
-                                {this.state.hide_refcode ? <span>&nbsp; &bull; &nbsp;
-                                    <label className="inline"><a href onClick={this.showRefcodeInput.bind(this)}>Enter refcode</a></label>
-                                </span> : null}
                             </form>
                       </main>
+                      </section>
             );
         }
 
-        
+
     }
 }
 

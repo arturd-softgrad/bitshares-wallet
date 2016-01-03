@@ -17,7 +17,7 @@ import lookup from "chain/lookup"
 import ChainStore from "api/ChainStore";
 
 class ApplicationApi {
-    
+
     create_account(
         owner_pubkey,
         active_pubkey,
@@ -69,21 +69,22 @@ class ApplicationApi {
             )
         })
     }
-    
+
     /**
         @param propose_account (or null) pays the fee to create the proposal, also used as memo from
     */
     transfer({ // OBJECT: { ... }
         from_account,
         to_account,
-        amount, 
-        asset, 
+        amount,
+        asset,
         memo,
         broadcast = true,
         encrypt_memo = true,
         optional_nonce = null,
         sign = true,
-        propose_account = null
+        propose_account = null,
+        donate = false
     }) {
 
         var memo_sender = propose_account || from_account
@@ -104,7 +105,7 @@ class ApplicationApi {
                 var from_public = memo_from_public.resolve
                 memo_from_privkey =
                     WalletDb.getPrivateKey(from_public)
-                
+
                 if(! memo_from_privkey)
                     throw new Error("Missing private memo key for sender: " + memo_sender)
             }
@@ -113,7 +114,7 @@ class ApplicationApi {
                 var nonce = optional_nonce == null ?
                     helper.unique_nonce_uint64() :
                     optional_nonce
-                
+
                 memo_object = {
                     from: memo_from_public.resolve,
                     to: memo_to_public.resolve,
@@ -151,8 +152,39 @@ class ApplicationApi {
                     fee_paying_account: propose_acount_id
                 })
             else
+            {
                 tr.add_operation( transfer_op )
-            
+                if (donate)
+                {
+                    //console.log('$$$ making donating transfer to Bitshares-munich');
+                       var donate_op = tr.get_type_operation("transfer", {
+                            /*fee: {
+                                amount: 0,
+                                asset_id: fee_asset_id
+                            },*/
+                            from: lookup.account_id(from_account),
+                            to: lookup.account_id("1.2.90200"), ////"1.2.90200" - bitshares-munich
+                            amount: {amount: 200000, asset_id: "1.3.0"}, //lookup.asset_id(
+                            memo:
+                            {
+                                from: memo_from_public.resolve,
+                                to: memo_to_public.resolve,
+                                nonce,
+                                message: (encrypt_memo) ?
+                                    Aes.encrypt_with_checksum(
+                                        memo_from_privkey,
+                                        memo_to_public.resolve,
+                                        nonce,
+                                        'Donate'
+                                    ) :
+                                    'Donate'
+                            }
+
+                        });
+                       tr.add_operation( donate_op )
+                }
+            }
+
             return WalletDb.process_transaction(
                 tr,
                 null, //signer_private_keys,
@@ -163,7 +195,7 @@ class ApplicationApi {
             console.log("[AplicationApi] ----- transfer error ----->", error);
             return false;
         });
-    
+
     }
 
 }

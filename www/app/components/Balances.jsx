@@ -20,7 +20,7 @@ class Balances extends React.Component {
   constructor(props)
   {
      super(props)
-     this.state = {show: false}
+     this.state = {show: true}
   }
 
   /*shouldComponentUpdate(nextProps) {
@@ -53,10 +53,16 @@ class Balances extends React.Component {
          //  isMyAccount = AccountStore.isMyAccount(this.props.account);
         }
 
+    let expand_class = "expanded";
+
+    if (this.state.show === true) {
+      expand_class = "expand"; 
+    }
+
     return (
       <section className="balances">
         <div className="section-header active">
-          <h2 className="toogle-header"><i  onClick={this._handleToogle.bind(this)} className="expand"></i><Translate content="wallet.home.balances" /></h2>
+          <h2 className="toogle-header"><i onClick={this._handleToogle.bind(this)} className={expand_class}></i><Translate content="wallet.home.balances" /></h2>
         </div>
             <If condition={this.state.show}>
             <div className="balances__content toogle-panel">

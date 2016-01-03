@@ -78,7 +78,7 @@ languages: {
 		autoInstallMajorVer: 'Автоматично инсталиране на основни версии за',
 		requirePinToSend: 'Изискване PIN към Изпратете фондове',
 		autoCloseWalletAfterInactivity: 'Автоматично близо BitShares Wallet след 3 минути бездействие',
-		alwaysDonateDevsMunich: 'Винаги дари 2 BTS на разработчиците поддръжка на BitShares Мюнхен (bitshares-Мюнхен)',
+		alwaysDonateDevsMunich: 'Винаги дари 2 BTS на разработчиците поддръжка на BitShares Мюнхен (BitShares-Мюнхен)',
 		allowUse_GpsToFind: 'Оставете Finder (v2.0) да използва GPS, за да намерите най-близките банкомати, Хората и ПОС системи с Smartcoins',
 		allowReportPosition : 'Оставете Finder (v2.0) да докладва позицията си, така че другите да купуват или продават Smartcoins с вас',
 		pinNumber: 'PIN номер',

@@ -12,13 +12,14 @@ import counterpart from "counterpart";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import Immutable from "immutable";
 const Checkbox = require('material-ui/lib/checkbox');
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 import ChainTypes from "./Utility/ChainTypes";
 import BindToChainState from "./Utility/BindToChainState";
 import { Router, Route, Link, IndexRoute } from 'react-router';
 import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions"
 import SettingsStore from "stores/SettingsStore";
+import LoadingIndicator from "./LoadingIndicator";
 
 // Flux SendScreen view to to configure the application
 @BindToChainState()
@@ -41,13 +42,15 @@ class SendScreen extends React.Component {
             from_account: null,
             to_account: null,
             amount: "",
+            loading: false,
             asset_id: null,
             asset: null,
             memo: "",
             error: null,
             propose: false,
             propose_account: "",
-            to_account_valid: false
+            to_account_valid: false,
+            donate: true
         };
 
          let { query } = this.props.location;
@@ -96,6 +99,10 @@ class SendScreen extends React.Component {
         this.setState({memo: e.target.value});
     }
 
+    onDonateChanged(e) {
+        this.setState({donate: this.refs.chkDonate.isChecked()});
+    }
+
     onTrxIncluded(confirm_store_state) {
         if(confirm_store_state.included && confirm_store_state.broadcasted_transaction) {
               this.setState({
@@ -109,7 +116,7 @@ class SendScreen extends React.Component {
               memo: "",
               error: null,
               propose: false,
-              propose_account: ""
+              propose_account: "",
           });
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.reset();
@@ -131,11 +138,11 @@ class SendScreen extends React.Component {
     onSubmit(e) {
         if (!this.state.to_account_valid)
         {
-          console.log("SendScreen.submit - no recipient account");
           return;
         }
         e.preventDefault();
-        this.setState({error: null});
+
+        this.setState({error: null, loading: true});
         let asset = this.state.asset;
         let precision = utils.get_asset_precision(asset.get("precision"));
 
@@ -145,14 +152,18 @@ class SendScreen extends React.Component {
         else
           WalletDb.tryUnlock();
 
+        //"1.2.90200" - bitshares-munich
+
         AccountActions.transfer(
             this.state.from_account.get("id"),
             this.state.to_account.get("id"),
             parseInt(this.state.amount * precision, 10),
             asset.get("id"),
             this.state.memo,
-            this.state.propose ? this.state.propose_account : null
+            this.state.propose ? this.state.propose_account : null,
+            this.state.donate
         ).then( () => {
+            this.setState({loading: false});
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.listen(this.onTrxIncluded);
         }).catch( e => {
@@ -182,35 +193,36 @@ class SendScreen extends React.Component {
             asset_types = Object.keys(account_balances);
             if (asset_types.length > 0) {
                 let current_asset_id = this.state.asset ? this.state.asset.get("id") : asset_types[0];
-                balance = (<span><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>)
+                balance = (<span className="avalibel-label"><BalanceComponent balance={account_balances[current_asset_id]}/> <Translate component="span" content="wallet.transfer_available"/></span>)
             } else {
                 balance = "No funds";
             }
         }
         let propose_incomplete = this.state.propose && ! this.state.propose_account
-        let submitButtonClass = "button";
+        let submitButtonClass = "";
         if(!this.state.from_account || !this.state.to_account || !this.state.amount || this.state.amount === "0"|| !this.state.asset || from_error || propose_incomplete)
-            submitButtonClass += " disabled";
+            submitButtonClass += "disabled";
 
         let accountsList = Immutable.Set();
         accountsList = accountsList.add(this.state.from_account)
-        let tabIndex = 1
-
+        let tabIndex = 1;
+        let from_span = counterpart.translate("wallet.home.from") + ": " + this.state.from_name;
    return (
+     <section>
+     {this.state.loading ? <LoadingIndicator type="circle"/> : null}
      <main className="no-nav content">
-          <h2>Request a specific Amount (optional)</h2>
           <form className="send-form" onSubmit={this.onSubmit.bind(this)} noValidate>
               <div className="form-row">
-                <span>From: {this.state.from_name}</span>
+                <span className="bold">{from_span}</span>
               </div>
               <div className="form-row">
-                  <AccountSelector label="transfer.to"
+                  <AccountSelector label={counterpart.translate("wallet.home.to")}
                      accountName={this.state.to_name}
                      onChange={this.toChanged.bind(this)}
                      onAccountChanged={this.onToAccountChanged.bind(this)}
                      account={this.state.to_name}/>
               </div>
-              <div className="form-row send-buttons"><Link to="contacts" className="btn send-form-btn">Contacts</Link><a href="#" className="btn photo-btn is-disabled"></a><a href="#" className="btn send-form-btn is-disabled">Clipboard</a></div>
+              <div className="form-row send-buttons"><Link to="contacts" className="btn send-form-btn">{counterpart.translate("wallet.home.contacts")}</Link><a href="#" className="btn photo-btn is-disabled"></a><a href="#" className="btn send-form-btn is-disabled">Clipboard</a></div>
               <div className="form-row curr-input">
                   <AmountSelector
                       amount={this.state.amount}
@@ -218,33 +230,36 @@ class SendScreen extends React.Component {
                       asset={asset_types.length > 0 && this.state.asset ? this.state.asset.get("id") : ( this.state.asset_id ? this.state.asset_id : asset_types[0])}
                       assets={asset_types}
                       display_balance={balance}/>
+                   {balance}
               </div>
               <div className="form-row">
+                    <span className="label bold">{counterpart.translate("wallet.home.memo") + ":"}</span>
                     <TextField
-                      floatingLabelText={counterpart.translate("wallet.home.memo")}
                       name="memo"
                       id="memo"
                       value={this.state.memo}
                       onChange={this.onMemoChanged.bind(this)}
-                      underlineFocusStyle={{borderColor: "#009FE3"}}
-                      underlineStyle={{borderColor: "#72BAD9"}}
                       multiLine={true} />
               </div>
               <div className="form-row">
+                <span className="danate-checkbox">
                   <Checkbox
-                    name="Donate"
-                    value="checkboxValue1"
-                    label="Donate 2 BTS to the Support Developers at BitShares Munich"
-                    defaultChecked={true}/>
+                    name="chkDonate"
+                    labelStyle={{"font-size": "10px"}}
+                    ref = "chkDonate"
+                    onCheck={this.onDonateChanged.bind(this)}
+                    checked={this.state.donate}/>
+                </span>
+                <span className="donate-label">{counterpart.translate("wallet.home.donateToDevs")}</span>
               </div>
-              <button className={"btn btn-send-big"+ (this.state.to_account_valid? "": " disabled")} type="submit" value="Submit">
-                  <span>send</span>
+              <button className={"btn btn-send-big upper "+ submitButtonClass} type="submit" value="Submit">
+                  <Translate component="span" content="wallet.home.send"/>
               </button>
             </form>
       </main>
+      </section>
     );
   }
-
 }
 
 export default  SendScreen;

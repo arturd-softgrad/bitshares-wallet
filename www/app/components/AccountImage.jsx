@@ -11,7 +11,7 @@ class AccountImage extends Component {
             <img src={image} height={height + "px"} width={width + "px"}/> :
             <Identicon id={account} account={account} size={this.props.size}/>;
         return (
-            <div className="account-image">
+            <div className={this.props.className}>
                 {custom_image}
             </div>
         )

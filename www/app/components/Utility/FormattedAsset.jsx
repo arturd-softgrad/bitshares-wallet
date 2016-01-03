@@ -59,7 +59,7 @@ class FormattedAsset extends React.Component {
                 <span className={colorClass}  >
                 {display_sign? amount>0 ? '+': null: null}
                 {!hide_amount ?
-                   <span>{this.props.exact_amount ? amount : amount / precision}</span>
+                   <span className="amount_span">{this.props.exact_amount ? amount : amount / precision}</span>
                 : null}
                 {hide_asset ? null : <span className="currency">{"\u00a0" + asset.symbol}</span>}
                 </span>

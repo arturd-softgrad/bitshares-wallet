@@ -6,7 +6,7 @@ import AccountSelector from './AccountSelector';
 import AccountActions from "actions/AccountActions";
 const RaisedButton = require('material-ui/lib/raised-button');
 const Dialog = require('material-ui/lib/dialog');
-const TextField = require('material-ui/lib/text-field');
+import TextField  from "./Utility/TextField";
 import { createHashHistory, useBasename } from 'history';
 
 const history = useBasename(createHashHistory)({});
@@ -53,12 +53,12 @@ class AddContact extends React.Component {
                onChange={this.toChanged.bind(this)}
                account={this.state.contact_name} />
           <TextField
-              floatingLabelText="Friendly name"
+              floatingLabelText="Friendly name:"
               type="text"
               onChange={this.toChangedFriendlyName.bind(this)}
               value={this.state.friendly_name}/>
            <TextField
-              floatingLabelText="Notes"
+              floatingLabelText="Notes:"
               type="text"
               onChange={this.toChangedNotes.bind(this)}
               value={this.state.notes}

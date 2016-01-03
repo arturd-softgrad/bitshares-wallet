@@ -158,7 +158,6 @@ class App extends React.Component {
                               nextPathname: nextState.location.pathname
                             }, '/create-account');
 
-                          //  transition.redirect("/create-account");
                         }
                         if (nextState.location.pathname .indexOf("/auth/") === 0) {
                          //   transition.redirect("/dashboard");
@@ -209,6 +208,9 @@ class App extends React.Component {
             <section>
                 <div className="bg-logo"><img src="app/assets/img/bg-logo.svg" alt="" /></div>
                     <header className="header-inner">
+                        <If condition={pathname === "/contacts"}>
+                             <div className="header__links contacts-nav"><Link to="add-contact"><i className="add-user"></i></Link><Link to="invite-friend"><i className="invite"></i></Link></div>
+                        </If>
                         <If condition={pathname != "/"}>
                              <a className="back" onClick={history.goBack}></a>
                         </If>
@@ -243,7 +245,7 @@ class App extends React.Component {
                                   value: AccountStore.getState().currentAccount
                                 };
                               },
-                              linkedAccounts: () => {
+                              linkedAccounts: () => { // props is the property of AltContainer
                                 return {
                                   store: AccountStore,
                                   value: AccountStore.getState().linkedAccounts
