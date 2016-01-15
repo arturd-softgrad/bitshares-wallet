@@ -19,6 +19,8 @@ import BindToChainState from "./Utility/BindToChainState";
 import FormattedPrice from "./Utility/FormattedPrice";
 import ChainTypes from "./Utility/ChainTypes";
 import ChainStore from "api/ChainStore";
+import ValueComponent from "./Utility/EquivalentValueComponent";
+import IntlStore from "stores/IntlStore";
 
 let ops = Object.keys(operations);
 
@@ -104,6 +106,9 @@ class Operation extends React.Component {
         hideDate: PropTypes.bool,
         hideFee: PropTypes.bool
     }
+
+
+
 
     // shouldComponentUpdate(nextProps) {
     //     return utils.are_equal_shallow(nextProps.op, this.props.op);
@@ -196,6 +201,8 @@ class Operation extends React.Component {
                         </span>
                     );*/
 
+  //<ValueComponent amount={amount} quoteAsset={assetId} baseAsset={"1.3.0"}/>
+
                     let isSent = current === op[1].from;
                     //let key = 'wallet.home.' + (isSent? 'sent':'recd');
                     let rowclass = isSent? "tran-sent": "tran-rcvd";
@@ -207,6 +214,7 @@ class Operation extends React.Component {
                         <span className="tran-rcvd">|<Translate component="span" content='wallet.home.recd'/>|</span>]:
                         <span><i className={isSent? 'sent':'rec'}></i></span>
 
+                    var assetId = op[1].amount.asset_id;
 
                     line = <tr className={rowclass}>
                         <td><BlockTime block_number={block}/></td>
@@ -214,7 +222,9 @@ class Operation extends React.Component {
                         <td>To:{this.linkToAccount(op[1].to)}<br/>
                             From:{this.linkToAccount(op[1].from)}<br/>
                             Memo:{memo_text}</td>
-                        <td><FormattedAsset display_sign={true} style={{fontWeight: "bold"}} amount={amount} asset={op[1].amount.asset_id}/></td>
+                        <td><FormattedAsset display_sign={true} style={{fontWeight: "bold"}} amount={amount} asset={assetId}/><br/>
+                            {this.props.taxableCurrencyId? [<span>(</span>,<ValueComponent amount={amount} quoteAsset={assetId} baseAsset={this.props.taxableCurrencyId}/>,<span>)</span>] : null}
+                        </td>
                     </tr>
 
 

@@ -56,7 +56,14 @@ class Balances extends React.Component {
     let expand_class = "expanded";
 
     if (this.state.show === true) {
-      expand_class = "expand"; 
+      expand_class = "expand";
+    }
+    let balancesL = null, balancesR = null;
+    if (balances && balances.length >0)
+    {
+      let slicer = Math.ceil(balances.length/2);
+      balancesL = balances.slice(0, slicer);
+      balancesR = balances.slice(slicer);
     }
 
     return (
@@ -66,9 +73,16 @@ class Balances extends React.Component {
         </div>
             <If condition={this.state.show}>
             <div className="balances__content toogle-panel">
-              <ul className="balances">
-                    {balances}
-              </ul>
+              <div className="balances__content-left">
+                <ul className="balances">
+                    {balancesL}
+                </ul>
+              </div>
+              <div className="balances__content-right">
+                <ul className="balances">
+                    {balancesR}
+                </ul>
+              </div>
             </div>
             </If>
       </section>

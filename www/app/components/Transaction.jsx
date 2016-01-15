@@ -58,7 +58,7 @@ class OperationTable extends React.Component {
        let fee_row = this.props.fee.amount > 0 ? (
             <tr>
                 <td><Translate component="span" content="wallet.transaction_fee" /></td>
-                <td><FormattedAsset color="fee" amount={this.props.fee.amount} asset={this.props.fee.asset_id} /></td>
+                <td><FormattedAsset color="fee" amount={this.props.fee.amount} asset={this.props.fee.asset_id}/>{this.props.isDonorOp? <Translate component="span" content="wallet.donation_fee_text" /> : null}</td>
             </tr> ) : null;
 
         return (
@@ -96,17 +96,26 @@ class Transaction extends React.Component {
     }
 
     render() {
-        let {trx} = this.props;
+        let {trx, donor} = this.props;
         let info = null;
         info = [];
-        let hideDonations = null;
+        //let hideDonations = null;
 
         let opCount = trx.operations.length;
+
+        //let donate_op = null;
+
+
+        let donor_info_row = null;
+        let donate_op = null; // IK --supposing that there can be the only donor operation  in transaction
+
+        //amount: {amount: 200000, asset_id: "1.3.0"} -- donation
 
         trx.operations.forEach((op, opIndex) => {
 
             let rows = [];
             let color = "";
+            let isDonorOp = false;
             switch (ops[op[0]]) { // For a list of trx types, see chain_types.coffee
 
                 case "transfer":
@@ -114,6 +123,15 @@ class Transaction extends React.Component {
                     color = "success";
 
                     let memo_text = null;
+
+                    // is donor?
+                    if (donor)
+                    {
+                        isDonorOp = op[1].to.indexOf(donor.to) != -1
+                                    && op[1].amount.amount == donor.amount.amount
+                                    //&& op[1].amount.asset_id == donor.amount.asset_id;
+                    }
+
 
                     if(op[1].memo) {
                         let memo = op[1].memo;
@@ -142,19 +160,13 @@ class Transaction extends React.Component {
                         }
                     }
 
-                    if (op[1].to == "1.2.90200") // bitshares-munich
+                    if (op[1].to == "1.2.90200") // bitshares-munich donation
                     {
-                        if (hideDonations == null)
-                        {
-                            var advancedSettings = SettingsStore.getSetting("advancedSettings");
-                            if (advancedSettings == null)
-                                hideDonations = false;
-                            else
-                                hideDonations = advancedSettings.hideDonations == true;
-                        }
-                        if (hideDonations == true)
-                            return null;
+
+                        donate_op = op[1];//// IK --assign any other operation as donor, can cause inconstsitncies with multiple operations
+                        return null;
                     }
+
 
                     rows.push(
                         <tr>
@@ -897,12 +909,19 @@ class Transaction extends React.Component {
                     break;
             }
 
-            info.push(
-                <OperationTable key={opIndex} opCount={opCount} index={opIndex} color={color} type={op[0]} fee={op[1].fee}>
+            var infoItem = (
+                <OperationTable key={opIndex} opCount={opCount} index={opIndex} color={color} type={op[0]} fee={op[1].fee} isDonorOp={isDonorOp} >
                     {rows}
                 </OperationTable>
             );
+            if (isDonorOp)
+                donor_info_row = infoItem;
+            info.push(infoItem);
         });
+
+        if (donor_info_row && donate_op && donor_info_row.props.fee.asset_id == donate_op.fee.asset_id)
+            donor_info_row.props.fee.amount  = parseInt(donate_op.fee.amount) + parseInt(donor_info_row.props.fee.amount);
+
 
         return (
             <div>

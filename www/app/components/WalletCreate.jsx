@@ -14,62 +14,66 @@ import key from "common/key_utils"
 import cname from "classnames"
 const RaisedButton = require('material-ui/lib/raised-button');
 
+
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({})
+
 @connectToStores
 class WalletCreate extends Component {
 
     static getStores() {
         return [WalletManagerStore];
     }
-    
+
     static getPropsFromStores() {
         return {}
     }
-    
+
     render() {
         if(WalletDb.getWallet() && this.props.children)
             return <div>{this.props.children}</div>
-        
+
         return <span>
             <CreateNewWallet {...this.props}/>
         </span>
     }
-    
+
 }
 
 @connectToStores
 class CreateNewWallet extends Component {
-    
+
     static getStores() {
         return [WalletManagerStore]
     }
-    
+
     static getPropsFromStores() {
         var wallet = WalletManagerStore.getState()
         return wallet
     }
-    
+
     static propTypes = {
         hideTitle: React.PropTypes.bool
     }
-    
+
     constructor() {
         super()
-        this.state = { 
+        this.state = {
             wallet_public_name: "default",
             valid_password: null,
             errors: {},
             isValid: false,
             create_submitted: false,
-            custom_brainkey: false,
+            custom_brainkey: true,
             brnkey: null
         }
     }
-    
+
     render() {
         let state = this.state
         let errors = state.errors
         let has_wallet = !!this.props.current_wallet
-        
+
         if(this.state.create_submitted &&
             this.state.wallet_public_name === this.props.current_wallet) {
             return <div>
@@ -78,7 +82,7 @@ class CreateNewWallet extends Component {
                     className="button success"><Translate content="wallet.done" /></span>
             </div>
         }
-        
+
         return (<span>
             {this.props.hideTitle ? null:
                 <h3><Translate content="wallet.create_wallet" /></h3>}
@@ -90,7 +94,7 @@ class CreateNewWallet extends Component {
                 <PasswordConfirm onValid={this.onPassword.bind(this)}/>
                 { has_wallet ? <div className="grid-content no-overflow">
                     <br/>
-                    <label><Translate content="wallet.name" /></label>
+                    <label><Translate content="wallet.wallet_name" /></label>
                     <input type="text" id="wallet_public_name"
                         value={this.state.wallet_public_name}
                     />
@@ -116,22 +120,22 @@ class CreateNewWallet extends Component {
             </form>
         </span>)
     }
-    
+
     onBack(e) {
         e.preventDefault()
         window.history.back()
     }
-    
+
     onPassword(valid_password) {
         this.state.valid_password = valid_password
         this.setState({ valid_password })
         this.validate()
     }
-    
+
     onCustomBrainkey() {
         this.setState({ custom_brainkey: true })
     }
-    
+
     onBrainkey(brnkey) {
         this.state.brnkey = brnkey
         this.setState({ brnkey })
@@ -144,7 +148,7 @@ class CreateNewWallet extends Component {
         WalletActions.setWallet(wallet_name, this.state.valid_password, this.state.brnkey)
         this.setState({create_submitted: true})
     }
-    
+
     formChange(event) {
         let key_id = event.target.id
         let value = event.target.value
@@ -154,30 +158,31 @@ class CreateNewWallet extends Component {
             // Allow only valid file name characters
             if( /[^a-z0-9_-]/.test(value) ) return
         }
-        
-        // Set state is updated directly because validate is going to 
+
+        // Set state is updated directly because validate is going to
         // require a merge of new and old state
         this.state[key_id] = value
         this.setState(this.state)
         this.validate()
     }
-    
+
     validate() {
         let state = this.state
         let errors = state.errors
         let wallet_names = WalletManagerStore.getState().wallet_names
-        errors.wallet_public_name =
-            !wallet_names.has(state.wallet_public_name) ?
-            null : `Wallet ${state.wallet_public_name.toUpperCase()} exists, please change the name`
-        
+        //errors.wallet_public_name =
+        //    !wallet_names.has(state.wallet_public_name) ?
+        //    null : `Wallet ${state.wallet_public_name.toUpperCase()} exists, please change the name`
+
         var isValid = errors.wallet_public_name === null && state.valid_password !== null
         if(this.state.custom_brainkey && isValid)
             isValid = this.state.brnkey !== null
         this.setState({ isValid, errors })
     }
-    
+
     onDone() {
-        window.history.back()
+        history.pushState(null, '/');
+        //window.history.back()
     }
 }
 

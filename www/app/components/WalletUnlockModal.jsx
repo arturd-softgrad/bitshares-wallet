@@ -51,7 +51,7 @@ class WalletUnlockModal extends React.Component {
 
     _show() {
         this.refs.unlockDialog.setState({open:true});
-        this.refs.password_input.clear()
+        //this.refs.password_input.clear()
         if(Apis.instance().chain_id !== WalletDb.getWallet().chain_id) {
             notify.error("This wallet was intended for a different block-chain; expecting " +
                 WalletDb.getWallet().chain_id.substring(0,4).toUpperCase() + ", but got " +
@@ -116,7 +116,8 @@ class WalletUnlockModal extends React.Component {
         else {
             this.pin_attempts = 0;
             SettingsStore.changeSetting({setting: "walletUnlockTime", value: null});
-            SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
+            //SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
+            SettingsStore.rememberWalletPassword(password);
             this.refs.password_input.clear()
             this.refs.unlockDialog.setState({open:false});
             if (!this.props.unclosable)

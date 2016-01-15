@@ -20,6 +20,9 @@ import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions"
 import SettingsStore from "stores/SettingsStore";
 import LoadingIndicator from "./LoadingIndicator";
+import bs58 from "common/base58";
+import lzma from "lzma";
+import {FetchChainObjects} from "api/ChainStore";
 
 // Flux SendScreen view to to configure the application
 @BindToChainState()
@@ -53,41 +56,55 @@ class SendScreen extends React.Component {
             donate: true
         };
 
-         let { query } = this.props.location;
+         let { query, state } = this.props.location;
 
          if (query.hasOwnProperty("contact")) {
             let current_contact = JSON.parse(query.contact);
             this.state.to_name= current_contact.name;
          }
-     //   if(props.query.from) this.state.from_name = props.query.from;
-     //   if(props.query.to) this.state.to_name = props.query.to;
- //       if(props.query.amount) this.state.amount = props.query.amount;
-   //     if(props.query.asset) this.state.asset_id = props.query.asset;
-  //      if(props.query.memo) this.state.memo = props.query.memo;
+
+         if (state && state.hasOwnProperty("payment")) {
+
+            let payment = JSON.parse(state.payment);
+
+            let compressed_data = bs58.decode(payment);
+
+            try {
+
+                lzma.decompress(compressed_data, result => {
+
+                    let invoice = JSON.parse(result);
+
+                    FetchChainObjects(ChainStore.getAsset, [invoice.currency]).then(assets_array => {
+
+                        let amount = invoice.line_items[0].price;
+
+                      // TODO redirect on Send Screen with query params
+                        this.setState({to_name: invoice.to, memo: invoice.memo, amount: amount, asset_id: assets_array[0].get("id")});
+
+                    });
+
+                });
+
+            } catch(error) {
+                console.dir(error);
+                this.setState({error: error.message});
+            }
+
+         }
+
         this.state.from_name = this.props.account.get("name");
         this.state.from_account = this.props.account;
         this.onTrxIncluded = this.onTrxIncluded.bind(this);
     }
 
-    /*
-    fromChanged(from_name) {
-        let asset = undefined
-        let amount = undefined
-        this.setState({from_name,asset,amount, error: null, propose: false, propose_account: ""})
-    }
-    */
 
     toChanged(to_name) {
         this.setState({to_name, error: null})
     }
-/*
-    onFromAccountChanged(from_account) {
-        this.setState({from_account, error: null})
-    }
-*/
 
     onToAccountChanged(to_account) {
-        //console.log("$$$onToAccountChanged, to_account=", to_account);
+
         this.setState({to_account, error: null, to_account_valid: !!to_account})
     }
 
@@ -146,11 +163,11 @@ class SendScreen extends React.Component {
         let asset = this.state.asset;
         let precision = utils.get_asset_precision(asset.get("precision"));
 
-        let advancedSettings = SettingsStore.getSetting("advancedSettings");
-        if (!advancedSettings || advancedSettings.requirePinToSend)
+        //let advancedSettings = SettingsStore.getAdvancedSettings();
+        //if (advancedSettings.requirePinToOpen)
           WalletUnlockActions.lock();
-        else
-          WalletDb.tryUnlock();
+        //else
+        //  WalletDb.tryUnlock();
 
         //"1.2.90200" - bitshares-munich
 
@@ -181,7 +198,7 @@ class SendScreen extends React.Component {
         let propose = this.state.propose
         if(this.state.from_account && ! from_my_account && ! propose ) {
             from_error = <span>
-                {counterpart.translate("account.errors.not_yours")}
+                {counterpart.translate("wallet.account_not_yours")}
                 {/* &nbsp;(<a onClick={this.onPropose.bind(this, true)}>{counterpart.translate("propose")}</a>) */}
             </span>;
         }
@@ -195,7 +212,7 @@ class SendScreen extends React.Component {
                 let current_asset_id = this.state.asset ? this.state.asset.get("id") : asset_types[0];
                 balance = (<span className="avalibel-label"><BalanceComponent balance={account_balances[current_asset_id]}/> <Translate component="span" content="wallet.transfer_available"/></span>)
             } else {
-                balance = "No funds";
+                balance = <Translate component="span" content="wallet.no_funds"/>;
             }
         }
         let propose_incomplete = this.state.propose && ! this.state.propose_account

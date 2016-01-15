@@ -108,7 +108,7 @@ class CreateAccount extends React.Component {
     createAccount(name) {
         let refcode = 'bitshares-munich';//this.refs.refcode ? this.refs.refcode.value() : null;
             AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {
-             
+
                 if(this.state.registrar_account) {
                     TransactionConfirmStore.listen(this.onFinishConfirm);
                 } else {
@@ -135,7 +135,8 @@ class CreateAccount extends React.Component {
             "default", //wallet name
             password
         ).then(()=> {
-             SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
+            SettingsStore.rememberWalletPassword(password);
+            // SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
             this.setState({loading: false});
             console.log("Congratulations, your wallet was successfully created.");
             BackupActions.requireBackup();
@@ -352,7 +353,7 @@ class CreateAccount extends React.Component {
                         <div className="page-header">
                             <h3>ACCOUNT CREATE/REGISTER OR IMPORT</h3>
                         </div>
-                            <form onSubmit={this.onSubmit.bind(this)} noValidate>
+                            <form className="register-form" onSubmit={this.onSubmit.bind(this)} noValidate>
                                 <div className="form-group">
                                     <AccountImage className="contact-image" account={this.state.validAccountName ? this.state.accountName:null}/>
                                 </div>

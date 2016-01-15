@@ -53,7 +53,7 @@ class ValueComponent extends React.Component {
             return <FormattedAsset amount={eqValue} asset={coreType}/>;
         }
 
-        return <FormattedAsset amount={eqValue} asset={coreType}/>;
+        return <FormattedAsset amount={eqValue} asset={coreType}  className="equi-val-component"/>;
     }
 }
 
@@ -68,7 +68,7 @@ class BalanceValueComponent extends React.Component {
     render() {
         let amount = Number(this.props.balance.get("balance"));
         let type = this.props.balance.get("asset_type");
-            
+
         return <ValueComponent amount={amount} quoteAsset={type} baseAsset={this.props.baseAsset}/>;
     }
 }

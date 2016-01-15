@@ -10,10 +10,16 @@ import KeyGenComponent from  "./KeyGenComponent"
 
 import { Router, Route, Link, IndexRoute } from 'react-router';
 
+import bs58 from "common/base58";
+import lzma from "lzma";
+
+import QRCode from 'qrcode.react';
+
+
+
 // Flux ReceiveScreen view
 @BindToChainState()
 class ReceiveScreen extends React.Component {
-
 
   static propTypes = {
        account: ChainTypes.ChainAccount.isRequired
@@ -32,9 +38,11 @@ class ReceiveScreen extends React.Component {
             from_account: null,
             to_account: null,
             amount: "",
-            currency: "",
+            currency: "BTS",
             asset_id: null,
             asset: null,
+            mainSize: 150,
+            paymentData: ""
         };
 
          let { query } = this.props.location;
@@ -42,13 +50,20 @@ class ReceiveScreen extends React.Component {
          if (query.hasOwnProperty("contact")) {
             let current_contact = JSON.parse(query.contact);
             this.state.to_name= current_contact.name;
-            console.log("$$$ receive screen contact ", current_contact);
          }
 
         this.state.from_name = this.props.account.get("name");
+
+        this.changePaymentData();
   }
 
-   _shareReceiveScrn() {
+  shouldComponentUpdate(nextState) {
+      return (
+          nextState.mainSize !== this.state.mainSize
+      );
+  }
+
+  _shareReceiveScrn() {
 
        var sharingMsg = 'Payment ' + this.state.amount + ' ' + this.state.currency + ' for ' + this.state.from_name;
 
@@ -70,14 +85,62 @@ class ReceiveScreen extends React.Component {
   formChange(event) {
       var state = this.state
       state[event.target.id] = event.target.value
-      this.setState(state)
+      this.setState(state);
+
+      this.changePaymentData();
   }
+
+  changePaymentData() {
+
+    let payment_data = {
+          "to" : this.state.from_name,
+          "to_label" : this.state.from_name,
+          "currency": this.state.currency,
+          "memo": "",
+          "line_items": [{"label": "", "quantity": 1, "price": this.state.amount}],
+          "note": "",
+          "callback": ""
+    }
+
+    payment_data = JSON.stringify(payment_data);
+
+    lzma.compress(payment_data, 1, function(result, error) {
+
+      payment_data = bs58.encode(new Buffer(result, 'hex'));
+
+        this.setState({paymentData: payment_data});
+
+    }.bind(this));
+ }
 
   setAccountName(name) {
     var state = this.state
     state.accountName = name;
     this.setState(state)
     return null;
+  }
+
+  componentDidMount() {
+
+    var getDOMNode;
+    if (/^0\.14/.test(React.version)) {
+      getDOMNode = function (ref) {
+        return ref;
+      };
+    } else {
+      getDOMNode = function (ref) {
+        return ref.getDOMNode();
+      };
+    }
+
+    let mainDom = getDOMNode(this.refs.main);
+
+    let mainPadding = 20;
+
+    let mainWidth = mainDom.offsetWidth - mainPadding;
+
+
+    this.setState({mainSize: mainWidth});
   }
 
   onAmountChanged({amount, asset}) {
@@ -96,13 +159,15 @@ class ReceiveScreen extends React.Component {
 
     let asset_types = [];
     let balance = null;
-    var qrcontent = KeyGenComponent.getComponents(this.state.amount);
+
+   // var qrcontent = KeyGenComponent.getComponents(this.state.amount);
 
 
     return (
-    <main className="no-nav content">
-      <div className="receive-qr">{qrcontent.qr}
-        <div className="data-text">{qrcontent.privateKey}</div>
+
+    <main ref="main" className="no-nav content">
+      <div className="receive-qr">
+          <QRCode value={this.state.paymentData} fgColor="#009A2D" size={this.state.mainSize}/>
       </div>
       <div className="amount">
         <h2><Translate component="span" content="wallet.home.requestSpecificAmount"/>:</h2>

@@ -22,6 +22,8 @@ import SettingsStore from "stores/SettingsStore";
 import { createHashHistory, useBasename } from 'history';
 import counterpart from "counterpart";
 import PasswordInput from "./Forms/PasswordInput";
+import {saveAs} from "common/filesaver.js"
+
 
 const history = useBasename(createHashHistory)({})
 
@@ -256,35 +258,40 @@ class Download extends BackupBaseComponent {
 
         var blob_size = this.props.backup.size;
 
-         window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
-            directoryEntry.getFile(fileName, { create: true }, function (fileEntry) {
-                fileEntry.createWriter(function (fileWriter) {
-                    fileWriter.onwriteend = function (e) {
+        var blob = new Blob([ contents ], {
+                            type: "application/octet-stream; charset=us-ascii"});
 
-                        WalletActions.setBackupDate()
 
-                        history.pushState(null, '/');
-                    };
+         if (window.resolveLocalFileSystemURL) // phone
+             window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
+                directoryEntry.getFile(fileName, { create: true }, function (fileEntry) {
+                    fileEntry.createWriter(function (fileWriter) {
+                        fileWriter.onwriteend = function (e) {
 
-                    fileWriter.onerror = function (e) {
-                        // you could hook this up with our global error handler, or pass in an error callback
-                        console.log('Write failed: ' + e.toString());
-                    };
+                            WalletActions.setBackupDate()
 
-                    console.log(contents, 'contents');
+                            history.pushState(null, '/');
+                        };
 
-                    var blob = new Blob([ contents ], {
-                        type: "application/octet-stream; charset=us-ascii"})
+                        fileWriter.onerror = function (e) {
+                            // you could hook this up with our global error handler, or pass in an error callback
+                            console.log('Write failed: ' + e.toString());
+                        };
 
-                    if(blob.size !== blob_size)
-                        throw new Error("Invalid backup to download conversion")
+                        console.log(contents, 'contents');
 
-                    fileWriter.write(blob);
+                        //var blob = new Blob([ contents ], {
+                        //    type: "application/octet-stream; charset=us-ascii"})
+
+                        if(blob.size !== blob_size)
+                            throw new Error("Invalid backup to download conversion")
+
+                        fileWriter.write(blob);
+                    }, errorHandler.bind(null, fileName));
                 }, errorHandler.bind(null, fileName));
             }, errorHandler.bind(null, fileName));
-        }, errorHandler.bind(null, fileName));
-
-      
+        else
+           saveAs(blob, this.props.backup.name); // browser
     }
 }
 
@@ -438,12 +445,13 @@ class DecryptBackup extends BackupBaseComponent {
         console.log(backup_password, 'this.state.backup_password');
 
         var private_key = PrivateKey.fromSeed(backup_password || "")
-     
+
         var contents = this.props.backup.contents;
 
         decryptWalletBackup(private_key.toWif(), contents).then( wallet_object => {
        //     console.log(private_key.toWif(), 'wallet_object');
             this.setState({verified: true})
+            SettingsStore.rememberWalletPassword(this.state.backup_password); //?
             //SettingsStore.changeSetting({setting: "currentAction", value: btoa(this.state.backup_password) });
             if(this.props.saveWalletObject)
                 BackupStore.setWalletObjct(wallet_object)

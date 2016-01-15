@@ -6,6 +6,9 @@ import BindToChainState from "./Utility/BindToChainState";
 import utils from "common/utils";
 import {operations} from "chain/chain_types";
 import Immutable from "immutable";
+import ChainStore from "api/ChainStore";
+import IntlStore from "stores/IntlStore";
+import SettingsStore from "stores/SettingsStore";
 
 
 function compareOps(b, a) {
@@ -47,6 +50,13 @@ class RecentTransactions extends React.Component {
         return false;
     }
 
+
+    componentWillMount() {
+        this.setState({hideDonations : SettingsStore.getAdvancedSettings().hideDonations == true});
+    }
+
+
+
     _onIncreaseLimit() {
         this.setState({
             limit: this.state.limit + 30
@@ -54,6 +64,20 @@ class RecentTransactions extends React.Component {
     }
 
     render() {
+
+        let iso = IntlStore.getCurrency().iso;
+        if (iso && iso.length != 0 )
+        {
+            var test_asset = ChainStore.getAsset(iso);
+            if (test_asset == null)
+                 this.setState({taxableCurrencyId:null});
+            else
+                this.setState({taxableCurrencyId:iso});
+        }
+        else
+            this.setState({taxableCurrencyId:null});
+
+
         let {accountsList, compactView, filter} = this.props;
         let {limit} = this.state;
         let history = [];
@@ -75,6 +99,10 @@ class RecentTransactions extends React.Component {
                 return a.op[0] === operations[filter];
             });
         }
+        if (this.state.hideDonations)
+            history = history.filter(a => {
+                return a.op[1].to != "1.2.90200";
+            });
 
         if (/*accounts_counter === 1 && */ current_account) current_account_id = current_account.get("id");
         //console.log('$$$raw history =', history); // $$$
@@ -93,7 +121,8 @@ class RecentTransactions extends React.Component {
                         current={current_account_id}
                         inverted={false}
                         hideFee={true}
-                        hideOpLabel={compactView} />
+                        hideOpLabel={compactView}
+                        taxableCurrencyId={this.state.taxableCurrencyId} />
                 )
         });
         /*return (
@@ -136,7 +165,7 @@ class RecentTransactions extends React.Component {
                 {this.props.showMore && historyCount > 20 && limit < historyCount ? (
                     <div className="account-info more-button">
                         <div className="button outline" onClick={this._onIncreaseLimit.bind(this)}>
-                            <Translate content="account.more" />
+                            <Translate content="wallet.account_more" />
                         </div>
                     </div>
                     ) : null}

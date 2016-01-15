@@ -185,10 +185,30 @@ class App extends React.Component {
         })
     }
 
+    _handleBalance() {
+        history.pushState(null, '/');
+    }
+
+    _handleContacts() {
+        history.pushState(null, 'contacts');
+    }
+
+    getMenuActiveClass(path)
+    {
+        var realPath =  this.props.location.pathname;
+        return path == realPath ? "active": "";
+    }
+
     render() {
         const { pathname } = this.props.location;
 
         const active_link = {color: '#000', 'border-bottom': '1px solid #009012'}
+
+        let borderClass = ""
+
+        if (pathname === "/") {
+            borderClass = "border";
+        }
 
         var unlockTime = SettingsStore.getSetting("walletUnlockTime");
         var locked = false;
@@ -208,28 +228,32 @@ class App extends React.Component {
             <section>
                 <div className="bg-logo"><img src="app/assets/img/bg-logo.svg" alt="" /></div>
                     <header className="header-inner">
+                        <img src="app/assets/img/bg-logo.svg" alt="" />
                         <If condition={pathname === "/contacts"}>
                              <div className="header__links contacts-nav"><Link to="add-contact"><i className="add-user"></i></Link><Link to="invite-friend"><i className="invite"></i></Link></div>
                         </If>
                         <If condition={pathname != "/"}>
                              <a className="back" onClick={history.goBack}></a>
                         </If>
-                      <div className="header__logo" onClick={this._goToHomepage.bind(this)}><img src="app/assets/img/logo.svg" alt=""/></div>
-                      <section className="utility">
-                        <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
-                        <Syncer synced={this.state.synced}/>
-                      </section>
+                      <div className="header__logo border" onClick={this._goToHomepage.bind(this)}><img src="app/assets/img/logo.svg" alt=""/></div>
                         <If condition={pathname === "/" || pathname === "/contacts"}>
                              <nav className="main-nav">
                               <ul>
-                                <li><Link activeStyle={active_link} to="/"><Translate content="wallet.home.balances" /></Link></li>
-                                <li><Link activeStyle={active_link} to="contacts"><Translate content="wallet.home.contacts" /></Link></li>
-                                <li><a className="is-disabled" href="#"><Translate content="wallet.home.finder" /></a></li>
-                                <li><a className="is-disabled" href="#"><Translate content="wallet.home.exchange" /></a></li>
+                                <li className={this.getMenuActiveClass("/")}><span onTouchTap={this._handleBalance.bind(this)} className="active-balance"  ><Translate content="wallet.home.balances" /></span></li>
+                                <li className={this.getMenuActiveClass("/contacts")}><span onTouchTap={this._handleContacts.bind(this)} className="active-contacts"   to="contacts"><Translate content="wallet.home.contacts" /></span></li>
+                                <li><span className="is-disabled" href="#"><Translate content="wallet.home.finder" /></span></li>
+                                <li><span className="is-disabled" href="#"><Translate content="wallet.home.exchange" /></span></li>
                               </ul>
                             </nav>
                         </If>
                     </header>
+                    <section className="utility">
+                      <span className="utility__ver">V1.0</span>
+                      <div className="utility__links">
+                        <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
+                        <Syncer synced={this.state.synced}/>
+                      </div>
+                    </section>
                      <AltContainer
                           stores={
                             {
@@ -328,6 +352,3 @@ var app = {
 
 
 app.initialize();
-
-
-

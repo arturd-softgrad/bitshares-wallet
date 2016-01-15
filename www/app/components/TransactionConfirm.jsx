@@ -50,12 +50,12 @@ class TransactionConfirm extends BaseComponent {
                     this.state.error
                 ) :
                 (
-               "Success!"
+               counterpart.translate("wallet.success_exclaim")
             );
             button_group = (
 
                 <div className="button-group">
-                    <RaisedButton label="Close"
+                    <RaisedButton label={counterpart.translate("wallet.close")}
                         secondary={true}
                         onTouchTap={this.onCloseClick.bind(this)} />
                 </div>
@@ -64,13 +64,15 @@ class TransactionConfirm extends BaseComponent {
             header = "Confirm transaction";
                 button_group = (
                 <div className="button-group">
-                   <RaisedButton label="Confirm"
-                        primary={true}
-                        onTouchTap={this.onConfirmClick.bind(this)} />
-
-                    <RaisedButton label="Cancel"
+                    <RaisedButton label= {counterpart.translate("wallet.home.cancel")}
                         secondary={true}
                         onTouchTap={this.onCloseClick.bind(this)} />
+
+                   <RaisedButton label= {counterpart.translate("wallet.confirm")}
+                        primary={true}
+                        backgroundColor = "#42b36e"
+                        onTouchTap={this.onConfirmClick.bind(this)} />
+
                 </div>
             );
         }
@@ -84,7 +86,7 @@ class TransactionConfirm extends BaseComponent {
                      ref="confirmModal">
                    <div style={{maxHeight: "60vh", overflowY:'auto'}}>
                             <Transaction key={Date.now()} trx={this.state.transaction.serialize()}
-                                index={0} no_links={true}/>
+                                index={0} no_links={true} donor={this.state.transaction.donor}/>
                     </div>
                     <div className="grid-block shrink" style={{paddingTop: "1rem"}}>
                         {button_group}

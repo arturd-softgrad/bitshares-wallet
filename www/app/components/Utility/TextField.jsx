@@ -45,7 +45,7 @@ class TextField extends React.Component {
             <span className="label error">{errorText}</span>
         ] : contents=[
             <span onTouchTap={this._handlerFocus.bind(this)} className="label bold">{lbl}</span>,
-            <input onChange={_handlerChange} ref={cur_ref} onKeyDown={onKeyDown} value={value} style={style} name={name} disabled={disabled} onKeyPress={onkeypress} type={type} pattern={pattern}  inputmode={inputmode} className="text-field"></input>, 
+            <input onChange={_handlerChange} ref={cur_ref} onKeyDown={onKeyDown} value={value} style={style} name={name}  id={id} disabled={disabled} onKeyPress={onkeypress} type={type} pattern={pattern}  inputmode={inputmode} className="text-field"></input>,
             <span className="label error">{errorText}</span>
             ]
 

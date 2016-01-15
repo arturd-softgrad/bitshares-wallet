@@ -8,6 +8,8 @@ import alt from "alt";
 const Dialog = require('material-ui/lib/dialog');
 import If from './If';
 import AccountImage from "./AccountImage";
+const RaisedButton = require('material-ui/lib/raised-button');
+
 
 class ContactsTable extends React.Component {
 
@@ -33,7 +35,35 @@ class ContactsTable extends React.Component {
     return true;
   }
 
-  render() {
+  _handleContactDelete() {
+      AccountActions.unlinkContact(this.state.current_contact);
+      history.pushState(null, 'contacts');
+  }
+
+  _handleDeleteContactCancel() {
+    //this.refs.delete_confirm.dismiss();
+    this.setState({deleting: false});
+  }
+
+  _handleConfirmDeleteContact() {
+    this.refs.delete_confirm.show();
+    this.setState({deleting: true});
+  }
+
+
+render() {
+
+let delete_contact_actions  = [
+      <RaisedButton
+        label="Confirm"
+        primary={true}
+        onTouchTap={this._handleContactDelete.bind(this)} />,
+      <RaisedButton
+        label="Cancel"
+        secondary={true}
+        onTouchTap={this._handleDeleteContactCancel.bind(this)} />
+    ];
+
 
     let contacts_arr = this.props.contacts.toArray();
     let contacts = [];
@@ -52,18 +82,27 @@ class ContactsTable extends React.Component {
             });
     }
 
+
+    let dlg = <Dialog title="Are you sure ?"
+              open={this.state.deleting}
+              actions={delete_contact_actions}
+              modal={true}
+              style={{width: '90%'}}
+              ref="delete_confirm" autoScrollBodyContent={true}>
+        </Dialog>;
+
     return (
       <table className="contacts-table">
         <theader>
           <tr>
             <th></th>
-            <th>Name</th>
-            <th>Account</th>
+            <th>{counterpart.translate("wallet.home.name")}</th>
+            <th></th>
           </tr>
         </theader>
         <tbody>
            {contacts.map((contact_item, i) =>
-              <ContactItem contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} key={i} />
+              <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} key={i} onDelete={this._handleConfirmDeleteContact.bind(this)}  />
             )}
         </tbody>
       </table>

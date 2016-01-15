@@ -24,7 +24,8 @@ class WalletUnlockStore {
     }
 
     onForceLock(){
-        SettingsStore.changeSetting({setting: "currentAction", value: "" });
+        //SettingsStore.changeSetting({setting: "currentAction", value: "" });
+        SettingsStore.rememberWalletPassword("");
         WalletDb.onLock()
         this.setState({unclosable:true});
     }
@@ -54,7 +55,8 @@ class WalletUnlockStore {
 
     onQuitApp(){
         WalletDb.onLock();
-        SettingsStore.changeSetting({setting: "currentAction", value: "" });
+        //SettingsStore.changeSetting({setting: "currentAction", value: "" });
+        SettingsStore.rememberWalletPassword("");
         if(navigator.app){
                 navigator.app.exitApp();
             }

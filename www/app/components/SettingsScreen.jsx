@@ -2,6 +2,7 @@ import React from "react";
 import Translate from "react-translate-component";
 import Transactions from "./Transactions";
 import Balances from "./Balances";
+import BackupBrainkey from "./BackupBrainkey"
 import { Router, Route, Link, IndexRoute } from 'react-router';
 import counterpart from "counterpart";
 import IntlActions from "actions/IntlActions";
@@ -18,6 +19,7 @@ import Colors from'material-ui/lib/styles/colors';
 const RaisedButton = require('material-ui/lib/raised-button');
 const RadioButton = require('material-ui/lib/radio-button');
 const RadioButtonGroup = require('material-ui/lib/radio-button-group');
+const Dialog = require('material-ui/lib/dialog');
 import _ from "lodash";
 
 import { createHashHistory, useBasename } from 'history';
@@ -35,16 +37,7 @@ class SettingsScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state ={ muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
-      advancedSettings: {
-          checkUpdatesStartup: true,
-          autoInstallMajorVer: false,
-          requirePinToSend: true,
-          autoCloseWalletAfterInactivity: true,
-          alwaysDonateDevsMunich: true,
-          hideDonations : false
-      }
-     }
+    this.state ={ muiTheme: ThemeManager.getMuiTheme(LightRawTheme)}
   }
 
   getChildContext() {
@@ -65,15 +58,12 @@ class SettingsScreen extends React.Component {
   }
 
   componentWillMount() {
-    this._displayFormatSamples();
+    //this._displayFormatSamples();
     let newMuiTheme = ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
       accent1Color: Colors.deepOrange500,
     });
-    var advancedSettings = SettingsStore.getSetting("advancedSettings");
-    if (advancedSettings == null)
-      this.setState({muiTheme: newMuiTheme})
-    else
-      this.setState({muiTheme: newMuiTheme, advancedSettings: advancedSettings});
+    var advancedSettings = SettingsStore.getAdvancedSettings();
+    this.setState({muiTheme: newMuiTheme, advancedSettings: advancedSettings});
     // currencies
     var currencies = IntlStore.getCurrencies();
     var rows = [];
@@ -136,38 +126,15 @@ class SettingsScreen extends React.Component {
   {
 
     //e.preventDefault();
-      //console.log("$$$settings screen - _handleAdvancedSettingsUpdate() triggered");
-      let resettingPin = this.state.advancedSettings && this.state.advancedSettings.requirePinToSend   && !this.refs.chkRequirePinToSend.isChecked()
-
-
       var advancedSettings =  {
           checkUpdatesStartup: this.refs.chkCheckUpdatesStartup.isChecked(),
           autoInstallMajorVer: this.refs.chkAutoInstallMajorVer.isChecked(),
-          requirePinToSend: resettingPin? true: this.refs.chkRequirePinToSend.isChecked(),
+          requirePinToOpen: this.refs.chkrequirePinToOpen.isChecked(),
           autoCloseWalletAfterInactivity: this.refs.chkAutoCloseWalletAfterInactivity.isChecked(),
           alwaysDonateDevsMunich: this.refs.chkAlwaysDonateDevsMunich.isChecked(),
           hideDonations: this.refs.chkHideDonations.isChecked()
       }
-      if (resettingPin)
-      {
-        //WalletUnlockActions.forceLock(); //
-        e.preventDefault();
-        WalletUnlockActions.lock();
-        //advancedSettings.requirePinToSend = true;
-        WalletUnlockActions.unlock().then( () => {
-            advancedSettings.requirePinToSend = false;
-            SettingsStore.changeSetting({setting: "advancedSettings", value: advancedSettings });
-            this.setState({advancedSettings: advancedSettings})
-            this.forceUpdate();
-        }).catch(
-          () => {
-            console.log('$$$settingsscreen - force update', this.state);
-            this.forceUpdate();
-          }
-        );
-        return;
-      }
-      SettingsStore.changeSetting({setting: "advancedSettings", value: advancedSettings });
+      SettingsStore.changeAdvancedSettings(advancedSettings);
       this.setState({advancedSettings: advancedSettings});
 
       //console.log("$$$settings screen - advanced settings updated", advancedSettings);
@@ -185,6 +152,23 @@ class SettingsScreen extends React.Component {
     history.pushState(null, 'changepin');
   }
 
+  onBrainkeyOpenClick(e) {
+        e.preventDefault();
+        //this.refs.brainkeyModal.dismiss();
+        WalletUnlockActions.lock();
+        WalletUnlockActions.unlock().then( () => {
+            var pw = SettingsStore.getWalletPassword();
+            this.setState({brainkeyModalOpen: true, brainKeyPw: pw});
+        })
+   }
+
+  onBrainkeyCloseClick(e) {
+        e.preventDefault();
+        //this.refs.brainkeyModal.dismiss();
+        this.setState({brainkeyModalOpen: false});
+   }
+
+
 
   // Render SettingsScreen view
   render() {
@@ -192,7 +176,7 @@ class SettingsScreen extends React.Component {
     let okActions = [
       { text: 'Ok' },
     ];
-    let translate = IntlStore.translate;
+    //let translate = IntlStore.translate;
     let settings = this.state.advancedSettings;
 
     return (
@@ -226,19 +210,19 @@ class SettingsScreen extends React.Component {
                 name="cchkCheckUpdatesStartup"
                 value="checkboxValue1"
                 label={<Translate content="wallet.settings.checkUpdatesStartup" />}
-                defaultChecked={settings.checkUpdatesStartup} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+                checked={settings.checkUpdatesStartup} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           <Checkbox ref="chkAutoInstallMajorVer"
             name="chkAutoInstallMajorVer"
             value="checkboxValue2"
             label={<Translate content="wallet.settings.autoInstallMajorVer" />}
-            defaultChecked={settings.autoInstallMajorVer} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+            checked={settings.autoInstallMajorVer} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
-              <Checkbox  ref="chkRequirePinToSend"
-                name="chkRequirePinToSend"
+              <Checkbox  ref="chkrequirePinToOpen"
+                name="chkrequirePinToOpen"
                 value="checkboxValue3"
-                label={<Translate content="wallet.settings.requirePinToSend" />}
-                checked={settings.requirePinToSend} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+                label={<Translate content="wallet.settings.requirePinToOpen" />}
+                checked={settings.requirePinToOpen} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
               <Checkbox  ref="chkAutoCloseWalletAfterInactivity"
@@ -270,6 +254,12 @@ class SettingsScreen extends React.Component {
               onTouchTap={this._redirectToChangePin.bind(this)}    />
           </section>
           <section className="setting-item">
+            <RaisedButton label={<Translate content="wallet.brainkey_backup" />}
+              onTouchTap={this.onBrainkeyOpenClick.bind(this)}    />
+          </section>
+
+
+          <section className="setting-item">
             <div><Translate content="wallet.settings.q_sharePublicAddress" /></div>
             <div><Translate content="wallet.settings.a_sharePublicAddress" /></div>
           </section>
@@ -286,6 +276,22 @@ class SettingsScreen extends React.Component {
             <div><Translate content="wallet.settings.a_searchTransaction" /></div>
           </section>
         </main>
+         <Dialog title={counterpart.translate("wallet.brainkey_backup")}
+               open={this.state.brainkeyModalOpen}
+               autoScrollBodyContent={true}
+               ref="brainkeyModal">
+             <div style={{maxHeight: "60vh", overflowY:'auto'}}>
+                <BackupBrainkey  pin = {this.state.brainKeyPw}/>
+              </div>
+              <div className="grid-block shrink" style={{paddingTop: "1rem"}}>
+                 <div className="button-group">
+                      <RaisedButton label={counterpart.translate("wallet.close")}
+                          secondary={true}
+                          onTouchTap={this.onBrainkeyCloseClick.bind(this)} />
+                  </div>
+              </div>
+          </Dialog>
+
       </section>
     );
   }

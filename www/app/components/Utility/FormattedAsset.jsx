@@ -4,6 +4,7 @@ import {PropTypes} from "react";
 import {Link} from "react-router";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
+//import ValueComponent from "./EquivalentValueComponent";
 
 /**
  *  Given an amount and an asset, render it with proper precision
@@ -33,6 +34,7 @@ class FormattedAsset extends React.Component {
         asset: "",
         hide_asset: false,
         hide_amount: false
+        //nested: false // prevents recursion
     }
 
     constructor(props) {
@@ -41,7 +43,7 @@ class FormattedAsset extends React.Component {
     }
 
     render() {
-        let {amount, decimalOffset, color, asset, hide_asset, hide_amount, display_sign} = this.props;
+        let {amount, decimalOffset, color, asset, hide_asset, hide_amount, display_sign, className} = this.props;
 
         if( asset && asset.toJS ) asset = asset.toJS();
 
@@ -54,15 +56,25 @@ class FormattedAsset extends React.Component {
         if (hide_amount) {
             colorClass += " no-amount";
         }
+        if (className)
+        {
+          if (colorClass.length != 0)
+            colorClass +=" ";
+           colorClass += className;
+        }
+
+        var displayAmount = (this.props.exact_amount ? amount : amount / precision).toFixed(decimals);
+
 
         return (
                 <span className={colorClass}  >
                 {display_sign? amount>0 ? '+': null: null}
                 {!hide_amount ?
-                   <span className="amount_span">{this.props.exact_amount ? amount : amount / precision}</span>
+                   <span className="amount_span">{displayAmount}</span>
                 : null}
                 {hide_asset ? null : <span className="currency">{"\u00a0" + asset.symbol}</span>}
                 </span>
+
         );
     }
 }

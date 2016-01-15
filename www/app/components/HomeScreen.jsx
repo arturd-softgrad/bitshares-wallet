@@ -18,11 +18,48 @@ import ChainTypes from "./Utility/ChainTypes";
 import KeyGenComponent from  "./KeyGenComponent"
 import WalletDb from "stores/WalletDb";
 
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
+import QRCode from 'qrcode.react';
+
 class HomeScreen extends React.Component {
 
     constructor(props) {
       super(props);
 
+      this.state =  {
+          qrContainerSize: 64
+      };
+
+    }
+
+    shouldComponentUpdate(nextState) {
+      return (
+          nextState.qrContainerSize !== this.state.qrContainerSize
+      );
+    }
+
+    componentDidMount() {
+
+      var getDOMNode;
+      if (/^0\.14/.test(React.version)) {
+        getDOMNode = function (ref) {
+          return ref;
+        };
+      } else {
+        getDOMNode = function (ref) {
+          return ref.getDOMNode();
+        };
+      }
+
+      let mainDom = getDOMNode(this.refs.qr_main);
+
+    //  let mainPadding = 20;
+
+      let mainWidth = mainDom.offsetWidth; //- mainPadding;
+
+
+      this.setState({qrContainerSize: mainWidth});
     }
 
     _shareBTSAddress()
@@ -45,6 +82,27 @@ class HomeScreen extends React.Component {
             console.log('BTS address share: social network sharing plugin is not available');
     }
 
+    _scan() {
+
+        cordova.plugins.barcodeScanner.scan(
+
+            function (result) {
+
+                if(!result.cancelled)
+                {
+                    if(result.format == "QR_CODE")
+                    {
+
+                        history.pushState({payment: JSON.stringify(result.text) }, 'send');
+                    }
+                }
+            },
+            function (error) {
+                alert("Scanning failed: " + error);
+            }
+       );
+    }
+
     render() {
 
       var isBackupRequired = BackupStore.isBackupRequired();
@@ -60,8 +118,9 @@ class HomeScreen extends React.Component {
       </section> :       [
             <section className="code content-home">
               <div className="code__item">
-                <div className="code__item__img">{qrcontent.qr}</div>
-
+                <div className="code__item__img" ref="qr_main">
+                  <QRCode value={qrcontent.qr} fgColor="#1B7A00" size={this.state.qrContainerSize}/>
+                </div>
                 <div className="code__item__data">
                       <AltContainer
                           stores={
@@ -89,7 +148,10 @@ class HomeScreen extends React.Component {
             </section>,
             <section className="code-buttons">
               <Link to="receive" className="btn btn-receive upper">receive</Link>
-              <Link to="send" className="btn btn-send upper">send</Link>
+              <div className="send-btn-container">
+                <span onTouchTap={this._scan.bind(this)} className="btn btn-qr-scan"></span>
+                <Link to="send" className="btn btn-send upper">send</Link>
+              </div>
             </section>,
                       <AltContainer
                           stores={

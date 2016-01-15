@@ -15,8 +15,12 @@ class ContactsScreen extends React.Component {
     super(props);
   }
 
+
+
+
   // Render ContactsScreen view
   render() {
+
 
     return (
       <section className="content-contacts">

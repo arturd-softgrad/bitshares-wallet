@@ -259,10 +259,10 @@ class WalletDb extends BaseStore {
     {
         if(!aes_private)
         {
-            var pw = SettingsStore.getSetting("currentAction");
+            var pw =  SettingsStore.getWalletPassword();//  SettingsStore.getSetting("currentAction");
             if (pw)
             {
-                this.validatePassword(atob(pw), true)
+                this.validatePassword(pw, true)
                 if (this.isLocked())
                 {
                     console.log("walletDb.unlock - tried to unlock, but password is not valid");

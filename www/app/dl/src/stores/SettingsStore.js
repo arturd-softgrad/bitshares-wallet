@@ -9,7 +9,12 @@ var ls = typeof localStorage === "undefined" ? null : localStorage;
 
 class SettingsStore {
     constructor() {
-        this.exportPublicMethods({getSetting: this.getSetting.bind(this), changeSetting: this.changeSetting.bind(this) });
+        this.exportPublicMethods({getSetting: this.getSetting.bind(this),
+            changeSetting: this.changeSetting.bind(this) , getAdvancedSettings: this.getAdvancedSettings.bind(this),
+            changeAdvancedSettings: this.changeAdvancedSettings.bind(this),
+            rememberWalletPassword: this.rememberWalletPassword.bind(this),
+            getWalletPassword: this.getWalletPassword.bind(this),
+        });
         //changeSetting
 
         this.settings = Immutable.Map({
@@ -95,6 +100,40 @@ class SettingsStore {
     changeSetting(payload){
         this.onChangeSetting(payload);
     }
+    getAdvancedSettings(){
+        var advancedSettings = this.getSetting("advancedSettings");
+        if (advancedSettings == null)
+        {
+            advancedSettings =  {
+                checkUpdatesStartup: false,
+                autoInstallMajorVer: false,
+                requirePinToOpen: true,
+                autoCloseWalletAfterInactivity: false,
+                alwaysDonateDevsMunich: true,
+                hideDonations: true};
+            this.changeAdvancedSettings(advancedSettings);
+      }
+      return advancedSettings;
+    }
+    changeAdvancedSettings(advancedSettings)
+    {
+        if (advancedSettings.requirePinToOpen)
+            this.rememberWalletPassword("");
+        this.changeSetting({setting: "advancedSettings", value: advancedSettings });
+    }
+    rememberWalletPassword(password)
+    {
+        this.changeSetting({setting: "currentAction", value: btoa(password) });
+    }
+    getWalletPassword()
+    {
+        var pw = this.getSetting("currentAction");
+        if (!pw || pw.length == 0)
+            return null;
+        return atob(pw);
+    }
+
+
 
     onChangeSetting(payload) {
         this.settings = this.settings.set(

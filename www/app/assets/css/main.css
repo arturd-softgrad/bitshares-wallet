@@ -282,6 +282,7 @@ body {
 }
 .contacts-table td:nth-child(3) {
   font-weight: 500;
+  text-align: right;
 }
 .contacts-table .b {
   display: block;
@@ -293,6 +294,24 @@ body {
 .contacts-table tr td {
   height: auto;
 }
+.edit-contact,
+.delete-contact {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+.edit-contact {
+  background: url('../img/edit-contact.svg');
+  background-size: cover;
+  margin-right: 15px;
+}
+
+.delete-contact {
+  background: url('../img/contact-delete-icon.svg');
+  background-size: cover;
+}
+
 .send-form label {
   display: block;
 }
@@ -421,20 +440,14 @@ i {
   background: #d34b4d url("../img/arrow-up-white.svg") 4px center no-repeat;
   background-size: auto 70%;
 }
-.btn-send:before {
-  opacity: 0.3;
-  pointer-events: none;
-  content: '';
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
-  background: #d34b4d url("../img/camera.svg") center center no-repeat;
-  background-size: 70%;
-  position: absolute;
-  top: 0;
-  left: -33px;
+.btn-qr-scan {
+    width: 24px;
+    height: 24px;
+    border-radius: 3px;
+    background: #d34b4d url("../img/camera.svg") center center no-repeat;
+    background-size: 70%;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
-  transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 }
 .btn-send:after {
   content: '';
@@ -445,6 +458,20 @@ i {
   top: 50%;
   left: -9px;
 }
+
+.send-btn-container {
+  width: 57%;
+  float: right;
+}
+
+.send-btn-container .btn-qr-scan {
+  margin-left: calc(25% - 33px);
+}
+
+.send-btn-container .btn-send {
+  width: 75%;
+}
+
 .balances {
   font-weight: 600;
 }
@@ -472,6 +499,7 @@ i {
   width: 34%;
   float: left;
   text-align: right;
+  word-break: break-all;
 }
 .balances__content-right {
   width: 66%;
@@ -582,6 +610,12 @@ div.timetime
   font-size: 0.685rem;
   word-wrap: break-word;
 }
+.equi-val-component  span{
+    font-size: 0.5rem!important;
+}
+
+
+
 .transactions table th:first-child {
   width: 20%;
   padding-right: 10px;
@@ -622,7 +656,6 @@ i.sent {
 }
 .utility {
   *zoom: 1;
- margin-top: 15px;
     padding-bottom: 30px;
     position: fixed;
     bottom: 0;
@@ -633,7 +666,8 @@ i.sent {
    /* height: 45px;
     background-color: #DFF6FF;
      box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.12), 0 -1px 4px rgba(0, 0, 0, 0.24); */
-    padding: 10px 10px 30px;
+    padding: 10px;
+    background: rgba(226, 244, 251, .9);
 }
 .utility:before {
   content: '';
@@ -658,6 +692,9 @@ i.sent {
   font-size: 10px;
   font-weight: 500;
   color: #000000;
+}
+.utility .utility__ver {
+  float: left;
 }
 
 .mat-icon {
@@ -701,6 +738,7 @@ i.sync {
 .receive-qr {
   margin-bottom: 17px;
 }
+
 .receive-qr .data-text {
   padding-left: 0;
 }
@@ -870,6 +908,13 @@ textarea {
   border-radius: 0;
   -webkit-appearance: none;
 }
+button {
+  border: none;
+  outline: none;
+}
+.btn-send-alone:after {
+  display: none;
+}
 .btn-send-big {
   display: block;
   width: 78%;
@@ -883,10 +928,9 @@ textarea {
 }
 
 .btn-send-big span {
-  display: inline-block;
-  background: url("../img/arrow-up-white.svg") left center no-repeat;
+  display: block;
+  background: url("../img/arrow-up-white.svg") 10px center no-repeat;
   background-size: auto 70%;
-  padding-left: 30px;
 }
 .is-disabled {
   opacity: 0.25;
@@ -908,7 +952,6 @@ textarea {
 }
 header {
   padding: 10px 0;
-  border-bottom: 1px solid #394245;
   *zoom: 1;
 }
 header:before {
@@ -921,25 +964,39 @@ header:after {
   clear: both;
 }
 .header-inner {
-    border-bottom: solid 1px;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     top: 0px;
     left: 0px;
     position: fixed;
     width: 100%;
-    height: 45px;
+    /*height: 45px;*/
    /* background-color: #DFF6FF;*/
     z-index: 9;
     /* width: 100%; */
-    padding: 10px 5px;
+    padding: 5px;
+    overflow: hidden;
+    background: #E2F5FC;
     /* box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24); */
 }
-.header__logo {
+
+.header-inner > img {
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.border {
+    border-bottom: solid 1px;
+}
+
+/*.header__logo {
   width: 24%;
   float: left;
-}
+}*/
 .main-nav {
-  margin: 10px 0;
+  padding: 10px 0;
  /* background-color: #DFF6FF;*/
 }
 .main-nav ul {
@@ -960,8 +1017,9 @@ header:after {
   justify-content: space-around;
   clear: left;
 }
-.main-nav ul a {
-  display: block;
+.main-nav li {
+  width: 25%;
+  text-align: center;
   text-transform: uppercase;
   color: #4a4645;
   font-weight: 500;
@@ -970,7 +1028,17 @@ header:after {
   font-size: 0.75rem;
   border-bottom: 1px solid transparent;
 }
-.main-nav li.active a {
+/*.main-nav span {
+  display: block;
+  text-transform: uppercase;
+  color: #4a4645;
+  font-weight: 500;
+  padding-bottom: 10px;
+  font-size: 12px;
+  font-size: 0.75rem;
+  border-bottom: 1px solid transparent;
+}*/
+.main-nav li.active {
   color: #000;
   border-bottom: 1px solid #009012;
 }
@@ -1276,6 +1344,20 @@ select {
   height: 20px;*/
 }
 
+.register-form {
+  font-size: 14px;
+}
+
+.register-form input {
+  outline: none;
+  width: 100%;
+  /*font-size: 14px;*/
+}
+
+a {
+  font-size: 14px;
+}
+
 .account-name {
   font-size: 12px;
   text-transform: lowercase;
@@ -1283,6 +1365,7 @@ select {
 
 .account-image canvas {
   border: solid 1px #00BCD4;
+  border-radius: 50%;
 }
 
 .contacts-table .account-image canvas {
@@ -1311,7 +1394,7 @@ select {
 }
 
 .content {
-    margin-top: 60px;
+    margin-top: 90px;
     padding: 0 10px;
 }
 
@@ -1322,7 +1405,7 @@ select {
 
 .content-contacts {
     padding: 0 10px;
-    margin-top: 90px;
+    margin-top: 95px;
 }
 
 .op-table > tbody > tr > td:first-child {
@@ -1670,8 +1753,17 @@ select {
 
 #deviceready {
   padding-bottom: 85px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 10px;
 }
 
+#content {
+  padding-bottom: 60px;
+}
 .share {
   display: inline-block;
   vertical-align: middle;
@@ -1680,6 +1772,7 @@ select {
   background: url("../img/share-icon.svg") center center no-repeat;
   background-size: cover;
 }
+
 
 .share_block {
   width: 10%;
@@ -1764,7 +1857,7 @@ select {
 }
 
 .contact-image canvas {
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .avalibel-label {

@@ -3,6 +3,7 @@ import {Link} from "react-router";
 import connectToStores from "alt/utils/connectToStores";
 import WalletManagerStore from "stores/WalletManagerStore";
 import Translate from "react-translate-component";
+import counterpart from "counterpart"
 
 class ExistingAccountBaseComponent extends React.Component {
     static getStores() {
@@ -40,13 +41,13 @@ export class ExistingAccountOptions extends ExistingAccountBaseComponent {
 
 
     render() {
-        var has_wallet = this.props.wallet.wallet_names.count() != 0
+        var has_wallet = WalletDb.getWallet() != null;//this.props.wallet.wallet_names.count() != 0
 
         return (
             <section className="code content-home">
                 {!has_wallet ? <div>
-                    <Link to="existing-account/import-keys">Import from BitShares 0.9.3c</Link><br/><br/>
-                    <Link to="existing-account/import-backup">IMPORT BACKUP</Link><br/><br/>
+                    <Link to="existing-account/import-keys">{counterpart.translate("wallet.import_bts1")}</Link><br/><br/>
+                    <Link to="existing-account/import-backup">{counterpart.translate("wallet.import_backup")}</Link><br/><br/>
                 </div>:null}
             </section>
         )

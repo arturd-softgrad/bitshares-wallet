@@ -45,7 +45,7 @@ class AssetSelector extends React.Component {
         });
 
         return (
-            <select defaultValue={this.props.value} className="nice-select" style={{"font-weight": "bold"}} onChange={this.onChange.bind(this)}>
+            <select value={this.props.value} className="nice-select" style={{"font-weight": "bold"}} onChange={this.onChange.bind(this)}>
                 {options}
             </select>
         )
@@ -116,6 +116,7 @@ class AmountSelector extends React.Component {
                    <input onChange={this._onChange.bind(this)}  onKeyDown={this.onKeyDown} value={value}  type="text" pattern="[0-9]" className="text-field input-amount"></input>
                     <AssetSelector
                            assets={this.props.assets}
+                           value={this.props.asset.get("id")}
                            onChange={this.onAssetChange.bind(this)}/>
                 </div>
 

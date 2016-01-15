@@ -142,50 +142,14 @@ var saveAs = saveAs || (function(view) {
             }
             if (can_use_save_link) {
                 object_url = get_URL().createObjectURL(blob);
-
-                //$$$$
-                //document.location = 'data:Application/octet-stream,' +
-                //         encodeURIComponent('dataToDownload');
-
-                // ***** $$$ test
-                 /*
-var fileTransfer = new FileTransfer();
-var uri =  object_url;//encodeURI("http://some.server.com/download.php");
-var fileURL =  cordova.file.dataDirectory+ name;  //'cdvfile://localhost/persistent/path/to/downloads/';
-
-fileTransfer.download(
-    uri,
-    fileURL,
-    function(entry) {
-        console.log("download complete: " + entry.toURL());
-    },
-    function(error) {
-        console.log("download error source " + error.source);
-        console.log("download error target " + error.target);
-        console.log("upload error code" + error.code);
-    },
-    false,
-    {
-        headers: {
-            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
-        }
-    }
-);*/
-
-                //***********
-
-
-
-
                 save_link.href = object_url;
                 save_link.download = name;
-                //setTimeout(function() {
-                    console.log('$$$ saveAs -- save_link.download.click');
+                setTimeout(function() {
                     click(save_link);
                     dispatch_all();
                     revoke(object_url);
                     filesaver.readyState = filesaver.DONE;
-                //});
+                });
                 return;
             }
             // Object and web filesystem URLs have a problem saving in Google Chrome when

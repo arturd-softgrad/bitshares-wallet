@@ -181,7 +181,8 @@ class ApplicationApi {
                             }
 
                         });
-                       tr.add_operation( donate_op )
+                       tr.add_operation(donate_op);
+                       tr.donor = transfer_op[1];
                 }
             }
 

@@ -43,7 +43,7 @@ class AccountSelector extends React.Component {
     getError() {
         let error = this.props.error;
         if (!error && this.props.accountName && !this.getNameType(this.props.accountName))
-            error = counterpart.translate("account.errors.invalid");
+            error = counterpart.translate("wallet.account_errors_invalid");
         return error;
     }
 
@@ -56,7 +56,7 @@ class AccountSelector extends React.Component {
     }
 
     onInputChanged(event) {
-        let value = event.target.value.trim().toLowerCase();
+        let value = event.target.value.trim(); //.toLowerCase();
         if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
     }
 
@@ -93,7 +93,7 @@ class AccountSelector extends React.Component {
         } else if (this.props.account) {
             if(type === "name") lookup_display = "#" + this.props.account.get("id").substring(4);
             else if (type === "id") lookup_display = this.props.account.get("name");
-        } else if (!error && this.props.accountName) error = counterpart.translate("account.errors.unknown");
+        } else if (!error && this.props.accountName) error = counterpart.translate("wallet.account_errors_unknown");
 
         let member_status = null;
         if (this.props.account)
