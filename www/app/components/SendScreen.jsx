@@ -152,6 +152,31 @@ class SendScreen extends React.Component {
         this.setState({ propose_account });
     }
 
+    availableBalanceClick()
+    {
+        //this.state.amount
+        if (this.state.from_account ) {
+            let account_balances = this.state.from_account.get("balances").toJS();
+            let asset_types = Object.keys(account_balances);
+            if (asset_types.length > 0) {
+                let current_asset_id = this.state.asset ? this.state.asset.get("id") : asset_types[0];
+                //let bc = React.render( <BalanceComponent ref="bc0" balance={account_balances[current_asset_id]}/>, document.getElementById('fakeContainer'))
+                var rawAmount=   Number(this.refs.bc1.state.balance.get('balance'))    //Number(bc.state.balance.get('balance'));
+                let asset = this.refs.bc1._reactInternalInstance._renderedComponent._instance.refs.formattedAsset.state.asset
+                if( asset && asset.toJS ) asset = asset.toJS();
+                let precision = utils.get_asset_precision(asset.precision);
+                var displayAmount = (rawAmount / precision).toFixed(asset.precision)
+                //this.refs.bc1._reactInternalInstance._renderedComponent._instance.refs.formattedAsset
+                this.setState({amount:displayAmount})
+            }
+        }
+    }
+
+    /*onGetAmount(amount)
+    {
+        this.setState({amount:amount});
+    }*/
+
     onSubmit(e) {
         if (!this.state.to_account_valid)
         {
@@ -210,7 +235,7 @@ class SendScreen extends React.Component {
             asset_types = Object.keys(account_balances);
             if (asset_types.length > 0) {
                 let current_asset_id = this.state.asset ? this.state.asset.get("id") : asset_types[0];
-                balance = (<span className="avalibel-label"><BalanceComponent balance={account_balances[current_asset_id]}/> <Translate component="span" content="wallet.transfer_available"/></span>)
+                balance = (<span className="avalibel-label" onTouchTap={this.availableBalanceClick.bind(this)}  ><BalanceComponent  ref="bc1" balance={account_balances[current_asset_id]}/> <Translate component="span" content="wallet.transfer_available"/></span>)
             } else {
                 balance = <Translate component="span" content="wallet.no_funds"/>;
             }
@@ -258,7 +283,7 @@ class SendScreen extends React.Component {
                       onChange={this.onMemoChanged.bind(this)}
                       multiLine={true} />
               </div>
-              <div className="form-row">
+              <div className="form-row dt">
                 <span className="danate-checkbox">
                   <Checkbox
                     name="chkDonate"

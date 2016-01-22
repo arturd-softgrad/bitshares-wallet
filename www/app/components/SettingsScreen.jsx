@@ -103,6 +103,8 @@ class SettingsScreen extends React.Component {
   _switchCurrency(value)
   {
     IntlActions.switchCurrency(value);
+    this.setState({ taxableCountry: value});
+
   }
   _switchLanguage(value)
   {
@@ -110,7 +112,7 @@ class SettingsScreen extends React.Component {
     if (value !== locale) {
         IntlActions.switchLocale(value);
     }
-    //this.setState({ currentLocale: value});
+    this.setState({ currentLocale: value});
   }
   _switchTimezone(value)
   {
@@ -118,7 +120,7 @@ class SettingsScreen extends React.Component {
     if (value !== tz) {
         IntlActions.switchTimezone(value);
     }
-    //this.setState({ currentTimeZone: value});
+    this.setState({ currentTimeZone: value});
   }
 
 
@@ -174,7 +176,7 @@ class SettingsScreen extends React.Component {
   render() {
 
     let okActions = [
-      { text: 'Ok' },
+      { text: counterpart.translate("wallet.ok") },
     ];
     //let translate = IntlStore.translate;
     let settings = this.state.advancedSettings;
@@ -188,7 +190,7 @@ class SettingsScreen extends React.Component {
             <div className="code__item"><Translate content="wallet.settings.taxableCountry" /></div>
             <Select name="test-selectbox"    value={this.state.currencyId}
                 options={this.currencyEntries} clearable={false}
-                onChange={this._switchCurrency}   />
+                onChange={this._switchCurrency.bind(this)}   />
           </section>
 
 
@@ -196,14 +198,14 @@ class SettingsScreen extends React.Component {
             <div className="code__item"><Translate content="wallet.settings.preferredLanguage" /></div>
             <Select name="test-selectbox1"    value={this.state.currentLocale}
                 options={this.languageEntries} clearable={false}
-                onChange={this._switchLanguage}   />
+                onChange={this._switchLanguage.bind(this)}   />
           </section>
 
           <section className="setting-item">
             <div className="code__item"><Translate content="wallet.settings.displayDtAs" /></div>
             <Select name="test-selectbox2"    value={this.state.currentTimeZone}
                 options={this.timezoneEntries} clearable={false}
-                onChange={this._switchTimezone}   />
+                onChange={this._switchTimezone.bind(this)}   />
           </section>
         <section className="setting-item">
           <Checkbox ref="chkCheckUpdatesStartup"
@@ -211,6 +213,8 @@ class SettingsScreen extends React.Component {
                 value="checkboxValue1"
                 label={<Translate content="wallet.settings.checkUpdatesStartup" />}
                 checked={settings.checkUpdatesStartup} onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
+        </section>
+        <section className="setting-item">
           <Checkbox ref="chkAutoInstallMajorVer"
             name="chkAutoInstallMajorVer"
             value="checkboxValue2"

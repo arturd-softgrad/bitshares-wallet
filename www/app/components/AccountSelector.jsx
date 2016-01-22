@@ -55,9 +55,19 @@ class AccountSelector extends React.Component {
         return null;
     }
 
-    onInputChanged(event) {
-        let value = event.target.value.trim(); //.toLowerCase();
-        if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
+    onInputChanged(e) {
+
+        e.preventDefault();
+        e.stopPropagation();
+        // Simplify the rules (prevent typing of invalid characters)
+        var account_name = e.target.value.trim().toLowerCase()
+        account_name = account_name.match(/[a-z0-9\.-]+/)
+        account_name = account_name ? account_name[0] : null
+
+
+        //let value = event.target.value.trim().toLowerCase();
+
+        if (this.props.onChange && account_name !== this.props.accountName) this.props.onChange(account_name);
     }
 
     onKeyDown(event) {
@@ -100,23 +110,23 @@ class AccountSelector extends React.Component {
             member_status = counterpart.translate("account.member." + ChainStore.getAccountMemberStatus(this.props.account));
 
         let action_class = classnames("button", {"disabled" : !(this.props.account || type === "pubkey") || error || this.props.disableActionButton});
-       
+
    //     let member_label = member_status + '&nbsp' + lookup_display;
 
         let label = this.props.label ? this.props.label : counterpart.translate("wallet.home.to");
-     
+
         return (
-            <div className="account-selector no-overflow" style={this.props.style}>   
+            <div className="account-selector no-overflow" style={this.props.style}>
 
                 <span className="label bold">{label + ":"}</span>
 
                 <AccountImage className="account-image" size={{height: 25, width: 25}}
-                              account={this.props.account ? this.props.account.get('name') : null} custom_image={null}/>    
-                <input onChange={this.onInputChanged.bind(this)} style={{"width": "85%"}} ref="user_input" onKeyDown={this.onKeyDown.bind(this)} value={this.props.accountName} onKeyPress={onkeypress} type="text" className="text-field"></input> 
-                <span className="label error">{error}</span>               
+                              account={this.props.account ? this.props.account.get('name') : null} custom_image={null}/>
+                <input onChange={this.onInputChanged.bind(this)} style={{"width": "85%"}} ref="user_input" onKeyDown={this.onKeyDown.bind(this)} value={this.props.accountName} onKeyPress={onkeypress} type="text" className="text-field"></input>
+                <span className="label error">{error}</span>
                           { this.props.children }
                           { this.props.onAction ? (
-                              <button className={action_class}      
+                              <button className={action_class}
                                       onClick={this.onAction.bind(this)}>
                                   <Translate content={this.props.action_label}/></button>
                           ) : null }

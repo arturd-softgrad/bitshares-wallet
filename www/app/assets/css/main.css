@@ -209,7 +209,7 @@ img {
 }
 
 .header__logo img {
-  height: 30px;
+  height: 40px;
 }
 
 ul {
@@ -419,7 +419,6 @@ i {
   height: 26px;
   line-height: 26px;
   text-align: center;
-  border-radius: 3px;
  /* border: 1px solid #fff;*/
   color: #fff;
   font-size: 12px;
@@ -443,7 +442,6 @@ i {
 .btn-qr-scan {
     width: 24px;
     height: 24px;
-    border-radius: 3px;
     background: #d34b4d url("../img/camera.svg") center center no-repeat;
     background-size: 70%;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
@@ -1040,7 +1038,11 @@ header:after {
 }*/
 .main-nav li.active {
   color: #000;
-  border-bottom: 1px solid #009012;
+  border-bottom: 3px solid #009012;
+}
+.main-nav li.active-contacts {
+  color: #000;
+  border-bottom: 3px solid #009EE6;
 }
 .back {
   display: block;
@@ -1050,6 +1052,7 @@ header:after {
   background: url("../img/back-icon.svg") center center no-repeat;
   background-size: cover;
   margin-right: 8px;
+  margin-top: 7px;
 }
 .header__links {
   float: right;
@@ -1136,6 +1139,12 @@ header:after {
 .setting-item {
   padding: 10px 0px;
 }
+/*.setting-item div {
+  padding: 10px 0;
+}
+.setting-item div:last-child {
+  padding-bottom: 0;
+}*/
 
 /*# sourceMappingURL=main.css.map */
 /*
@@ -1220,7 +1229,6 @@ select {
   min-height: 34px; }
 .nice-select .list {
   background-color: #fff;
-  border-radius: 5px;
   box-shadow: 0 0 0 1px rgba(68, 68, 68, 0.11);
   box-sizing: border-box;
   margin-top: 4px;
@@ -1359,7 +1367,7 @@ a {
 }
 
 .account-name {
-  font-size: 12px;
+  font-size: 14px;
   text-transform: lowercase;
 }
 
@@ -1442,7 +1450,6 @@ a {
 .Select-control {
   background-color: #fff;
   border-color: #d9d9d9 #ccc #b3b3b3;
-  border-radius: 4px;
   border: 1px solid #ccc;
   color: #333;
   cursor: default;
@@ -1675,7 +1682,6 @@ a {
 }
 .Select-item {
   background-color: #f2f9fc;
-  border-radius: 2px;
   border: 1px solid #c9e6f2;
   color: #08c;
   display: inline-block;
@@ -1812,7 +1818,6 @@ a {
     font-family: Roboto, sans-serif;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
-    border-radius: 2px;
     display: inline-block;
   /*  min-width: 88px; */
     height: 36px;
@@ -1827,7 +1832,6 @@ a {
     font-family: Roboto, sans-serif;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
-    border-radius: 2px;
     display: inline-block;
   /*  min-width: 88px; */
     height: 36px;
@@ -1918,4 +1922,11 @@ a {
   display: inline-block;
   margin-top: 60px;
   padding: 0 10px;
+}
+.dt {
+  display: table;
+}
+.dt span {
+  display: table-cell;
+  vertical-align: middle;
 }

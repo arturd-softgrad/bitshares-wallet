@@ -5,6 +5,8 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import AccountImage from "./AccountImage";
 import { Router, Route, Link, IndexRoute } from 'react-router';
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
 
 // Flux Transactions view to display a single contact
 class ContactItem extends React.Component {
@@ -24,12 +26,25 @@ class ContactItem extends React.Component {
 
   _tapHandler() {
 
-    this.setState({tapped: true})
+    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
+    history.pushState({contact: current_contact_json}, 'contact-overview');
+
+    /*this.setState({tapped: true})
     setTimeout(() => {
       this.setState({tapped: false});
-    }.bind(this), 500)
+
+    }.bind(this), 500);*/
 
   }
+
+  _editHandler()
+  {
+    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
+    history.pushState({contact: current_contact_json}, 'contact-edit');
+  }
+
+
+
 
   render() {
 
@@ -39,19 +54,22 @@ class ContactItem extends React.Component {
     if (this.state.tapped === true) {
       tapped = "tapped";
     }
+  ////      <Link to="contact-overview" query={{contact: current_contact_json}}> </Link>
+
 
     return (
+      <tr >
 
-      <Link to="contact-overview" query={{contact: current_contact_json}}>
-      <tr onTouchTap={this._tapHandler.bind(this)} className={tapped}>
-        <td><AccountImage className="contact-image" account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
-        <td> <span className="b bold">{this.props.friendly_name}</span>{"Account: " + this.props.contact_name}<br/>{"Notes: " + this.props.notes}</td>
+        <td onTouchTap={this._tapHandler.bind(this)} className={tapped} ><AccountImage className="contact-image" account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
+
+        <td onTouchTap={this._tapHandler.bind(this)} className={tapped}> <span className="b bold">{this.props.friendly_name}</span>{"Account: " + this.props.contact_name}<br/>{"Notes: " + this.props.notes}</td>
+
         <td>
-          <span className="edit-contact"></span>
-          <span className="delete-contact"></span>
+          <span className="edit-contact" onTouchTap={this._editHandler.bind(this)} ></span>
+          <span className="delete-contact" onTouchTap={this.props.onDelete.bind(this)} ></span>
         </td>
       </tr>
-      </Link>
+
     );
   }
 }

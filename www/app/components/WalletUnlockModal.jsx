@@ -154,15 +154,10 @@ class WalletUnlockModal extends React.Component {
                         key={this.state.password_input_reset}
                         wrongPassword={this.state.password_error}/>
                     <div className="button-group">
-
-                        <RaisedButton label="Unlock" //errors
-                            primary={true}
-                            type="submit" />
                         <If condition={!this.props.unclosable}>
-                        <RaisedButton label={counterpart.translate("wallet.home.cancel")}
-                            secondary={true}
-                            onTouchTap={this._handleClose.bind(this)} />
+                             <button type="button" className="primary"  onTouchTap={this._handleClose.bind(this)} >{counterpart.translate("wallet.home.cancel")}</button>
                         </If>
+                        <button type="button" className="secondary"  type="submit" >{counterpart.translate("wallet.unlock")}</button>
                     </div>
                 </form>
            </Dialog>

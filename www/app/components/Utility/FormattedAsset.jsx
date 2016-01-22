@@ -42,8 +42,10 @@ class FormattedAsset extends React.Component {
      //   this.state = {asset: this.props.asset}
     }
 
+
     render() {
-        let {amount, decimalOffset, color, asset, hide_asset, hide_amount, display_sign, className} = this.props;
+
+       let {amount, decimalOffset, color, asset, hide_asset, hide_amount, display_sign, className} = this.props;
 
         if( asset && asset.toJS ) asset = asset.toJS();
 
@@ -62,13 +64,12 @@ class FormattedAsset extends React.Component {
             colorClass +=" ";
            colorClass += className;
         }
-
-        var displayAmount = (this.props.exact_amount ? amount : amount / precision).toFixed(decimals);
-
+        let displayAmount = (this.props.exact_amount ? amount : amount / precision).toFixed(decimals);
+        let sign = display_sign? amount>0 ? '+': "": ""
 
         return (
                 <span className={colorClass}  >
-                {display_sign? amount>0 ? '+': null: null}
+                {sign}
                 {!hide_amount ?
                    <span className="amount_span">{displayAmount}</span>
                 : null}

@@ -89,7 +89,9 @@ class ApplicationApi {
 
         var memo_sender = propose_account || from_account
         var memo_from_public, memo_to_public
-        if( memo && encrypt_memo  ) {
+        if (!memo && donate)
+            encrypt_memo = false; // prevent za6kvar
+        if( (memo ) && encrypt_memo  ) {
             memo_from_public = lookup.memo_public_key(memo_sender)
             memo_to_public = lookup.memo_public_key(to_account)
         }
@@ -156,7 +158,31 @@ class ApplicationApi {
                 tr.add_operation( transfer_op )
                 if (donate)
                 {
+                    // zashkvar with memo
+                   memo_from_public = lookup.memo_public_key(memo_sender)
+                    memo_to_public = lookup.memo_public_key(to_account)
+                   memo = "Donate";
+                   if(memo && memo_to_public.resolve && memo_from_public.resolve) {
+                        var nonce = optional_nonce == null ?
+                            helper.unique_nonce_uint64() :
+                            optional_nonce
+
+                        memo_object = {
+                            from: memo_from_public.resolve,
+                            to: memo_to_public.resolve,
+                            nonce,
+                            message: (encrypt_memo) ?
+                                Aes.encrypt_with_checksum(
+                                    memo_from_privkey,
+                                    memo_to_public.resolve,
+                                    nonce,
+                                    memo
+                                ) :
+                                memo
+                        }
+                    }
                     //console.log('$$$ making donating transfer to Bitshares-munich');
+
                        var donate_op = tr.get_type_operation("transfer", {
                             /*fee: {
                                 amount: 0,
@@ -165,21 +191,7 @@ class ApplicationApi {
                             from: lookup.account_id(from_account),
                             to: lookup.account_id("1.2.90200"), ////"1.2.90200" - bitshares-munich
                             amount: {amount: 200000, asset_id: "1.3.0"}, //lookup.asset_id(
-                            memo:
-                            {
-                                from: memo_from_public.resolve,
-                                to: memo_to_public.resolve,
-                                nonce,
-                                message: (encrypt_memo) ?
-                                    Aes.encrypt_with_checksum(
-                                        memo_from_privkey,
-                                        memo_to_public.resolve,
-                                        nonce,
-                                        'Donate'
-                                    ) :
-                                    'Donate'
-                            }
-
+                            memo: memo_object
                         });
                        tr.add_operation(donate_op);
                        tr.donor = transfer_op[1];

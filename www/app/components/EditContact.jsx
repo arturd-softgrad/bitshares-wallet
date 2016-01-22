@@ -7,17 +7,20 @@ import AccountActions from "actions/AccountActions";
 const RaisedButton = require('material-ui/lib/raised-button');
 const Dialog = require('material-ui/lib/dialog');
 import TextField  from "./Utility/TextField";
+import AccountImage from "./AccountImage";
 import { createHashHistory, useBasename } from 'history';
 
 const history = useBasename(createHashHistory)({});
 
 // ContactOverview view
-class AddContact extends React.Component {
+class EditContact extends React.Component {
 
   constructor(props) {
     super(props);
 
-     this.state = {contact_name: "", friendly_name: "", notes:""}
+     var contact = JSON.parse(this.props.location.state.contact);
+
+     this.state = {contact: contact, contact_name: contact.name, friendly_name: contact.friendly_name, notes: contact.notes}
   }
 
   toChanged(contact_name) {
@@ -34,7 +37,9 @@ class AddContact extends React.Component {
 
   _handlerOnLinkContact(e) {
     // TODO add validate account name
-      AccountActions.linkContact({name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes});
+      var contact =  {name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes};
+      AccountActions.unlinkContact(this.state.contact);
+      AccountActions.linkContact(contact);
       history.pushState(null, 'contacts');
   }
 
@@ -47,11 +52,15 @@ class AddContact extends React.Component {
 
     return (
        <section className="content">
-          <AccountSelector
-               label={counterpart.translate("wallet.home.account")}
-               accountName={this.state.contact_name}
-               onChange={this.toChanged.bind(this)}
-               account={this.state.contact_name} />
+            <div style={{"height": "50px"}}>
+              <AccountImage className="contact-image" account={this.state.contact_name} size={{height: 45, width: 45}}/>
+            </div>
+            <div>
+            <TextField
+              floatingLabelText={counterpart.translate("wallet.home.account")}
+              value={this.state.contact_name}
+              disabled={true} />
+            </div>
           <TextField
               floatingLabelText={counterpart.translate("wallet.contactFriendlyName")+":"}
               type="text"
@@ -64,18 +73,12 @@ class AddContact extends React.Component {
               value={this.state.notes}
               multiLine={true}/>
           <div>
-           <RaisedButton
-            label={counterpart.translate("wallet.add")}
-            primary={true}
-            onTouchTap={this._handlerOnLinkContact.bind(this)} />,
-            <RaisedButton
-            label={counterpart.translate("wallet.home.cancel")}
-            secondary={true}
-            onTouchTap={this._handleOnLinkCancel} />
+             <button type="button" className="primary"  onTouchTap={this._handleOnLinkCancel.bind(this)}>{counterpart.translate("wallet.home.cancel")}</button>
+             <button type="button" className="secondary"  onTouchTap={this._handlerOnLinkContact.bind(this)}>{counterpart.translate("wallet.save")}</button>
           </div>
          </section>
     );
   }
 };
 
-export default AddContact;
+export default EditContact;

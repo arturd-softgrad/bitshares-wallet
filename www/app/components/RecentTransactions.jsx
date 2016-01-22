@@ -155,7 +155,7 @@ class RecentTransactions extends React.Component {
                         <th className="right-td"><Translate content="wallet.transaction_date" /></th>
                         <th><Translate content="wallet.transaction_op" /></th>
                         <th><Translate content="wallet.home.to" />/<Translate content="wallet.home.from" /></th>
-                        <th><Translate content="wallet.home.amount" /> <Translate content="wallet.home.asset" /></th>
+                        <th><Translate content="wallet.home.amount" /> </th>
                     </tr>
                     </thead>
                     <tbody>

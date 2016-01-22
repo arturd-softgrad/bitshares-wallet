@@ -29,14 +29,14 @@ class InviteFriend extends React.Component {
 
           let onSuccess = function() {
             history.pushState(null, 'contacts');
-          } 
+          }
 
           let onError = function(error) {
             console.log(error);
           }
-             
+
           window.plugins.socialsharing.shareViaEmail(
-              'Hi, I just found this awesome BitShares Wallet that allows you to send and receive Smartcons. Check it out! Cheers', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+              'Hi, I just found this awesome BitShares Wallet that allows you to send and receive Smartcoins. Check it out! Cheers', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
               'Awesome BitShares',
               null, // TO: must be null or an array
               null, // CC: must be null or an array
@@ -49,7 +49,7 @@ class InviteFriend extends React.Component {
       } else {
          console.log('BitShares invite: social network sharing plugin is not available');
       }
-     
+
   }
 
   toChangedEmails(e) {

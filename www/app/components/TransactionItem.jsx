@@ -15,7 +15,7 @@ class TransactionItem extends React.Component {
 
   render() {
     return (
-      	 <section className="transactions">
+         <section className="transactions">
         <div className="section-header">
           <h2><i className="expand"></i><Translate content="wallet.home.transactions" /></h2>
         </div>
@@ -23,10 +23,10 @@ class TransactionItem extends React.Component {
           <table>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>|All|</th>
-                <th>To/From</th>
-                <th>Amount assets</th>
+                <th>{counterpart.translate("wallet.transaction_date")}</th>
+                <th>{"|"+counterpart.translate("wallet.home.all")+"|"}</th>
+                <th>{counterpart.translate("wallet.to_slash_from")}</th>
+                <th>{counterpart.translate("wallet.home.amount")}</th>
               </tr>
             </thead>
             <tbody>

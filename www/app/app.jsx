@@ -18,7 +18,8 @@ import WalletChangePassword from "./components/WalletChangePassword";
 import WalletUnlockModal from "./components/WalletUnlockModal";
 import AddContact from "./components/AddContact";
 import InviteFriend from "./components/InviteFriend";
-import ContactOverview from './components/ContactOverview';
+import EditContact from './components/EditContact';
+import ContactOverview from "./components/ContactOverview"
 import Syncer from './components/Syncer';
 import cookies from "cookies-js";
 import Translate from "react-translate-component";
@@ -195,8 +196,8 @@ class App extends React.Component {
 
     getMenuActiveClass(path)
     {
-        var realPath =  this.props.location.pathname;
-        return path == realPath ? "active": "";
+        var realPath =  this.props.location.pathname.substring(1);
+        return path == realPath ? "active"+(realPath.length==0 ? "": "-"+path): "";
     }
 
     render() {
@@ -239,8 +240,8 @@ class App extends React.Component {
                         <If condition={pathname === "/" || pathname === "/contacts"}>
                              <nav className="main-nav">
                               <ul>
-                                <li className={this.getMenuActiveClass("/")}><span onTouchTap={this._handleBalance.bind(this)} className="active-balance"  ><Translate content="wallet.home.balances" /></span></li>
-                                <li className={this.getMenuActiveClass("/contacts")}><span onTouchTap={this._handleContacts.bind(this)} className="active-contacts"   to="contacts"><Translate content="wallet.home.contacts" /></span></li>
+                                <li className={this.getMenuActiveClass("")}><span onTouchTap={this._handleBalance.bind(this)} className="active-balance"  ><Translate content="wallet.home.balances" /></span></li>
+                                <li className={this.getMenuActiveClass("contacts")}><span onTouchTap={this._handleContacts.bind(this)} className="active-contacts"   to="contacts"><Translate content="wallet.home.contacts" /></span></li>
                                 <li><span className="is-disabled" href="#"><Translate content="wallet.home.finder" /></span></li>
                                 <li><span className="is-disabled" href="#"><Translate content="wallet.home.exchange" /></span></li>
                               </ul>
@@ -248,7 +249,7 @@ class App extends React.Component {
                         </If>
                     </header>
                     <section className="utility">
-                      <span className="utility__ver">V1.0</span>
+                      <span className="utility__ver">v1.0 alpha 9</span>
                       <div className="utility__links">
                         <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
                         <Syncer synced={this.state.synced}/>
@@ -303,6 +304,7 @@ var app = {
                 <Route path="add-contact" component={AddContact}/>
                 <Route path="invite-friend" component={InviteFriend}/>
                 <Route path="contact-overview" component={ContactOverview}/>
+                <Route path="contact-edit" component={EditContact}/>
                 <Route path="send" component={SendScreen}/>
                 <Route path="receive" component={ReceiveScreen}/>
                 <Route path="settings" component={SettingsScreen}/>

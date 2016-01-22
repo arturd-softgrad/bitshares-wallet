@@ -56,14 +56,6 @@ languages: {
     account_premium_name_warn: "Это премиальное имя учетной записи. Они дорогостоящие и не могут быть зарегистрированы бесплатно обычным пользователем. Попробуйте выбрать имя, содержащее одно и более тире, цифру, или не содержащее гласных",
     reset: 'Сброс',
     done: 'Готово',
-        brainkey_backup : 'Backup brainkey',
-    wallet_brainkey: 'Wallet brainkey',
-    close: 'Close',
-    verified: 'verified',
-    wallet_created: "Wallet Created",
-    import_bts1: "Import from BitShares 0.9.3c",
-    import_backup: "Import Backup",
-    wallet_name :   "Wallet Name",
 
 
 home: {

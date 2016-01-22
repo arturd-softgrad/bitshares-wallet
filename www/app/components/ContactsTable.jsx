@@ -4,11 +4,17 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import ContactItem from "./ContactItem";
 import AccountStore from "stores/AccountStore";
+import AccountActions from "actions/AccountActions";
 import alt from "alt";
 const Dialog = require('material-ui/lib/dialog');
 import If from './If';
 import AccountImage from "./AccountImage";
+import EditContact from "./EditContact"
+
 const RaisedButton = require('material-ui/lib/raised-button');
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
+
 
 
 class ContactsTable extends React.Component {
@@ -16,14 +22,16 @@ class ContactsTable extends React.Component {
    constructor () {
     super();
     this.state = {
-      current_contact: {}
+      current_contact: {},
+      deletionConfirmOpen:false,
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
 
       return this.props.contacts !== nextProps.contacts ||
-             this.state.current_contact != nextState.current_contact
+             this.state.current_contact != nextState.current_contact ||
+             this.state.deletionConfirmOpen != nextState.deletionConfirmOpen;
   }
 
   IsJsonString(str) {
@@ -37,32 +45,44 @@ class ContactsTable extends React.Component {
 
   _handleContactDelete() {
       AccountActions.unlinkContact(this.state.current_contact);
+      this.setState({deletionConfirmOpen: false});
       history.pushState(null, 'contacts');
   }
 
+  /*_handleEditContact()
+  {
+    console.log('not implemented - _handleEditContact');
+  }*/
+
   _handleDeleteContactCancel() {
     //this.refs.delete_confirm.dismiss();
-    this.setState({deleting: false});
+    this.setState({deletionConfirmOpen: false});
   }
 
   _handleConfirmDeleteContact() {
-    this.refs.delete_confirm.show();
-    this.setState({deleting: true});
+    //this.refs.delete_confirm.show();
+    this.setState({deletionConfirmOpen: true});
   }
 
 
-render() {
+
+
+
+
+  render() {
 
 let delete_contact_actions  = [
       <RaisedButton
-        label="Confirm"
+        label={counterpart.translate("wallet.confirm")}
         primary={true}
         onTouchTap={this._handleContactDelete.bind(this)} />,
       <RaisedButton
         label="Cancel"
-        secondary={true}
+        secondary={counterpart.translate("wallet.home.cancel")}
         onTouchTap={this._handleDeleteContactCancel.bind(this)} />
     ];
+
+
 
 
     let contacts_arr = this.props.contacts.toArray();
@@ -83,16 +103,18 @@ let delete_contact_actions  = [
     }
 
 
-    let dlg = <Dialog title="Are you sure ?"
-              open={this.state.deleting}
+    let dlg = <Dialog title={counterpart.translate("wallet.contactDeleteConfirm")}
+              open={this.state.deletionConfirmOpen}
               actions={delete_contact_actions}
               modal={true}
               style={{width: '90%'}}
               ref="delete_confirm" autoScrollBodyContent={true}>
         </Dialog>;
 
-    return (
-      <table className="contacts-table">
+
+
+
+      let table = <table className="contacts-table">
         <theader>
           <tr>
             <th></th>
@@ -102,11 +124,15 @@ let delete_contact_actions  = [
         </theader>
         <tbody>
            {contacts.map((contact_item, i) =>
-              <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} key={i} onDelete={this._handleConfirmDeleteContact.bind(this)}  />
+              <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} key={i}
+               onDelete={this._handleConfirmDeleteContact.bind(this)}  />
             )}
         </tbody>
       </table>
-    );
+
+    return <div>{dlg}{table}</div>;
+
+
   }
 }
 

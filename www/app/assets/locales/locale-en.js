@@ -68,13 +68,18 @@ languages: {
     close: 'Close',
     verified: 'verified',
     wallet_created: "Wallet Created",
-    import_bts1: "Import from BitShares 0.9.3c",
+    import_bts1: "Import from Brainkey",
 	import_backup: "Import Backup",
 	wallet_name :   "Wallet Name",
-
-
-
-
+	contactDeleteConfirm: 'Are you SURE you want to permanently DELETE this Contact?',
+	contactFriendlyName: 'Friendly name',
+	contactNotes: 'Notes',
+	save: 'Save',
+	add: 'Add',
+	ok: 'Ok',
+	to_slash_from: 'To/From',
+	unlock: 'Unlock',
+	tran_confirm: 'Confirm transaction',
 home: {
         balances: 'Balances',
         contacts: 'CONTACTS',
@@ -110,10 +115,7 @@ home: {
         publicKey: 'Public Key',
         privateKey: 'Private Key',
         yes: 'Yes',
-        no: 'No'
-
-
-
+        no: 'No',
     },
     settings:{
         bitsharesWalletSettings: 'BitShares Wallet Settings',
