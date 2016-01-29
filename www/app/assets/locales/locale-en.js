@@ -80,6 +80,8 @@ languages: {
 	to_slash_from: 'To/From',
 	unlock: 'Unlock',
 	tran_confirm: 'Confirm transaction',
+	email: 'E-mail',
+	contact_email_hint : 'To display a photo for this Contact, enter its Gravatar e-mail here',
 home: {
         balances: 'Balances',
         contacts: 'CONTACTS',

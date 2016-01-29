@@ -11,17 +11,36 @@ import IntlStore from "stores/IntlStore";
 import SettingsStore from "stores/SettingsStore";
 
 
-function compareOps(b, a) {
-    if(a.block_num < b.block_num) return -1;
-    if(a.block_num === b.block_num) {
-        if(a.trx_in_block < b.trx_in_block) return -1;
-        if(a.trx_in_block === b.trx_in_block) {
-            if(a.op_in_trx < b.op_in_trx) return -1;
-            if(a.op_in_trx === b.op_in_trx) return 0;
-        }
+
+
+
+
+class SortableHeader extends React.Component {
+
+    constructor(props) {
+        super();
+
     }
-    return 1;
+
+    render()
+    {
+        if (this.props.col == this.props.sorting.col)
+        {
+            //dangerouslySetInnerHTML={{__html: getMarkup()}}
+             //<Translate content="wallet.to_slash_from" />&#x25B2 &#x25BC</th>
+            let arrow =  this.props.sorting.descending ? "&#x25BC" : "&#x25B2";
+            return  <th onTouchTap={this.props.onSort.bind(this, this.props.col)} ><b>{this.props.children}</b><span  dangerouslySetInnerHTML={{__html: arrow}}  /></th>
+        }
+        else
+        {
+            return  <th onTouchTap={this.props.onSort.bind(this, this.props.col)} >{this.props.children}</th>
+        }
+
+    }
+
 }
+
+
 
 @BindToChainState({keep_updating: true})
 class RecentTransactions extends React.Component {
@@ -34,14 +53,61 @@ class RecentTransactions extends React.Component {
 
     constructor(props) {
         super();
+        let limit = props.limit ? Math.max(20, props.limit) : 20;
         this.state = {
-            limit: props.limit ? Math.max(20, props.limit) : 20
+            limit: limit,
+            more: limit,
+            sorting:
+                {col: '',
+                 descending: false},
+            sortingChange: false};
+    }
+
+
+    compareOps1(b, a) {
+    if(a.block_num < b.block_num) return -1;
+    if(a.block_num === b.block_num) {
+        if(a.trx_in_block < b.trx_in_block) return -1;
+        if(a.trx_in_block === b.trx_in_block) {
+            if(a.op_in_trx < b.op_in_trx) return -1;
+            if(a.op_in_trx === b.op_in_trx) return 0;
         }
     }
+    return 1;
+    }
+
+    compareOps(b,a){
+        return this.state.sorting.descending? -this.compareOps1(b,a) : this.compareOps1(b,a)
+    }
+
+
+
+    compareAccounts(b, a) {
+        let id = a.op[1].from || a.op[1].to; //  "1.2.98491"
+        let acnt = ChainStore.getAccount(id);
+        let x = acnt? ChainStore.getAccount(id).get("name"): "";
+        id = b.op[1].from || b.op[1].to;
+        acnt = ChainStore.getAccount(id);
+        let y = acnt? ChainStore.getAccount(id).get("name"): "";
+        return this.state.sorting.descending? (x > y ? -1: x==y ? 0: 1):
+            (x > y ? 1: x==y ? 0: -1);
+    }
+
+    //history[0].op[1].amount.amount
+    compareAmounts(b, a) {
+        let x = a.op[1].amount? a.op[1].amount.amount: 0;
+        let y = b.op[1].amount? b.op[1].amount.amount: 0;
+        return this.state.sorting.descending?  (x > y ? -1: x==y ? 0: 1):
+            (x > y ? 1: x==y ? 0: -1);
+    }
+
 
     shouldComponentUpdate(nextProps, nextState) {
         if(!utils.are_equal_shallow(this.props.accountsList, nextProps.accountsList)) return true;
         if (nextState.limit !== this.state.limit) return true;
+        if (nextState.sortingChange !== this.state.sortingChange) return true;
+
+        if(!utils.are_equal_shallow(this.props.sorting, nextProps.sorting)) return true;
         for(let key = 0; key < nextProps.accountsList.length; ++key) {
             let npa = nextProps.accountsList[key];
             let nsa = this.props.accountsList[key];
@@ -53,18 +119,43 @@ class RecentTransactions extends React.Component {
 
     componentWillMount() {
         this.setState({hideDonations : SettingsStore.getAdvancedSettings().hideDonations == true});
+        var sorting = SettingsStore.getSetting("transactionListSortCol");
+        if (sorting)
+            this.setState({sorting: sorting});
+
     }
 
 
 
     _onIncreaseLimit() {
         this.setState({
-            limit: this.state.limit + 30
+            limit: this.state.limit + this.state.more
         });
     }
 
-    render() {
 
+
+    _onSort(col){
+        console.log('$$$sorted by 111123 col=', col);
+        let sorting = this.state.sorting;
+        if (sorting.col == col)
+            sorting.descending = !sorting.descending;
+        else
+            sorting.col = col;
+        this.setState({sorting:sorting, sortingChange:!this.state.sortingChange}); // weird, but update is not triggered without it
+        SettingsStore.changeSetting({setting: "transactionListSortCol", value: this.state.sorting });
+
+        //history[0].op[1].amount.amount  10000
+        //history[0].op[1].from "1.2.98491"
+        //var account = ChainStore.getAccount(id) account.get("name");
+
+    }
+
+
+
+
+    render() {
+        let ops = Object.keys(operations);
         let iso = IntlStore.getCurrency().iso;
         if (iso && iso.length != 0 )
         {
@@ -92,24 +183,56 @@ class RecentTransactions extends React.Component {
                 if (h) history = history.concat(h.toJS().filter(op => !seen_ops.has(op.id) && seen_ops.add(op.id)));
             }
         }
-        let historyCount = history.length;
+
 
         if (filter) {
             history = history.filter(a => {
-                return a.op[0] === operations[filter];
+                return a.op[0] === operations[filter] /*&& ops[a.op[0]] == "transfer" *///
             });
         }
         if (this.state.hideDonations)
             history = history.filter(a => {
                 return a.op[1].to != "1.2.90200";
             });
+        //sorting
+        history = history.filter(a => { //weird sorting glitch
+            return a.op[0] === 0 // weird sorting glitch
+        });
+
+
+        let comparer = this.compareOps.bind(this);
+        let sortCol = this.state.sorting.col;
+        if (sortCol == "to")
+            comparer = this.compareAccounts.bind(this);
+        else if (sortCol == "amount")
+            comparer = this.compareAmounts.bind(this);
+
 
         if (/*accounts_counter === 1 && */ current_account) current_account_id = current_account.get("id");
         //console.log('$$$raw history =', history); // $$$
+        if (current_account_id && sortCol=="op")
+        {
+            let desc = this.state.sorting.descending;
+            comparer = function(b,a)
+            {
+                let x =  b.op[1].from == current_account_id;
+                let y =  a.op[1].from == current_account_id;
+                return desc ?
+                    (x==y ? 0: x == true ? 1: -1):
+                    (x==y ? 0: x == true ? -1: 1);
+            }
+        }
+
+
+
         let rowid =0;
         history = history
-            .sort(compareOps)
-            .slice(0, limit)
+            .sort(comparer);
+       // if (this.state.sorting.descending)
+       //     history = history.reverse();
+      let historyCount = history.length;
+
+         history = history.slice(0, limit)
             .map(o => {
                 return (
                     <Operation
@@ -148,23 +271,27 @@ class RecentTransactions extends React.Component {
                     ) : null}
             </div>
         );*/
+
+//                 <th onTouchTap={this._onSort.bind(this, "to" )}><Translate content="wallet.to_slash_from" />&#x25B2 &#x25BC</th>
+// <Translate content="wallet.to_slash_from" />&#x25B2 &#x25BC</th>
+
         return   <div>
                 <table className="table">
                     <thead>
                     <tr>
-                        <th className="right-td"><Translate content="wallet.transaction_date" /></th>
-                        <th><Translate content="wallet.transaction_op" /></th>
-                        <th><Translate content="wallet.home.to" />/<Translate content="wallet.home.from" /></th>
-                        <th><Translate content="wallet.home.amount" /> </th>
+                        <SortableHeader onSort={this._onSort.bind(this)} col="" sorting = {this.state.sorting} className="right-td" ><Translate content="wallet.transaction_date" /></SortableHeader>
+                        <SortableHeader onSort={this._onSort.bind(this)} col="op" sorting = {this.state.sorting} ><Translate content="wallet.transaction_op" /></SortableHeader>
+                        <SortableHeader onSort={this._onSort.bind(this)} col="to" sorting = {this.state.sorting} ><Translate content="wallet.to_slash_from" /></SortableHeader>
+                        <SortableHeader onSort={this._onSort.bind(this)} col="amount" sorting = {this.state.sorting} ><Translate content="wallet.home.amount" /> </SortableHeader>
                     </tr>
                     </thead>
                     <tbody>
                         {history}
                     </tbody>
                 </table>
-                {this.props.showMore && historyCount > 20 && limit < historyCount ? (
+                {this.props.showMore &&  limit < historyCount ? (
                     <div className="account-info more-button">
-                        <div className="button outline" onClick={this._onIncreaseLimit.bind(this)}>
+                        <div className="button outline " onClick={this._onIncreaseLimit.bind(this)}>
                             <Translate content="wallet.account_more" />
                         </div>
                     </div>

@@ -57,13 +57,13 @@ class WalletDb extends BaseStore {
             console.error(e) }
     }
 
+
     getWallet() {
         return this.state.wallet
     }
 
     onLock() {
         aes_private = null
-         //SettingsStore.changeSetting({setting: "aes_private", value: null });
          //console.log("walletDb.onLock - aes_private has been reset");
     }
 

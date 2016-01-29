@@ -13,6 +13,10 @@ class ContactsScreen extends React.Component {
 
   constructor(props) {
     super(props);
+     let { query } = this.props.location;
+
+    this.state = {transfer: query && this.props.location.state && this.props.location.state.transfer? JSON.parse(this.props.location.state.transfer) : null}
+
   }
 
 
@@ -49,7 +53,7 @@ class ContactsScreen extends React.Component {
                     }
                   }
                 >
-                  <ContactsTable />
+                  <ContactsTable transfer={this.state.transfer} />
             </AltContainer>
         </main>
       </section>

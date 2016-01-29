@@ -23,8 +23,9 @@ class ContactsTable extends React.Component {
     super();
     this.state = {
       current_contact: {},
-      deletionConfirmOpen:false,
-    };
+      deletionConfirmOpen:false}
+
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -71,16 +72,17 @@ class ContactsTable extends React.Component {
 
   render() {
 
-let delete_contact_actions  = [
-      <RaisedButton
-        label={counterpart.translate("wallet.confirm")}
-        primary={true}
-        onTouchTap={this._handleContactDelete.bind(this)} />,
-      <RaisedButton
-        label="Cancel"
-        secondary={counterpart.translate("wallet.home.cancel")}
-        onTouchTap={this._handleDeleteContactCancel.bind(this)} />
-    ];
+
+
+  let delete_contact_actions  =
+            [<RaisedButton
+            label={counterpart.translate("wallet.home.cancel")}
+            backgroundColor = "#FF4081" primary = {true}
+            onTouchTap={this._handleDeleteContactCancel.bind(this)}  />,
+           <RaisedButton
+            label={counterpart.translate("wallet.confirm")}
+            backgroundColor = "#008000" secondary={true}
+            onTouchTap={this._handleContactDelete.bind(this)} />]
 
 
 
@@ -124,8 +126,8 @@ let delete_contact_actions  = [
         </theader>
         <tbody>
            {contacts.map((contact_item, i) =>
-              <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} key={i}
-               onDelete={this._handleConfirmDeleteContact.bind(this)}  />
+              <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} email={contact_item.email} key={i}
+               transfer={this.props.transfer}   onDelete={this._handleConfirmDeleteContact.bind(this)}  />
             )}
         </tbody>
       </table>

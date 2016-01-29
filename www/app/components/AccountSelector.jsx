@@ -121,7 +121,7 @@ class AccountSelector extends React.Component {
                 <span className="label bold">{label + ":"}</span>
 
                 <AccountImage className="account-image" size={{height: 25, width: 25}}
-                              account={this.props.account ? this.props.account.get('name') : null} custom_image={null}/>
+                              account={this.props.account ? this.props.account.get('name') : null} custom_image={null}  email={this.props.email} />
                 <input onChange={this.onInputChanged.bind(this)} style={{"width": "85%"}} ref="user_input" onKeyDown={this.onKeyDown.bind(this)} value={this.props.accountName} onKeyPress={onkeypress} type="text" className="text-field"></input>
                 <span className="label error">{error}</span>
                           { this.props.children }

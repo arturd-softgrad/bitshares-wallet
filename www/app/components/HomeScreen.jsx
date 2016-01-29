@@ -119,7 +119,7 @@ class HomeScreen extends React.Component {
             <section className="code content-home">
               <div className="code__item">
                 <div className="code__item__img" ref="qr_main">
-                  <QRCode value={qrcontent.qr} fgColor="#1B7A00" size={this.state.qrContainerSize}/>
+                  <QRCode value={qrcontent.qr} fgColor="#1B7A00" bgColor ="#C9E6F2"  size={this.state.qrContainerSize}/>
                 </div>
                 <div className="code__item__data">
                       <AltContainer

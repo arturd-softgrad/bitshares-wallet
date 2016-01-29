@@ -21,13 +21,21 @@ class ContactItem extends React.Component {
 
       return  this.props.contact_name !== nextProps.contact_name ||
               this.props.notes !== nextProps.notes ||
-              this.props.friendly_name !== nextProps.friendly_name
+              this.props.friendly_name !== nextProps.friendly_name ||
+              this.props.email == nextProps.email
   }
 
   _tapHandler() {
 
-    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
-    history.pushState({contact: current_contact_json}, 'contact-overview');
+    if (this.props.transfer)
+    {
+      history.pushState({contactname: this.props.contact_name, transfer: this.props.transfer}, 'send');
+    }
+    else
+    {
+      let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes, email: this.props.email });
+      history.pushState({contact: current_contact_json}, 'contact-overview');
+    }
 
     /*this.setState({tapped: true})
     setTimeout(() => {
@@ -39,7 +47,7 @@ class ContactItem extends React.Component {
 
   _editHandler()
   {
-    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
+    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes, email: this.props.email });
     history.pushState({contact: current_contact_json}, 'contact-edit');
   }
 
@@ -63,11 +71,11 @@ class ContactItem extends React.Component {
         <td onTouchTap={this._tapHandler.bind(this)} className={tapped} ><AccountImage className="contact-image" account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
 
         <td onTouchTap={this._tapHandler.bind(this)} className={tapped}> <span className="b bold">{this.props.friendly_name}</span>{"Account: " + this.props.contact_name}<br/>{"Notes: " + this.props.notes}</td>
-
+        {this.props.transfer? null:
         <td>
           <span className="edit-contact" onTouchTap={this._editHandler.bind(this)} ></span>
           <span className="delete-contact" onTouchTap={this.props.onDelete.bind(this)} ></span>
-        </td>
+        </td> }
       </tr>
 
     );

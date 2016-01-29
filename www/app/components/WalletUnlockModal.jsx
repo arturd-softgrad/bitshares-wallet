@@ -72,13 +72,13 @@ class WalletUnlockModal extends React.Component {
         //DEBUG console.log('... componentDidUpdate this.props.resolve', this.props.resolve)
         if(this.props.resolve) {
             if (WalletDb.isLocked())
-                this._show();
+                this.refs.unlockDialog.setState({open:true});//this._show();
             else
                 this.props.resolve()
             return;
         }
         if (this.props.unclosable)
-            this._show();
+            this.refs.unlockDialog.setState({open:true});//this._show();
     }
 
     onPasswordEnter(e) {
@@ -130,8 +130,12 @@ class WalletUnlockModal extends React.Component {
     }
     _handleClose() {
         if (!this.props.unclosable)
+        {
+            WalletDb.tryUnlock();
             this.refs.unlockDialog.setState({open:false});
-         history.pushState(null, '/');
+
+        }
+       // history.pushState(null, '/');
     }
 
     render() {
@@ -155,15 +159,23 @@ class WalletUnlockModal extends React.Component {
                         wrongPassword={this.state.password_error}/>
                     <div className="button-group">
                         <If condition={!this.props.unclosable}>
-                             <button type="button" className="primary"  onTouchTap={this._handleClose.bind(this)} >{counterpart.translate("wallet.home.cancel")}</button>
+                           <RaisedButton  label={counterpart.translate("wallet.home.cancel")}
+                                        backgroundColor = "#FF4081" primary = {true}
+                                        onTouchTap={this._handleClose.bind(this)}  />
                         </If>
-                        <button type="button" className="secondary"  type="submit" >{counterpart.translate("wallet.unlock")}</button>
+                       <RaisedButton
+                        label={counterpart.translate("wallet.unlock")}
+                        backgroundColor = "#008000" secondary={true}
+                        type="submit" />
                     </div>
                 </form>
            </Dialog>
         )
     }
 }
+
+
+
 
 WalletUnlockModal.defaultProps = {
     modalId: "unlock_wallet_modal2"

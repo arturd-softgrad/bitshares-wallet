@@ -20,7 +20,9 @@ class EditContact extends React.Component {
 
      var contact = JSON.parse(this.props.location.state.contact);
 
-     this.state = {contact: contact, contact_name: contact.name, friendly_name: contact.friendly_name, notes: contact.notes}
+     this.state = {contact: contact, contact_name: contact.name, friendly_name: contact.friendly_name,
+      email: contact.email ? contact.email: "",
+      notes: contact.notes}
   }
 
   toChanged(contact_name) {
@@ -31,13 +33,16 @@ class EditContact extends React.Component {
       this.setState({friendly_name: e.target.value});
   }
 
+  toChangedEmail(e) {
+      this.setState({email: e.target.value});
+  }
+
   toChangedNotes(e) {
       this.setState({notes: e.target.value});
   }
-
   _handlerOnLinkContact(e) {
     // TODO add validate account name
-      var contact =  {name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes};
+      var contact =  {name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes, email: this.state.email};
       AccountActions.unlinkContact(this.state.contact);
       AccountActions.linkContact(contact);
       history.pushState(null, 'contacts');
@@ -53,7 +58,7 @@ class EditContact extends React.Component {
     return (
        <section className="content">
             <div style={{"height": "50px"}}>
-              <AccountImage className="contact-image" account={this.state.contact_name} size={{height: 45, width: 45}}/>
+              <AccountImage className="contact-image" account={this.state.contact_name}  email={this.state.email} size={{height: 45, width: 45}}/>
             </div>
             <div>
             <TextField
@@ -67,14 +72,25 @@ class EditContact extends React.Component {
               onChange={this.toChangedFriendlyName.bind(this)}
               value={this.state.friendly_name}/>
            <TextField
+              floatingLabelText={counterpart.translate("wallet.contact_email_hint")+":"}
+              type="text"
+              onChange={this.toChangedEmail.bind(this)}
+              value={this.state.email}/>
+           <TextField
               floatingLabelText={counterpart.translate("wallet.contactNotes")+":"}
               type="text"
               onChange={this.toChangedNotes.bind(this)}
               value={this.state.notes}
               multiLine={true}/>
           <div>
-             <button type="button" className="primary"  onTouchTap={this._handleOnLinkCancel.bind(this)}>{counterpart.translate("wallet.home.cancel")}</button>
-             <button type="button" className="secondary"  onTouchTap={this._handlerOnLinkContact.bind(this)}>{counterpart.translate("wallet.save")}</button>
+            <RaisedButton
+            label={counterpart.translate("wallet.home.cancel")}
+            backgroundColor = "#FF4081" primary = {true}
+            onTouchTap={this._handleOnLinkCancel.bind(this)}  />&nbsp;
+           <RaisedButton
+            label={counterpart.translate("wallet.save")}
+            backgroundColor = "#008000" secondary={true}
+            onTouchTap={this._handlerOnLinkContact.bind(this)} />
           </div>
          </section>
     );

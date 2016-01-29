@@ -65,8 +65,14 @@ class TransactionConfirm extends BaseComponent {
             header = counterpart.translate("wallet.tran_confirm");
                 button_group = (
                 <div className="button-group">
-                     <button type="button" className="primary"  onTouchTap={this.onCloseClick.bind(this)}>{counterpart.translate("wallet.home.cancel")}</button>
-                     <button type="button" className="secondary"  onTouchTap={this.onConfirmClick.bind(this)}>{counterpart.translate("wallet.confirm")}</button>
+                    <RaisedButton
+                        label={counterpart.translate("wallet.home.cancel")}
+                        backgroundColor = "#FF4081" primary = {true}
+                        onTouchTap={this.onCloseClick.bind(this)}  />&nbsp;
+                       <RaisedButton
+                        label={counterpart.translate("wallet.confirm")}
+                        backgroundColor = "#008000" secondary={true}
+                        onTouchTap={this.onConfirmClick.bind(this)} />
                 </div>
             );
         }

@@ -23,6 +23,8 @@ import LoadingIndicator from "./LoadingIndicator";
 import bs58 from "common/base58";
 import lzma from "lzma";
 import {FetchChainObjects} from "api/ChainStore";
+import { createHashHistory, useBasename } from 'history';
+const history = useBasename(createHashHistory)({});
 
 // Flux SendScreen view to to configure the application
 @BindToChainState()
@@ -62,6 +64,20 @@ class SendScreen extends React.Component {
             let current_contact = JSON.parse(query.contact);
             this.state.to_name= current_contact.name;
          }
+         if (state && state.contactname)
+         {
+            this.state.to_name= state.contactname;
+         }
+         if (state && state.transfer)
+         {
+            //let current_transfer = {amount: this.state.amount,  memo: this.state.memo, donate: this.state.donate};
+            let transfer = state.transfer;//JSON.parse(state.transfer);
+            this.state.amount = transfer.amount;
+            this.state.memo = transfer.memo;
+            this.state.donate = transfer.donate;
+
+         }
+
 
          if (state && state.hasOwnProperty("payment")) {
 
@@ -152,6 +168,15 @@ class SendScreen extends React.Component {
         this.setState({ propose_account });
     }
 
+    contactsClick(){
+      let current_transfer = {amount: this.state.amount,  memo: this.state.memo, donate: this.state.donate};
+      //if (this.state.to_account)
+      //  current_transfer.to_account = this.state.to_account.get("id");
+      if (this.state.asset)
+        current_transfer.asset = this.state.asset.get("id");
+     history.pushState({transfer: JSON.stringify(current_transfer)}, 'contacts');
+    }
+
     availableBalanceClick()
     {
         //this.state.amount
@@ -163,11 +188,11 @@ class SendScreen extends React.Component {
                 //let bc = React.render( <BalanceComponent ref="bc0" balance={account_balances[current_asset_id]}/>, document.getElementById('fakeContainer'))
                 var rawAmount=   Number(this.refs.bc1.state.balance.get('balance'))    //Number(bc.state.balance.get('balance'));
                 let asset = this.refs.bc1._reactInternalInstance._renderedComponent._instance.refs.formattedAsset.state.asset
+                let rawAsset = asset;
                 if( asset && asset.toJS ) asset = asset.toJS();
                 let precision = utils.get_asset_precision(asset.precision);
                 var displayAmount = (rawAmount / precision).toFixed(asset.precision)
-                //this.refs.bc1._reactInternalInstance._renderedComponent._instance.refs.formattedAsset
-                this.setState({amount:displayAmount})
+                this.setState({amount:displayAmount, asset: rawAsset});
             }
         }
     }
@@ -184,18 +209,18 @@ class SendScreen extends React.Component {
         }
         e.preventDefault();
 
-        this.setState({error: null, loading: true});
         let asset = this.state.asset;
+        //let asset = this.state.asset ? this.state.asset.get("id") : asset_types[0];
         let precision = utils.get_asset_precision(asset.get("precision"));
 
         //let advancedSettings = SettingsStore.getAdvancedSettings();
+        this.setState({error: null, loading: true});
         //if (advancedSettings.requirePinToOpen)
-          WalletUnlockActions.lock();
+        WalletUnlockActions.lock();
         //else
-        //  WalletDb.tryUnlock();
+        //WalletDb.tryUnlock();
 
         //"1.2.90200" - bitshares-munich
-
         AccountActions.transfer(
             this.state.from_account.get("id"),
             this.state.to_account.get("id"),
@@ -209,6 +234,7 @@ class SendScreen extends React.Component {
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.listen(this.onTrxIncluded);
         }).catch( e => {
+            this.setState({loading: false});
             let msg = e.message ? e.message.split( '\n' )[1] : null;
             console.log( "error: ", e, msg)
             this.setState({error: msg})
@@ -264,7 +290,11 @@ class SendScreen extends React.Component {
                      onAccountChanged={this.onToAccountChanged.bind(this)}
                      account={this.state.to_name}/>
               </div>
-              <div className="form-row send-buttons"><Link to="contacts" className="btn send-form-btn">{counterpart.translate("wallet.home.contacts")}</Link><a href="#" className="btn photo-btn is-disabled"></a><a href="#" className="btn send-form-btn is-disabled">Clipboard</a></div>
+              <div className="form-row send-buttons">
+                <a className="btn send-form-btn" onTouchTap={this.contactsClick.bind(this)}>{counterpart.translate("wallet.home.contacts")}</a>
+                <a href="#" className="btn photo-btn is-disabled"></a>
+                <a href="#" className="btn send-form-btn is-disabled">Clipboard</a>
+              </div>
               <div className="form-row curr-input">
                   <AmountSelector
                       amount={this.state.amount}

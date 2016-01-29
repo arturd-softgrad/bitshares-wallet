@@ -205,11 +205,12 @@ img {
   max-width: 100%;
 }
 .header__logo {
-  height: 50px;
+  height: 60px;
 }
 
 .header__logo img {
   height: 40px;
+  margin-top: 5px;
 }
 
 ul {
@@ -415,7 +416,8 @@ i {
 }
 .btn {
   display: inline-block;
-  width: 43%;
+  /*width: 43%;*/
+  width: calc(45% - 10px);
   height: 26px;
   line-height: 26px;
   text-align: center;
@@ -458,16 +460,19 @@ i {
 }
 
 .send-btn-container {
-  width: 57%;
+  /*width: 57%;*/
+  width: calc(55% - 10px);
   float: right;
 }
 
 .send-btn-container .btn-qr-scan {
-  margin-left: calc(25% - 33px);
+  /*margin-left: calc(25% - 33px);*/
+  /*margin-left: 10px;*/
+
 }
 
 .send-btn-container .btn-send {
-  width: 75%;
+   width: calc(100% - 33px);
 }
 
 .balances {
@@ -612,6 +617,16 @@ div.timetime
     font-size: 0.5rem!important;
 }
 
+.more-button span
+{
+	
+    color: #08C;
+}
+.more-button
+{
+	text-align: center;
+}
+
 
 
 .transactions table th:first-child {
@@ -631,6 +646,7 @@ div.timetime
 .transactions table th:nth-child(4) {
   width: 23%;
   text-align: right;
+  padding-right: 10px;
 }
 .sent-color {
   color: #cd0000;
@@ -986,7 +1002,7 @@ header:after {
 }
 
 .border {
-    border-bottom: solid 1px;
+     border-bottom: 1px solid #9B9B9B;
 }
 
 /*.header__logo {
@@ -994,7 +1010,7 @@ header:after {
   float: left;
 }*/
 .main-nav {
-  padding: 10px 0;
+  padding: 15px 0;
  /* background-color: #DFF6FF;*/
 }
 .main-nav ul {
@@ -1021,7 +1037,7 @@ header:after {
   text-transform: uppercase;
   color: #4a4645;
   font-weight: 500;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   font-size: 12px;
   font-size: 0.75rem;
   border-bottom: 1px solid transparent;
@@ -1408,7 +1424,7 @@ a {
 
 .content-home {
     padding: 0 10px;
-    margin-top: 110px;
+    margin-top: 150px;
 }
 
 .content-contacts {
@@ -1855,14 +1871,32 @@ a {
 
 .contact-image {
   display: inline-block;
-  vertical-align: middle;
-  width: 30px;
-  height: 30px;
+  vertical-align: middle;  
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.contact-image img {
+  border-radius: 50%;
 }
 
 .contact-image canvas {
   border-radius: 50%;
 }
+
+.account-image{
+  border-radius: 50%;
+
+}
+.account-image img{
+  border-radius: 50%;
+
+}
+
+
+
+
 
 .avalibel-label {
     width: 80%;

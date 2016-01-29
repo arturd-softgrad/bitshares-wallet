@@ -67,16 +67,21 @@ class ContactOverview extends React.Component {
   // Render ContactsScreen view
   render() {
 
-    let delete_contact_actions  = [
-      <RaisedButton
-        label={counterpart.translate("wallet.confirm")}
-        primary={true}
-        onTouchTap={this._handleContactDelete.bind(this)} />,
-      <RaisedButton
-        label={counterpart.translate("wallet.home.cancel")}
-        secondary={true}
-        onTouchTap={this._handleDeleteContactCancel.bind(this)} />
-    ];
+
+
+   let delete_contact_actions  =
+            [<RaisedButton
+            label={counterpart.translate("wallet.home.cancel")}
+            backgroundColor = "#FF4081" primary = {true}
+            onTouchTap={this._handleDeleteContactCancel.bind(this)}  />,
+           <RaisedButton
+            label={counterpart.translate("wallet.confirm")}
+            backgroundColor = "#008000" secondary={true}
+            onTouchTap={this._handleContactDelete.bind(this)} />]
+
+
+
+
 
     return (
       <section className="content">
@@ -88,7 +93,7 @@ class ContactOverview extends React.Component {
               ref="delete_confirm" autoScrollBodyContent={true}>
         </Dialog>
         <div style={{"height": "50px"}}>
-          <AccountImage className="contact-image" account={this.state.current_contact.name} size={{height: 45, width: 45}}/>
+          <AccountImage className="contact-image" account={this.state.current_contact.name}  email={this.state.current_contact.email} size={{height: 45, width: 45}}/>
         </div>
         <div>
         <TextField
@@ -114,8 +119,8 @@ class ContactOverview extends React.Component {
           </div>
           <section className="code-buttons">
                 <div>
-                  <Link to="receive upper" className="btn btn-receive" query={{contact: JSON.stringify(this.state.current_contact)}}><Translate component="span" content="wallet.home.receive"/></Link>
-                  <Link to="send upper"  query={{contact: JSON.stringify(this.state.current_contact)}} className="btn btn-send btn-send-alone"><Translate component="span" content="wallet.home.send"/></Link>
+                  <Link to="receive" className="btn btn-receive upper" query={{contact: JSON.stringify(this.state.current_contact)}}><Translate component="span" content="wallet.home.receive"/></Link>
+                  <Link to="send"  query={{contact: JSON.stringify(this.state.current_contact)}} className="btn btn-send btn-send-alone upper"><Translate component="span" content="wallet.home.send"/></Link>
                 </div>
           </section>
         </form>
