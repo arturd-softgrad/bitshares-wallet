@@ -161,7 +161,7 @@ class ApplicationApi {
                     // zashkvar with memo
                    memo_from_public = lookup.memo_public_key(memo_sender)
                     memo_to_public = lookup.memo_public_key(to_account)
-                   memo = "Donate";
+                   memo = "Donation";
                    if(memo && memo_to_public.resolve && memo_from_public.resolve) {
                         var nonce = optional_nonce == null ?
                             helper.unique_nonce_uint64() :

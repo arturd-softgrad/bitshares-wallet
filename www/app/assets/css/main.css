@@ -298,8 +298,8 @@ body {
 .edit-contact,
 .delete-contact {
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
 }
 
 .edit-contact {
@@ -810,7 +810,7 @@ input[type="text"] {
     clear: none;
     border-left: none;
     border-radius: 0;
-    border: 1px solid #000000;
+    border: 1px solid #9B9B9B;
     height: 25px;
 }
 .nice-select:after {
@@ -818,7 +818,7 @@ input[type="text"] {
   height: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 7px solid #000;
+  border-top: 7px solid #9B9B9B;
   -webkit-transform: none;
   -ms-transform: none;
   transform: none;
@@ -900,7 +900,7 @@ color #00901f,
   margin-top: -10px;
 }
 .send-form-btn {
-  border: 1px solid #000;
+  border: 1px solid #9B9B9B;
   color: #000;
   font-weight: 500;
 }
@@ -1392,6 +1392,17 @@ a {
   border-radius: 50%;
 }
 
+.qube-account-image {
+   display: inline-block;
+  vertical-align: middle;
+  width: 15%;
+}
+ 
+
+.qube-account-image canvas {
+  border: solid 1px #00BCD4;
+}
+
 .contacts-table .account-image canvas {
   border-radius: 50%;
   width: 25px;
@@ -1807,14 +1818,14 @@ a {
 }
 
 .text-field {
-    border: solid 1px #000;
+    border: solid 1px #9B9B9B;
     background: transparent;
     height: 25px;
     padding-left: 5px;
 }
 
 .text-area {
-    border: solid 1px #000;
+    border: solid 1px #9B9B9B;
     background: transparent;
     height: 70px;
     padding-left: 5px;
@@ -1874,23 +1885,23 @@ a {
   vertical-align: middle;  
   width: 45px;
   height: 45px;
-  border-radius: 50%;
+ /* border-radius: 50%;*/
 }
 
 .contact-image img {
-  border-radius: 50%;
+/*  border-radius: 50%;*/
 }
 
 .contact-image canvas {
-  border-radius: 50%;
+ /*  border-radius: 50%;*/
 }
 
 .account-image{
-  border-radius: 50%;
+  /*border-radius: 50%;*/
 
 }
 .account-image img{
-  border-radius: 50%;
+ /* border-radius: 50%;*/
 
 }
 

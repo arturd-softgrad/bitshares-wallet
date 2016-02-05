@@ -29,7 +29,7 @@ class AccountStore extends BaseStore {
             // onNewPrivateKeys: [ PrivateKeyActions.loadDbData, PrivateKeyActions.addKey ]
         });
         this._export("loadDbData", "loadContactsDbData", "tryToSetCurrentAccount", "onCreateAccount",
-            "getMyAccounts", "isMyAccount", "getMyAuthorityForAccount");
+            "getMyAccounts", "isMyAccount", "getMyAuthorityForAccount", "doesContactExist");
     }
 
     _getInitialState() {
@@ -248,15 +248,24 @@ class AccountStore extends BaseStore {
 
         if( ! validation.is_account_name(contact.name, true))
             throw new Error("Invalid account name: " + contact.name)
-        contact.timestamp = new Date().getTime();
+        if(!contact.hasOwnProperty("timestamp"))
+            contact.timestamp = new Date().getTime();
+        let contact_name = contact.name;
 
         contact = JSON.stringify(contact);
-
-        iDB.add_to_store("linked_contacts", {
-            contact
-        });
+        iDB.add_to_store("linked_contacts", { contact: contact, contact_name: contact_name  });
         this.state.contacts = this.state.contacts.add(contact);
     }
+
+    doesContactExist(name){
+        for (var json of this.state.contacts) {
+            let contact = JSON.parse(json);
+            if (contact.name == name)
+                return true;
+        }
+        return false;
+    }
+
 
     // TODO implemented Unlink contact
 
@@ -273,10 +282,14 @@ class AccountStore extends BaseStore {
 
     onUnlinkContact(contact) {
 
+        let contact_name = contact.name;
+        //delete(contact.contactJson);
         contact = JSON.stringify(contact);
 
-        iDB.remove_from_store("linked_contacts", contact);
+        iDB.remove_from_store("linked_contacts", contact_name);
         this.state.contacts = this.state.contacts.delete(contact);
+        //this.loadContactsDbData();
+
     }
 }
 

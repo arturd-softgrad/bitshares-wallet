@@ -157,11 +157,11 @@ class SettingsScreen extends React.Component {
   onBrainkeyOpenClick(e) {
         e.preventDefault();
         //this.refs.brainkeyModal.dismiss();
-        WalletUnlockActions.lock();
-        WalletUnlockActions.unlock().then( () => {
+    //    WalletUnlockActions.lock();
+   //     WalletUnlockActions.unlock().then( () => {
             var pw = SettingsStore.getWalletPassword();
             this.setState({brainkeyModalOpen: true, brainKeyPw: pw});
-        })
+      //  })
    }
 
   onBrainkeyCloseClick(e) {
@@ -250,16 +250,14 @@ class SettingsScreen extends React.Component {
                 checked={settings.hideDonations}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">
-            <RaisedButton label={<Translate content="wallet.settings.backup" />}
+            <RaisedButton style={{'width': '32%', 'min-width': '40px'}} label={<Translate content="wallet.settings.backup" />}
               onTouchTap={this._redirectToBackup.bind(this)}    />
+            <RaisedButton style={{'margin-left': '7%', 'width': '60%', 'min-width': '40px'}} label={<Translate content="wallet.brainkey_backup" />}
+              onTouchTap={this.onBrainkeyOpenClick.bind(this)}    />
           </section>
           <section className="setting-item">
             <RaisedButton label={<Translate content="wallet.settings.editPin" />}
               onTouchTap={this._redirectToChangePin.bind(this)}    />
-          </section>
-          <section className="setting-item">
-            <RaisedButton label={<Translate content="wallet.brainkey_backup" />}
-              onTouchTap={this.onBrainkeyOpenClick.bind(this)}    />
           </section>
 
 

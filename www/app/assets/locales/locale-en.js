@@ -130,7 +130,7 @@ home: {
         autoInstallMajorVer: 'Automatically install major version releases',
         requirePinToOpen: 'Require PIN to open wallet',
         autoCloseWalletAfterInactivity: 'Automatically close BitShares Wallet after 3 minutes of inactivity',
-        alwaysDonateDevsMunich: 'Always donate 2 BTS to the Support Developers at BitShares Munich (BitShares-munich)',
+        alwaysDonateDevsMunich: 'Always donate 2 BTS to the Support Developers at BitShares Munich (bitshares-munich)',
         allowUse_GpsToFind: 'Allow the Finder (v2.0) to use GPS to find nearest ATM’s, Humans and POS systems with Smartcoins',
         allowReportPosition : 'Allow the Finder (v2.0) to report your position so that others can buy or sell Smartcoins with you',
         pinNumber: 'PIN number',

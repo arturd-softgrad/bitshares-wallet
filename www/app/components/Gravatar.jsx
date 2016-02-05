@@ -77,7 +77,7 @@ static md5(s)
       {
         let hash = Gravatar.md5(email);
         let {height, width} = this.props.size;
-        return <img src={"http://www.gravatar.com/avatar/"+hash} height={height + "px"} width={width + "px"}/>
+        return <img style={{'border-radius': '50%'}} src={"http://www.gravatar.com/avatar/"+hash} height={height + "px"} width={width + "px"}/>
        }
       else
         return null;

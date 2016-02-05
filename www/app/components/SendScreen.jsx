@@ -267,8 +267,10 @@ class SendScreen extends React.Component {
             }
         }
         let propose_incomplete = this.state.propose && ! this.state.propose_account
+
         let submitButtonClass = "";
-        if(!this.state.from_account || !this.state.to_account || !this.state.amount || this.state.amount === "0"|| !this.state.asset || from_error || propose_incomplete)
+
+        if(!this.state.from_account || !this.state.to_account || !this.state.amount || this.state.amount === "0"|| !this.state.asset || from_error || propose_incomplete || this.state.amount === "")
             submitButtonClass += "disabled";
 
         let accountsList = Immutable.Set();

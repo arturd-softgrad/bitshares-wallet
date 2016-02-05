@@ -50,21 +50,21 @@ class ContactsTable extends React.Component {
       history.pushState(null, 'contacts');
   }
 
-  /*_handleEditContact()
-  {
-    console.log('not implemented - _handleEditContact');
-  }*/
+
 
   _handleDeleteContactCancel() {
     //this.refs.delete_confirm.dismiss();
     this.setState({deletionConfirmOpen: false});
   }
 
-  _handleConfirmDeleteContact() {
-    //this.refs.delete_confirm.show();
-    this.setState({deletionConfirmOpen: true});
+  _handleConfirmDeleteContact(contact) {
+    this.setState({deletionConfirmOpen: true, current_contact: contact});
   }
-
+  _handleEditContact(contact)
+  {
+    //let current_contact_json = JSON.stringify(contact);
+    history.pushState({contact: contact}, 'contact-edit');
+  }
 
 
 
@@ -94,7 +94,9 @@ class ContactsTable extends React.Component {
 
       for (var i=contacts_arr.length-1; i > -1; i--) {
         if (this.IsJsonString(contacts_arr[i])) {
-          contacts.push(JSON.parse(contacts_arr[i]));
+          var json = JSON.parse(contacts_arr[i]);
+          //json.contactJson = contacts_arr[i];
+          contacts.push(json);
         }
       }
      contacts.sort(function(a, b) {
@@ -115,7 +117,6 @@ class ContactsTable extends React.Component {
 
 
 
-
       let table = <table className="contacts-table">
         <theader>
           <tr>
@@ -127,7 +128,9 @@ class ContactsTable extends React.Component {
         <tbody>
            {contacts.map((contact_item, i) =>
               <ContactItem ref="contact_item" contact_name={contact_item.name} friendly_name={contact_item.friendly_name} notes={contact_item.notes} email={contact_item.email} key={i}
-               transfer={this.props.transfer}   onDelete={this._handleConfirmDeleteContact.bind(this)}  />
+              onDelete={this._handleConfirmDeleteContact.bind(this, contact_item)}
+              onEdit= {this._handleEditContact.bind(this,contact_item)}
+               transfer={this.props.transfer}   />
             )}
         </tbody>
       </table>

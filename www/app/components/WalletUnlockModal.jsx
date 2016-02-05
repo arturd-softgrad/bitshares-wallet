@@ -32,31 +32,39 @@ class WalletUnlockModal extends React.Component {
     }
 
     componentWillReceiveProps(next_props) {
-        if(next_props.unclosable !== this.props.unclosable) {
+        /*if(next_props.unclosable !== this.props.unclosable) {
             this.forceUpdate();
-        }
+        }*/
     }
 
     _getInitialState() {
         return {
             password_error: null,
-            password_input_reset: Date.now()
+            password_input_reset: Date.now(),
+            open: false
 
         }
     }
+    /*shouldComponentUpdate(nextProps, nextState) {
+        return      (nextState.password_error != this.state.password_error) ||
+        (nextState.password_input_reset != this.state.password_input_reset) ||
+        (nextState.open != this.state.open);
+    }*/
 
     reset() {
         this.setState(this._getInitialState())
     }
 
     _show() {
-        this.refs.unlockDialog.setState({open:true});
+        if (this.state.open)
+            return;
+        this.setState({open:true});
         //this.refs.password_input.clear()
         if(Apis.instance().chain_id !== WalletDb.getWallet().chain_id) {
             notify.error("This wallet was intended for a different block-chain; expecting " +
                 WalletDb.getWallet().chain_id.substring(0,4).toUpperCase() + ", but got " +
                 Apis.instance().chain_id.substring(0,4).toUpperCase())
-               this.refs.unlockDialog.dismiss();// MODAL close
+                this.setState({open:false});//this.refs.unlockDialog.dismiss();// MODAL close
             return
         }
     }
@@ -70,15 +78,24 @@ class WalletUnlockModal extends React.Component {
 
     componentDidUpdate() {
         //DEBUG console.log('... componentDidUpdate this.props.resolve', this.props.resolve)
-        if(this.props.resolve) {
-            if (WalletDb.isLocked())
-                this.refs.unlockDialog.setState({open:true});//this._show();
-            else
-                this.props.resolve()
+        if (this.props.unclosable)
+        {
+            this._show();
             return;
         }
-        if (this.props.unclosable)
-            this.refs.unlockDialog.setState({open:true});//this._show();
+        else if(this.props.resolve) {
+            if (WalletDb.isLocked())
+                this._show();
+            else
+                if (this.closing == true)
+                {
+                    this.closing = false;
+                    this._handleDismiss();
+                }
+                else
+                    this.props.resolve()
+            return;
+        }
     }
 
     onPasswordEnter(e) {
@@ -99,17 +116,6 @@ class WalletUnlockModal extends React.Component {
                 SettingsStore.changeSetting({setting: "walletUnlockTime", value: unlockTime });
                 console.log("Invalid pin was entered 3 times, locking for 15 minutes until ", new Date(unlockTime))
                 WalletUnlockActions.quitApp();
-                /*if(navigator.app){
-                    navigator.app.exitApp();
-                }
-                else if(navigator.device){
-                    navigator.device.exitApp();
-                }
-                else
-                {
-                    console.log('No device detected, redirecting to homepage instead of quit app');
-                    history.pushState(null, '/');
-                }*/
             }
             return false
         }
@@ -119,9 +125,9 @@ class WalletUnlockModal extends React.Component {
             //SettingsStore.changeSetting({setting: "currentAction", value: btoa(password) });
             SettingsStore.rememberWalletPassword(password);
             this.refs.password_input.clear()
-            this.refs.unlockDialog.setState({open:false});
-            if (!this.props.unclosable)
-                this.props.resolve()
+            this.setState({open:false});
+            //if (!this.props.unclosable)
+            //    this.props.resolve()
             SessionActions.onUnlock()
             WalletUnlockActions.change()
             this.setState({password_input_reset: Date.now(), password_error: false})
@@ -132,7 +138,8 @@ class WalletUnlockModal extends React.Component {
         if (!this.props.unclosable)
         {
             WalletDb.tryUnlock();
-            this.refs.unlockDialog.setState({open:false});
+            this.setState({open:false});
+            this.closing = true;
 
         }
        // history.pushState(null, '/');
@@ -147,9 +154,9 @@ class WalletUnlockModal extends React.Component {
         // https://github.com/akiran/react-foundation-apps/issues/34
         return (
 
-            <Dialog title="Unlock Wallet"
+            <Dialog title={counterpart.translate("wallet.unlock_wallet")}
               actions={this.props.actions} autoScrollBodyContent={true}
-              ref="unlockDialog" open={false}
+              ref="unlockDialog" open={this.state.open}
               onRequestClose={this._handleDismiss.bind(this)}>
 
                 <form onSubmit={this.onPasswordEnter} noValidate>

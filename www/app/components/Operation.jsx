@@ -219,9 +219,9 @@ class Operation extends React.Component {
                     line = <tr className={rowclass}>
                         <td><BlockTime block_number={block}/></td>
                         <td>{sentRcvd}</td>
-                        <td>To:{this.linkToAccount(op[1].to)}<br/>
-                            From:{this.linkToAccount(op[1].from)}<br/>
-                            Memo:{memo_text}</td>
+                        <td>{counterpart.translate("wallet.home.to")}: {this.linkToAccount(op[1].to)}<br/>
+                            {counterpart.translate("wallet.home.from")}: {this.linkToAccount(op[1].from)}<br/>
+                            {counterpart.translate("wallet.home.memo")}: {memo_text}</td>
                         <td><FormattedAsset display_sign={true} style={{fontWeight: "bold"}} amount={amount} asset={assetId}/><br/>
                             {this.props.taxableCurrencyId? [<span>(</span>,<ValueComponent amount={amount} quoteAsset={assetId} baseAsset={this.props.taxableCurrencyId}/>,<span>)</span>] : null}
                         </td>

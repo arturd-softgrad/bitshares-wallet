@@ -16,7 +16,8 @@ var upgrade = function(db, oldVersion) {
         db.createObjectStore("wallet", { keyPath: "public_name" })
         idb_helper.autoIncrement_unique(db, "private_keys", "pubkey")
         db.createObjectStore("linked_accounts", { keyPath: "name" })
-        db.createObjectStore("linked_contacts", { keyPath: "contact"})
+        //db.createObjectStore("linked_contacts", { keyPath: "contact"})
+        db.createObjectStore("linked_contacts", { keyPath: "contact_name"})
 
     }
     if (oldVersion < 2) {
@@ -148,11 +149,11 @@ module.exports = iDB = (function () {
             _instance = undefined
         },
 
-        add_to_store: function (store_name, value) {
+        add_to_store: function (store_name, value, key) {
             return new Promise((resolve, reject) => {
                 let transaction = this.instance().db().transaction([store_name], "readwrite");
                 let store = transaction.objectStore(store_name);
-                let request = store.add(value);
+                let request = store.add(value, key);
                 request.onsuccess = () => { resolve(value); };
                 request.onerror = (e) => {
                     console.log("ERROR!!! add_to_store - can't store value in db. ", e.target.error.message, value);

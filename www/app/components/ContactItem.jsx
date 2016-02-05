@@ -45,18 +45,18 @@ class ContactItem extends React.Component {
 
   }
 
-  _editHandler()
+ /* _editHandler()
   {
     let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes, email: this.props.email });
     history.pushState({contact: current_contact_json}, 'contact-edit');
-  }
+  }*/
 
 
 
 
   render() {
 
-    let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
+    //let current_contact_json = JSON.stringify({name: this.props.contact_name, friendly_name: this.props.friendly_name, notes: this.props.notes });
     let tapped = "no_tapped";
 
     if (this.state.tapped === true) {
@@ -68,12 +68,12 @@ class ContactItem extends React.Component {
     return (
       <tr >
 
-        <td onTouchTap={this._tapHandler.bind(this)} className={tapped} ><AccountImage className="contact-image" account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
+        <td onTouchTap={this._tapHandler.bind(this)} className={tapped} ><AccountImage className="contact-image"  email={this.props.email} account={this.props.contact_name} size={{height: 35, width: 35}}/></td>
 
-        <td onTouchTap={this._tapHandler.bind(this)} className={tapped}> <span className="b bold">{this.props.friendly_name}</span>{"Account: " + this.props.contact_name}<br/>{"Notes: " + this.props.notes}</td>
+        <td onTouchTap={this._tapHandler.bind(this)} className={tapped}> <span className="b bold">{this.props.friendly_name}</span>{counterpart.translate("wallet.home.account")+": " + this.props.contact_name}<br/>{counterpart.translate("wallet.contactNotes")+": " + this.props.notes}</td>
         {this.props.transfer? null:
         <td>
-          <span className="edit-contact" onTouchTap={this._editHandler.bind(this)} ></span>
+          <span className="edit-contact" onTouchTap={this.props.onEdit.bind(this)}  ></span>
           <span className="delete-contact" onTouchTap={this.props.onDelete.bind(this)} ></span>
         </td> }
       </tr>

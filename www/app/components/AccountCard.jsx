@@ -32,7 +32,7 @@ class AccountCard extends Component {
 
         return (
             <div className="profile">
-                    <AccountImage className="account-image" account={this.props.account.get("name")} size={{height: 20, width: 20}} />
+                    <AccountImage className="qube-account-image" account={this.props.account.get("name")} size={{height: 20, width: 20}} />
                     <span className="account-name">{this.props.account.get("name")}</span>
                     <span></span>
             </div>

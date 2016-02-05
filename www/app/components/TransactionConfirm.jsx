@@ -35,7 +35,7 @@ class TransactionConfirm extends BaseComponent {
     onCloseClick(e) {
         e.preventDefault();
         TransactionConfirmActions.close();
-        this.refs.confirmModal.dismiss();
+        //this.refs.confirmModal.dismiss();
     }
 
     render() {
@@ -55,7 +55,8 @@ class TransactionConfirm extends BaseComponent {
             button_group = (
 
                 <div className="button-group">
-                    <RaisedButton label={counterpart.translate("wallet.close")}
+                    <RaisedButton label={counterpart.translate(this.state.error ? "wallet.home.cancel": "wallet.close")}
+                        backgroundColor = {this.state.error? "#FF4081" : "#008000"}
                         secondary={true}
                         onTouchTap={this.onCloseClick.bind(this)} />
                 </div>

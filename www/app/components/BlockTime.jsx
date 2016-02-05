@@ -48,14 +48,19 @@ class BlockTime extends React.Component {
         }
     }
 
-    /*
+
     shouldComponentUpdate(next_props, next_state) {
         return next_props.block_number !== this.props.block_number || next_state.time !== this.state.time;
     }
-    */
+
+
 
                 //{this.state.time ?  <FormattedDate value={this.state.time} formats={intlData.formats} format="short"/> : null}
     render() {
+        if (!this.state.time)
+            return null;
+       //console.log ("$$$$$blockTime block_number="+  this.props.block_number + " time =", this.state.time) // $$$$$$$$$$$$$$$$$$$$$$$$$$$
+
         return (
             <span className="time" key={this.props.block_number}>
                 {this.state.time ? <TimeAgo time={this.state.time} /> : null }

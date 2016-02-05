@@ -28,7 +28,8 @@ class HomeScreen extends React.Component {
       super(props);
 
       this.state =  {
-          qrContainerSize: 64
+          qrContainerSize: 48//64
+          //The QR code on the homescreen is WAY too big. Take off 25% of its size.
       };
 
     }
@@ -57,6 +58,7 @@ class HomeScreen extends React.Component {
     //  let mainPadding = 20;
 
       let mainWidth = mainDom.offsetWidth; //- mainPadding;
+
 
 
       this.setState({qrContainerSize: mainWidth});
@@ -103,6 +105,11 @@ class HomeScreen extends React.Component {
        );
     }
 
+    _onQRCodeClick()
+    {
+       history.pushState(null, 'receive');
+    }
+
     render() {
 
       var isBackupRequired = BackupStore.isBackupRequired();
@@ -118,8 +125,8 @@ class HomeScreen extends React.Component {
       </section> :       [
             <section className="code content-home">
               <div className="code__item">
-                <div className="code__item__img" ref="qr_main">
-                  <QRCode value={qrcontent.qr} fgColor="#1B7A00" bgColor ="#C9E6F2"  size={this.state.qrContainerSize}/>
+                <div className="code__item__img" ref="qr_main" onTouchTap={this._onQRCodeClick.bind(this)}>
+                  <QRCode    value={qrcontent.qr} fgColor="#1B7A00" bgColor ="#C9E6F2"  size={this.state.qrContainerSize}/>
                 </div>
                 <div className="code__item__data">
                       <AltContainer

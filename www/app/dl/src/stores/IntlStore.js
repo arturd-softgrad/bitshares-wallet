@@ -192,8 +192,9 @@ class IntlStore extends BaseStore {
         var tz = this.getCurrentTimeZone();
         var formatted = [];
         formatted.push(new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs));
-        options =  {hour: "numeric", minute: "numeric"};
-        formatted.push(new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs)+ ' ' + tz.abbr);
+        options =  {hour: "numeric", minute: "numeric", timeZone : 'UTC'};
+        var correction = new Date().getTimezoneOffset()*-60000; // cheat Intl that considers current timezone
+        formatted.push(new Intl.DateTimeFormat(locale, options).format(utcTime+tz.offsetMs+correction)+ ' ' + tz.abbr);
         return formatted;
     }
 

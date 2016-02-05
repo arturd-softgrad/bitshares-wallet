@@ -97,7 +97,7 @@ class ReceiveScreen extends React.Component {
           "to_label" : this.state.from_name,
           "currency": this.state.currency,
           "memo": "",
-          "line_items": [{"label": "", "quantity": 1, "price": this.state.amount}],
+          "line_items": [{"label": "", "quantity": 1, "price": this.formatAmount( this.state.amount )}],
           "note": "",
           "callback": ""
     }
@@ -154,6 +154,28 @@ class ReceiveScreen extends React.Component {
     }
   }
 
+  formatAmount(v) {
+    // TODO: use asset's precision to format the number
+    if (!v) v = "";
+    if (typeof v === "number") v = v.toString();
+    let value = v.trim().replace(/,/g, "");
+    // value = utils.limitByPrecision(value, this.props.asset.get("precision"));
+    while (value.substring(0, 2) == "00")
+        value = value.substring(1);
+    if (value[0] === ".") value = "0" + value;
+    else if (value.length) {
+        let n = Number(value)
+        if (isNaN(n)) {
+            value = parseFloat(value);
+            if (isNaN(value)) return "";
+        }
+        let parts = (value + "").split('.');
+        value = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        if (parts.length > 1) value += "." + parts[1];
+    }
+    return value;
+}
+
   // Render ReceiveScreen view
   render() {
 
@@ -161,7 +183,7 @@ class ReceiveScreen extends React.Component {
     let balance = null;
 
    // var qrcontent = KeyGenComponent.getComponents(this.state.amount);
-
+    let value = this.formatAmount( this.state.amount );
 
     return (
 
@@ -173,7 +195,7 @@ class ReceiveScreen extends React.Component {
         <h2><Translate component="span" content="wallet.home.requestSpecificAmount"/>:</h2>
         <form className="receive_form" action="#">
 
-          <input type="text" className="text-field receive-input"  onKeyDown={this.onKeyDown} id="amount" onChange={this.formChange.bind(this)} />
+          <input type="text" className="text-field receive-input"  value={value} onKeyDown={this.onKeyDown} id="amount" pattern="[0-9]" onChange={this.formChange.bind(this)} />
           <select className="nice-select receive-select" style={{"background": "transparent"}} name="currency" id = "currency" onChange={this.formChange.bind(this)} >
             <option value="BTS">BTS</option>
             <option value="USD">USD</option>

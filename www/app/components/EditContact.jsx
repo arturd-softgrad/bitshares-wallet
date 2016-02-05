@@ -18,7 +18,7 @@ class EditContact extends React.Component {
   constructor(props) {
     super(props);
 
-     var contact = JSON.parse(this.props.location.state.contact);
+     var contact = this.props.location.state.contact;//JSON.parse(this.props.location.state.contact);
 
      this.state = {contact: contact, contact_name: contact.name, friendly_name: contact.friendly_name,
       email: contact.email ? contact.email: "",
@@ -34,7 +34,7 @@ class EditContact extends React.Component {
   }
 
   toChangedEmail(e) {
-      this.setState({email: e.target.value});
+      this.setState({email: e.target.value.toLowerCase()});
   }
 
   toChangedNotes(e) {
@@ -42,7 +42,8 @@ class EditContact extends React.Component {
   }
   _handlerOnLinkContact(e) {
     // TODO add validate account name
-      var contact =  {name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes, email: this.state.email};
+      var contact =  {name: this.state.contact_name, friendly_name: this.state.friendly_name, notes: this.state.notes,
+          email: this.state.email, timestamp: this.state.contact.timestamp };
       AccountActions.unlinkContact(this.state.contact);
       AccountActions.linkContact(contact);
       history.pushState(null, 'contacts');

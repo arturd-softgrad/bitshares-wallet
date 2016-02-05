@@ -115,7 +115,7 @@ languages: {
         autoInstallMajorVer: 'Automatische Updates',
         requirePinToOpen: 'Pineingabe vor jeder Überweisung erforderlich',
         autoCloseWalletAfterInactivity: 'Schließe das BitShares Wallet automatisch nach 3 Minuten inaktivität',
-        alwaysDonateDevsMunich: 'Unterstütze immer das BitShares Munich Entwickler Team und spende 2 BTS an (BitShares-munich)',
+        alwaysDonateDevsMunich: 'Unterstütze immer das BitShares Munich Entwickler Team und spende 2 BTS an (bitshares-munich)',
         allowUse_GpsToFind: 'Standortfreigabe für Finder (v2.0) finde den nächsten Geldauotmaten, Mensch oder EC-Karten Gerät mit Smartcoins',
         allowReportPosition : 'Gib deine Standort für den Finder frei (v2.0) damit andere Smartcoin nutzer mit dir Tauschen können',
         pinNumber: 'Pin Nummer',

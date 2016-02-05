@@ -14,7 +14,7 @@ class TimeAgo extends React.Component {
         chain_time: true
     }
 
-    constructor(props) {
+    /*constructor(props) {
         super(props);
         this.timeout = null;
         this._update = this._update.bind(this);
@@ -63,7 +63,7 @@ class TimeAgo extends React.Component {
 
     componentWillUnmount() {
         this._clearTimeout();
-    }
+    }*/  // commented -- causes issues while rendering transaction time without  considering timezone
 
     render() {
         let {time, component, chain_time} = this.props;
@@ -72,8 +72,15 @@ class TimeAgo extends React.Component {
             return null;
         }
 
+        //console.log("$$$$$timeago.render time=", time);
+
         if (typeof time === "string" && time.indexOf("+") === -1) {
             time += "+00:00";
+        }
+        else if (time.getTimezoneOffset)// getting UTC
+        {
+            var tzo = time.getTimezoneOffset();
+            time.setTime(time.getTime() + tzo*60000);
         }
 
         component = component ? component : "span";
@@ -82,7 +89,7 @@ class TimeAgo extends React.Component {
 
 
         //console.log('$$offset_mills = ', offset_mills);
-        let timeAgo = [<div ref={"timeago_ttip_" + time} data-tip={new Date(time)} data-place="top" data-type="light">{formattedTime[0]}</div>,
+        let timeAgo = [<div ref={"timeago_ttip_" + formattedTime[0]} data-tip={formattedTime[0]} data-place="top" data-type="light">{formattedTime[0]}</div>,
             <div className="timetime">{formattedTime[1]}</div>]
         //let timeAgo = <span ref={"timeago_ttip_" + time} data-tip={new Date(time)} data-place="top" data-type="light"><FormattedRelative value={new Date(time).getTime() + offset_mills}/></span>
         return React.createElement(component, {className: this.props.className}, timeAgo);

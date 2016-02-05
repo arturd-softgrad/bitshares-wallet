@@ -29,11 +29,11 @@ class SortableHeader extends React.Component {
             //dangerouslySetInnerHTML={{__html: getMarkup()}}
              //<Translate content="wallet.to_slash_from" />&#x25B2 &#x25BC</th>
             let arrow =  this.props.sorting.descending ? "&#x25BC" : "&#x25B2";
-            return  <th onTouchTap={this.props.onSort.bind(this, this.props.col)} ><b>{this.props.children}</b><span  dangerouslySetInnerHTML={{__html: arrow}}  /></th>
+            return  <th onClick={this.props.onSort.bind(this, this.props.col)} ><b>{this.props.children}</b><span  dangerouslySetInnerHTML={{__html: arrow}}  /></th>
         }
         else
         {
-            return  <th onTouchTap={this.props.onSort.bind(this, this.props.col)} >{this.props.children}</th>
+            return  <th onClick={this.props.onSort.bind(this, this.props.col)} >{this.props.children}</th>
         }
 
     }
@@ -136,7 +136,6 @@ class RecentTransactions extends React.Component {
 
 
     _onSort(col){
-        console.log('$$$sorted by 111123 col=', col);
         let sorting = this.state.sorting;
         if (sorting.col == col)
             sorting.descending = !sorting.descending;
@@ -144,11 +143,6 @@ class RecentTransactions extends React.Component {
             sorting.col = col;
         this.setState({sorting:sorting, sortingChange:!this.state.sortingChange}); // weird, but update is not triggered without it
         SettingsStore.changeSetting({setting: "transactionListSortCol", value: this.state.sorting });
-
-        //history[0].op[1].amount.amount  10000
-        //history[0].op[1].from "1.2.98491"
-        //var account = ChainStore.getAccount(id) account.get("name");
-
     }
 
 
@@ -157,16 +151,13 @@ class RecentTransactions extends React.Component {
     render() {
         let ops = Object.keys(operations);
         let iso = IntlStore.getCurrency().iso;
+        let taxableCurrencyId = null;
         if (iso && iso.length != 0 )
         {
             var test_asset = ChainStore.getAsset(iso);
-            if (test_asset == null)
-                 this.setState({taxableCurrencyId:null});
-            else
-                this.setState({taxableCurrencyId:iso});
+            if (test_asset != null)
+                    taxableCurrencyId = iso;
         }
-        else
-            this.setState({taxableCurrencyId:null});
 
 
         let {accountsList, compactView, filter} = this.props;
@@ -245,7 +236,7 @@ class RecentTransactions extends React.Component {
                         inverted={false}
                         hideFee={true}
                         hideOpLabel={compactView}
-                        taxableCurrencyId={this.state.taxableCurrencyId} />
+                        taxableCurrencyId={taxableCurrencyId} />
                 )
         });
         /*return (

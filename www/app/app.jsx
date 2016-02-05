@@ -249,7 +249,7 @@ class App extends React.Component {
                         </If>
                     </header>
                     <section className="utility">
-                      <span className="utility__ver">v1.0 alpha 9</span>
+                      <span className="utility__ver">v1.0 alpha 11</span>
                       <div className="utility__links">
                         <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
                         <Syncer synced={this.state.synced}/>
