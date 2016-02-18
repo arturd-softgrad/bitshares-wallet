@@ -183,13 +183,14 @@ class ReceiveScreen extends React.Component {
     let balance = null;
 
    // var qrcontent = KeyGenComponent.getComponents(this.state.amount);
+   // orig #009A2D
     let value = this.formatAmount( this.state.amount );
 
     return (
 
     <main ref="main" className="no-nav content">
       <div className="receive-qr">
-          <QRCode value={this.state.paymentData} fgColor="#009A2D" size={this.state.mainSize}/>
+          <QRCode value={this.state.paymentData} fgColor="#064012" size={this.state.mainSize}/>
       </div>
       <div className="amount">
         <h2><Translate component="span" content="wallet.home.requestSpecificAmount"/>:</h2>

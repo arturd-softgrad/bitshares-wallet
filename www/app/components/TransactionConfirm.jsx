@@ -47,6 +47,8 @@ class TransactionConfirm extends BaseComponent {
 
         if(this.state.error || this.state.included) {
             header = this.state.error ? (
+                    this.state.error.indexOf('Insufficient Balance:') != -1 ?
+                    <h3><Translate component="span" content="wallet.out_of_balance"/></h3>:
                     this.state.error
                 ) :
                 (

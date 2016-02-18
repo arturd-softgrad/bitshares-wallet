@@ -3,6 +3,7 @@ import Translate from "react-translate-component"
 import Immutable from "immutable"
 import cname from "classnames"
 import TextField  from "./Utility/TextField";
+import counterpart from "counterpart"
 
 export default class PasswordConfirm extends Component {
 
@@ -38,7 +39,7 @@ export default class PasswordConfirm extends Component {
                   name="password"
                   id="password"
                   ref="password"
-                  floatingLabelText="6-digit PIN"
+                  floatingLabelText={counterpart.translate("wallet.six_digits_pin")}
                   type="password"
                   value={this.state.password}
                   onChange={this.formChange.bind(this)} />
@@ -48,7 +49,7 @@ export default class PasswordConfirm extends Component {
                   name="password"
                   id="confirm"
                   ref="password"
-                  floatingLabelText="6-digit PIN confirm"
+                  floatingLabelText={counterpart.translate("wallet.six_digits_pin_confirm")}
                   type="password"
                   value={this.state.confirm}
                   onChange={this.formChange.bind(this)} />

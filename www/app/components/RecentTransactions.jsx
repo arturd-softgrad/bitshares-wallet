@@ -149,6 +149,8 @@ class RecentTransactions extends React.Component {
 
 
     render() {
+
+
         let ops = Object.keys(operations);
         let iso = IntlStore.getCurrency().iso;
         let taxableCurrencyId = null;
@@ -191,6 +193,34 @@ class RecentTransactions extends React.Component {
         });
 
 
+        if (current_account)
+            current_account_id = current_account.get("id");
+        if (current_account_id)
+        {
+            let incomingTrans = history.filter(a =>  a.op[1].to == current_account_id);
+            let currentIncomingCount =  incomingTrans.length;
+            if (this.lastIncomingCount && this.lastIncomingCount < currentIncomingCount)
+            {
+                console.log('$$$ incoming transaction - playing sound');
+                if (Media)
+                {
+                    let src = "http://bitshares-munich.de/img/woohoo.wav"
+                    //console.log('$$$Media feature is installed');
+                    var media = new Media(src);
+                    media.play();
+                }
+
+            }
+            this.lastIncomingCount = currentIncomingCount;
+        }
+
+
+
+
+
+
+
+
         let comparer = this.compareOps.bind(this);
         let sortCol = this.state.sorting.col;
         if (sortCol == "to")
@@ -199,7 +229,6 @@ class RecentTransactions extends React.Component {
             comparer = this.compareAmounts.bind(this);
 
 
-        if (/*accounts_counter === 1 && */ current_account) current_account_id = current_account.get("id");
         //console.log('$$$raw history =', history); // $$$
         if (current_account_id && sortCol=="op")
         {
@@ -217,6 +246,10 @@ class RecentTransactions extends React.Component {
 
 
         let rowid =0;
+        if (!this.lastHistory)
+        {
+
+        }
         history = history
             .sort(comparer);
        // if (this.state.sorting.descending)

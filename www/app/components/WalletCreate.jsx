@@ -13,6 +13,7 @@ import connectToStores from "alt/utils/connectToStores"
 import key from "common/key_utils"
 import cname from "classnames"
 const RaisedButton = require('material-ui/lib/raised-button');
+import counterpart from "counterpart"
 
 
 import { createHashHistory, useBasename } from 'history';
@@ -103,19 +104,24 @@ class CreateNewWallet extends Component {
                 </div>:null}
                 <div className="grid-content no-overflow">
                     { this.state.custom_brainkey ? <div>
-                        <label>Brainkey</label>
+                        <label>{counterpart.translate("wallet.brainkey")}</label>
                         <BrainkeyInput onChange={this.onBrainkey.bind(this)}/>
-                        This BrainKey is not compatable with BTS 1.0
-                        <br/>(Use a backup file instead)
+                        {counterpart.translate("wallet.brainkey_imcompatible_ln1")}
+                        <br/>{counterpart.translate("wallet.brainkey_imcompatible_ln2")}
                         <br/>&nbsp;
                     </div>:null}
-                    <RaisedButton className={cname("button",{disabled: !(this.state.isValid)})} type="submit" label="Create wallet"  primary={true}  />
-                    <RaisedButton label="Cancel" secondary={true} onTouchTap={this.onBack.bind(this)}/>
+                       <RaisedButton  label={counterpart.translate("wallet.home.cancel")}
+                                    backgroundColor = "#FF4081" primary = {true}
+                                    onTouchTap={this.onBack.bind(this)}  />
+                       <RaisedButton className={cname("button",{disabled: !(this.state.isValid)})} type="submit"
+                        label={counterpart.translate("wallet.create_wallet")}
+                        backgroundColor =  "#008000" secondary={true}   />
+
                 </div>
                 <br/>
                 { ! this.state.custom_brainkey ? <span>
                 <label><a onClick={this.onCustomBrainkey.bind(this)}>
-                    Custom brainkey</a></label>
+                    {counterpart.translate("wallet.custom_brainkey")}</a></label>
                 </span>:null}
             </form>
         </span>)

@@ -298,8 +298,8 @@ body {
 .edit-contact,
 .delete-contact {
   display: inline-block;
-  width: 15px;
-  height: 15px;
+  width: 30px;
+  height: 30px;
 }
 
 .edit-contact {
@@ -441,6 +441,16 @@ i {
   background: #d34b4d url("../img/arrow-up-white.svg") 4px center no-repeat;
   background-size: auto 70%;
 }
+.btn-send:focus{
+	margin-right: 5px;
+    color: #ccc;
+}
+.btn-receive:focus{
+	margin-right: 5px;
+    color: #ccc;
+}
+
+
 .btn-qr-scan {
     width: 24px;
     height: 24px;
@@ -1383,7 +1393,7 @@ a {
 }
 
 .account-name {
-  font-size: 14px;
+  font-size: 18px;
   text-transform: lowercase;
 }
 
@@ -1885,23 +1895,23 @@ a {
   vertical-align: middle;  
   width: 45px;
   height: 45px;
- /* border-radius: 50%;*/
+  border-radius: 50%;
 }
 
-.contact-image img {
-/*  border-radius: 50%;*/
-}
+/*.contact-image img {
+  border-radius: 50%;
+}*/
 
 .contact-image canvas {
- /*  border-radius: 50%;*/
+  border-radius: 50%;
 }
 
 .account-image{
-  /*border-radius: 50%;*/
+  border-radius: 50%;
 
 }
 .account-image img{
- /* border-radius: 50%;*/
+  border-radius: 50%;
 
 }
 
@@ -1972,6 +1982,6 @@ a {
   display: table;
 }
 .dt span {
-  display: table-cell;
+  /*display: table-cell;*/
   vertical-align: middle;
 }

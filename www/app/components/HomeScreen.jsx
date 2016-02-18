@@ -17,6 +17,7 @@ import Immutable from "immutable";
 import ChainTypes from "./Utility/ChainTypes";
 import KeyGenComponent from  "./KeyGenComponent"
 import WalletDb from "stores/WalletDb";
+import counterpart from "counterpart";
 
 import { createHashHistory, useBasename } from 'history';
 const history = useBasename(createHashHistory)({});
@@ -121,12 +122,12 @@ class HomeScreen extends React.Component {
       console.log('$$$isLocked', isLocked);
 
       var contents = isBackupRequired ?        <section className="code content-home">
-        <Link to="backup" className="active"><Translate content="wallet.backup.createBackupPrompt" /></Link>
+        <Link to="backup" className="active"><Translate content="wallet.createBackupPrompt" /></Link>
       </section> :       [
             <section className="code content-home">
               <div className="code__item">
                 <div className="code__item__img" ref="qr_main" onTouchTap={this._onQRCodeClick.bind(this)}>
-                  <QRCode    value={qrcontent.qr} fgColor="#1B7A00" bgColor ="#C9E6F2"  size={this.state.qrContainerSize}/>
+                  <QRCode    value="" fgColor="#064012" bgColor ="#C9E6F2"  size={this.state.qrContainerSize}/>
                 </div>
                 <div className="code__item__data">
                       <AltContainer
@@ -154,10 +155,10 @@ class HomeScreen extends React.Component {
               </div>
             </section>,
             <section className="code-buttons">
-              <Link to="receive" className="btn btn-receive upper">receive</Link>
+              <Link to="receive" className="btn btn-receive upper">{counterpart.translate("wallet.home.receive")}</Link>
               <div className="send-btn-container">
                 <span onTouchTap={this._scan.bind(this)} className="btn btn-qr-scan"></span>
-                <Link to="send" className="btn btn-send upper">send</Link>
+                <Link to="send" className="btn btn-send upper">{counterpart.translate("wallet.home.send")}</Link>
               </div>
             </section>,
                       <AltContainer

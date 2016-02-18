@@ -108,7 +108,7 @@ class SettingsStore {
                 checkUpdatesStartup: false,
                 autoInstallMajorVer: false,
                 requirePinToOpen: true,
-                autoCloseWalletAfterInactivity: false,
+                autoCloseWalletAfterInactivity: true,
                 alwaysDonateDevsMunich: true,
                 hideDonations: true};
             this.changeAdvancedSettings(advancedSettings);

@@ -45,7 +45,7 @@ class BackupBaseComponent extends Component {
 export class BackupCreate extends BackupBaseComponent {
     render() {
         return <span className="content_block">
-            <h3><Translate content="wallet.backup.create_backup" /></h3>
+            <h3><Translate content="wallet.create_backup" /></h3>
             <Create>
                 <NameSizeModified/>
                 <Sha1/>
@@ -102,7 +102,7 @@ export class BackupRestore extends BackupBaseComponent {
         var restored = has_new_wallet
 
         return <div>
-            <h3>Import backup</h3>
+            <h3>{counterpart.translate("wallet.import_backup")}</h3>
             {(new FileReader).readAsBinaryString ? null : <p className="error">Warning! You browser doesnt support some some file operations required to restore backup, we recommend you to use Chrome or Firefox browsers to restore your backup.</p>}
             <Upload>
                 <NameSizeModified/>
@@ -238,10 +238,8 @@ class Download extends BackupBaseComponent {
 
     render() {
         let translate = IntlStore.translate;
-        /*return <span className="button success"
-            onClick={this.onDownload.bind(this)}><Translate content="wallet.backup.download" /></span>*/
         return   <section className="setting-item">
-                  <RaisedButton label="Download"
+                  <RaisedButton label={counterpart.translate("wallet.download")}
                     onTouchTap={this._onDownload.bind(this)}   />
           </section>
     }
@@ -376,9 +374,9 @@ class Upload extends BackupBaseComponent {
             ! this.props.backup.public_key
 
         return <div>
-          <span>Choose an backup</span>
+          <span>{counterpart.translate("wallet.choose_backup")}</span>
           <input type="file" id="backup_input_file"  onChange={this.onFileUpload.bind(this)}/>
-            { is_invalid ? <h5>Invalid format</h5> : null }
+            { is_invalid ? <h5>{counterpart.translate("wallet.invalid_format")}</h5> : null }
         </div>
     }
 

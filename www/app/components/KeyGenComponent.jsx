@@ -28,7 +28,7 @@ class KeyGenComponent extends React.Component {
         var wif = private_key.toWif()
         return {
             privateKey: wif,
-            qr: <QrCode  data={wif}/>
+            qr: ""
         };
 
     }

@@ -103,7 +103,7 @@ class SettingsScreen extends React.Component {
   _switchCurrency(value)
   {
     IntlActions.switchCurrency(value);
-    this.setState({ taxableCountry: value});
+    this.setState({ currencyId: value});
 
   }
   _switchLanguage(value)
@@ -246,7 +246,7 @@ class SettingsScreen extends React.Component {
                <Checkbox  ref="chkHideDonations"
                 name="chkHideDonations"
                 value="checkboxValue6"
-                label={<Translate content="wallet.settings_hideDonations" />}
+                label={<Translate content="wallet.home.hideDonations" />}
                 checked={settings.hideDonations}  onCheck={this._handleAdvancedSettingsUpdate.bind(this)} />
           </section>
           <section className="setting-item">

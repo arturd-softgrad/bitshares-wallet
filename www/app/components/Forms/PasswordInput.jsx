@@ -7,6 +7,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
 import TextField  from "../Utility/TextField";
+import counterpart from "counterpart";
 
 class PasswordInput extends Component {
 
@@ -122,9 +123,9 @@ class PasswordInput extends Component {
                     <TextField
                       name="password"
                       ref={this.props.ref}
-                      floatingLabelText={this.state.watermark || "6-digits PIN"}
+                      floatingLabelText={this.state.watermark || counterpart.translate("wallet.six_digits_pin")}
                       type="password"
-                      pattern="[0-9]" 
+                      pattern="[0-9]"
                       inputmode="numeric"
                       value={this.state.passwordValue}
                       onChange={this.handleChange}
@@ -135,9 +136,9 @@ class PasswordInput extends Component {
                     <div>
                     <TextField
                       name="confirm_password"
-                      floatingLabelText="6-digits PIN confirm"
+                      floatingLabelText={counterpart.translate("wallet.six_digits_pin_confirm")}
                       type="password"
-                      pattern="[0-9]" 
+                      pattern="[0-9]"
                       inputmode="numeric"
                       value={this.state.confirmPasswordValue}
                       onKeyDown={this.onKeyDown}

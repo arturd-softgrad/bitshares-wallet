@@ -88,12 +88,13 @@ class ApplicationApi {
     }) {
 
         var memo_sender = propose_account || from_account
-        var memo_from_public, memo_to_public
-        if (!memo && donate)
-            encrypt_memo = false; // prevent za6kvar
-        if( (memo ) && encrypt_memo  ) {
+        var memo_from_public, memo_to_public, memo_donat_public
+        //if (!memo && donate)
+        //    encrypt_memo = false; // prevent za6kvar
+        if( memo || donate ) {
             memo_from_public = lookup.memo_public_key(memo_sender)
             memo_to_public = lookup.memo_public_key(to_account)
+            memo_donat_public =  lookup.memo_public_key("1.2.90200")
         }
         var asset_id_lookup = lookup.asset_id(asset)
         var propose_acount_id = propose_account ? lookup.account_id(propose_account) : null
@@ -103,7 +104,7 @@ class ApplicationApi {
             var asset_id = asset_id_lookup.resolve
             if( propose_account ) propose_acount_id = propose_acount_id.resolve
             var memo_from_privkey
-            if(encrypt_memo && memo ) {
+            if(encrypt_memo && (memo || donate) ) {
                 var from_public = memo_from_public.resolve
                 memo_from_privkey =
                     WalletDb.getPrivateKey(from_public)
@@ -159,26 +160,27 @@ class ApplicationApi {
                 if (donate)
                 {
                     // zashkvar with memo
-                   memo_from_public = lookup.memo_public_key(memo_sender)
-                    memo_to_public = lookup.memo_public_key(to_account)
-                   memo = "Donation";
-                   if(memo && memo_to_public.resolve && memo_from_public.resolve) {
+                   //memo_from_public = lookup.memo_public_key(memo_sender)
+                   //memo_to_public = lookup.memo_public_key(to_account)
+                   //memo = "Donation";
+                   let memo_object_donat = null;
+                   if(memo_donat_public.resolve && memo_from_public.resolve) {
                         var nonce = optional_nonce == null ?
                             helper.unique_nonce_uint64() :
                             optional_nonce
 
-                        memo_object = {
+                        memo_object_donat = {
                             from: memo_from_public.resolve,
-                            to: memo_to_public.resolve,
+                            to: memo_donat_public.resolve,
                             nonce,
                             message: (encrypt_memo) ?
                                 Aes.encrypt_with_checksum(
                                     memo_from_privkey,
-                                    memo_to_public.resolve,
+                                    memo_donat_public.resolve,
                                     nonce,
-                                    memo
+                                    "Donation"
                                 ) :
-                                memo
+                                "Donation"
                         }
                     }
                     //console.log('$$$ making donating transfer to Bitshares-munich');
@@ -191,7 +193,7 @@ class ApplicationApi {
                             from: lookup.account_id(from_account),
                             to: lookup.account_id("1.2.90200"), ////"1.2.90200" - bitshares-munich
                             amount: {amount: 200000, asset_id: "1.3.0"}, //lookup.asset_id(
-                            memo: memo_object
+                            memo: memo_object_donat
                         });
                        tr.add_operation(donate_op);
                        tr.donor = transfer_op[1];

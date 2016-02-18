@@ -23,6 +23,7 @@ import ContactOverview from "./components/ContactOverview"
 import Syncer from './components/Syncer';
 import cookies from "cookies-js";
 import Translate from "react-translate-component";
+import IntlStore from "stores/IntlStore";
 
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
@@ -46,6 +47,7 @@ import AltContainer from "alt/AltContainer";
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import If from './components/If';
 import TransactionConfirm from './components/TransactionConfirm';
+import IdleTimer from 'react-idle-timer';
 
 
 import { createHashHistory, useBasename } from 'history';
@@ -88,10 +90,10 @@ class App extends React.Component {
         NotificationStore.listen(this._onNotificationChange.bind(this));
 
         // Try to retrieve locale from cookies
-        let locale;
-        if (cookies) {
+        let locale = IntlStore.getCurrentLocale();
+        /*if (cookies) {
             locale = cookies.get("graphene_locale");
-        }
+        }*/
 
         // Switch locale if the user has already set a different locale than en
         let localePromise = (locale) ? IntlActions.switchLocale(locale) : null;
@@ -106,6 +108,7 @@ class App extends React.Component {
         }).catch(error => {
             console.log("[app.jsx] ----- ERROR ----->", error, error.stack);
             this.setState({loading: false});
+             //WalletUnlockActions.forceLock();
         });
 
         //WalletDb.onLock();//$$$$ if (WalletDb.isLocked())
@@ -116,12 +119,16 @@ class App extends React.Component {
             this.setState({synced: true});
         }).catch(error => {
             console.log("[app.jsx] ----- ChainStore.init error ----->", error, error.stack);
+            //WalletUnlockActions.forceLock();
             this.setState({loading: false});
         });
 
         //<Link className="back" onClick={history.goBack}></Link>
 
-    } catch(e) { console.error(e) }}
+    } catch(e) {
+        console.error('application mount error', e);
+        //WalletUnlockActions.forceLock();
+    }}
 
      /** Usage: NotificationActions.[success,error,warning,info] */
     _onNotificationChange() {
@@ -199,6 +206,13 @@ class App extends React.Component {
         var realPath =  this.props.location.pathname.substring(1);
         return path == realPath ? "active"+(realPath.length==0 ? "": "-"+path): "";
     }
+    _onIdle()
+    {
+        console.log("Application 3 minutes inactivity detected on ", new Date());
+        var closeOnIdle = SettingsStore.getAdvancedSettings().autoCloseWalletAfterInactivity;
+        if (closeOnIdle)
+            WalletUnlockActions.quitApp();
+    }
 
     render() {
         const { pathname } = this.props.location;
@@ -227,6 +241,11 @@ class App extends React.Component {
                 </section>
              ):(
             <section>
+                <IdleTimer  ref="idleTimer"    element={document}
+                        idleAction={this._onIdle.bind(this)}
+                        timeout={180000}
+                        format="MM-DD-YYYY HH:MM:ss.SSS">
+                  </IdleTimer>
                 <div className="bg-logo"><img src="app/assets/img/bg-logo.svg" alt="" /></div>
                     <header className="header-inner">
                         <img src="app/assets/img/bg-logo.svg" alt="" />
@@ -240,8 +259,8 @@ class App extends React.Component {
                         <If condition={pathname === "/" || pathname === "/contacts"}>
                              <nav className="main-nav">
                               <ul>
-                                <li className={this.getMenuActiveClass("")}><span onTouchTap={this._handleBalance.bind(this)} className="active-balance"  ><Translate content="wallet.home.balances" /></span></li>
-                                <li className={this.getMenuActiveClass("contacts")}><span onTouchTap={this._handleContacts.bind(this)} className="active-contacts"   to="contacts"><Translate content="wallet.home.contacts" /></span></li>
+                                <li className={this.getMenuActiveClass("")} onTouchTap={this._handleBalance.bind(this)} ><span className="active-balance"  ><Translate content="wallet.home.balances" /></span></li>
+                                <li className={this.getMenuActiveClass("contacts")} onTouchTap={this._handleContacts.bind(this)} ><span className="active-contacts"   to="contacts"><Translate content="wallet.home.contacts" /></span></li>
                                 <li><span className="is-disabled" href="#"><Translate content="wallet.home.finder" /></span></li>
                                 <li><span className="is-disabled" href="#"><Translate content="wallet.home.exchange" /></span></li>
                               </ul>
@@ -249,7 +268,7 @@ class App extends React.Component {
                         </If>
                     </header>
                     <section className="utility">
-                      <span className="utility__ver">v1.0 alpha 11</span>
+                      <span className="utility__ver">v1.0 alpha 12</span>
                       <div className="utility__links">
                         <Link className="mat-icon" to="settings"><i className="settings"></i></Link>
                         <Syncer synced={this.state.synced}/>

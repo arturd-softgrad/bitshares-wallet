@@ -55,7 +55,8 @@ class SendScreen extends React.Component {
             propose: false,
             propose_account: "",
             to_account_valid: false,
-            donate: true
+            donate: true,
+            outOfBalance : false
         };
 
          let { query, state } = this.props.location;
@@ -125,7 +126,20 @@ class SendScreen extends React.Component {
     }
 
     onAmountChanged({amount, asset}) {
-        this.setState({amount, asset, error: null})
+
+        let outOfBalance = false;
+        if (amount && asset)
+        {
+          let precision = utils.get_asset_precision(asset.get("precision"));
+          let requestedAmount = parseInt(amount * precision, 10);
+          let availableBalance = this.getAvailableBalance();
+          if (availableBalance && parseInt(availableBalance.amount * precision, 10) < requestedAmount)
+          {
+            outOfBalance = true;
+            //console.log("$$$sendScreen._insufficient_balance"); //$$$
+          }
+        }
+        this.setState({amount, asset, error: null,  outOfBalance: outOfBalance});
     }
 
     onMemoChanged(e) {
@@ -179,8 +193,16 @@ class SendScreen extends React.Component {
 
     availableBalanceClick()
     {
-        //this.state.amount
-        if (this.state.from_account ) {
+        let availableBalance = this.getAvailableBalance()
+        if (availableBalance)
+          this.setState({amount:availableBalance.amount, asset: availableBalance.asset});
+
+
+    }
+
+    getAvailableBalance()
+    {
+        if (this.state.from_account && this.refs.bc1 ) {
             let account_balances = this.state.from_account.get("balances").toJS();
             let asset_types = Object.keys(account_balances);
             if (asset_types.length > 0) {
@@ -192,26 +214,34 @@ class SendScreen extends React.Component {
                 if( asset && asset.toJS ) asset = asset.toJS();
                 let precision = utils.get_asset_precision(asset.precision);
                 var displayAmount = (rawAmount / precision).toFixed(asset.precision)
-                this.setState({amount:displayAmount, asset: rawAsset});
+                return  {amount:displayAmount, asset: rawAsset};
             }
         }
+        else
+          return null;
     }
 
-    /*onGetAmount(amount)
-    {
-        this.setState({amount:amount});
-    }*/
+
+
+    canSubmit(){
+         return this.state.from_account && this.state.to_account && this.state.amount
+         && this.state.amount != "0" && (this.state.asset || this.state.asset_id) && this.state.amount.length != 0
+         && !this.state.error && !this.state.outOfBalance
+    }
+
 
     onSubmit(e) {
-        if (!this.state.to_account_valid)
+        if (!this.state.to_account_valid || !this.canSubmit())
         {
           return;
         }
         e.preventDefault();
 
-        let asset = this.state.asset;
-        //let asset = this.state.asset ? this.state.asset.get("id") : asset_types[0];
+        let asset = this.state.asset || ChainStore.getAsset(this.state.asset_id);
         let precision = utils.get_asset_precision(asset.get("precision"));
+
+
+
 
         //let advancedSettings = SettingsStore.getAdvancedSettings();
         this.setState({error: null, loading: true});
@@ -259,10 +289,13 @@ class SendScreen extends React.Component {
         if (this.state.from_account && !from_error) {
             let account_balances = this.state.from_account.get("balances").toJS();
             asset_types = Object.keys(account_balances);
-            if (asset_types.length > 0) {
+            if (this.state.outOfBalance)
+                balance = <span className="avalibel-label" ><Translate component="span" content="wallet.out_of_balance"/></span>;
+            else if (asset_types.length > 0) {
                 let current_asset_id = this.state.asset ? this.state.asset.get("id") : asset_types[0];
                 balance = (<span className="avalibel-label" onTouchTap={this.availableBalanceClick.bind(this)}  ><BalanceComponent  ref="bc1" balance={account_balances[current_asset_id]}/> <Translate component="span" content="wallet.transfer_available"/></span>)
-            } else {
+            }
+            else {
                 balance = <Translate component="span" content="wallet.no_funds"/>;
             }
         }
@@ -270,7 +303,7 @@ class SendScreen extends React.Component {
 
         let submitButtonClass = "";
 
-        if(!this.state.from_account || !this.state.to_account || !this.state.amount || this.state.amount === "0"|| !this.state.asset || from_error || propose_incomplete || this.state.amount === "")
+        if(from_error || propose_incomplete || !this.canSubmit())
             submitButtonClass += "disabled";
 
         let accountsList = Immutable.Set();
@@ -295,7 +328,7 @@ class SendScreen extends React.Component {
               <div className="form-row send-buttons">
                 <a className="btn send-form-btn" onTouchTap={this.contactsClick.bind(this)}>{counterpart.translate("wallet.home.contacts")}</a>
                 <a href="#" className="btn photo-btn is-disabled"></a>
-                <a href="#" className="btn send-form-btn is-disabled">Clipboard</a>
+                <a href="#" className="btn send-form-btn is-disabled">{counterpart.translate("wallet.clipboard")}</a>
               </div>
               <div className="form-row curr-input">
                   <AmountSelector

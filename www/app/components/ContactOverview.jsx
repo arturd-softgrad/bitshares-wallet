@@ -85,6 +85,7 @@ class ContactOverview extends React.Component {
 
     return (
       <section className="content">
+        <div className="header__links"><button className="contact-delet-btn"><i onTouchTap={this._handleConfirmDeleteContact.bind(this)} className="contact_delet"></i></button></div>
         <Dialog title={counterpart.translate("wallet.contactDeleteConfirm")}
               actions={delete_contact_actions}
               modal={true}

@@ -21,11 +21,15 @@ import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from'material-ui/lib/styles/colors';
 const RaisedButton = require('material-ui/lib/raised-button');
 const Dialog = require('material-ui/lib/dialog');
+import IntlStore from "stores/IntlStore";
+import IntlActions from "actions/IntlActions";
+
 import { createHashHistory, useBasename } from 'history';
 import BackupActions, {backup, restore, decryptWalletBackup} from "actions/BackupActions";
 import If from "./If";
 const FlatButton = require('material-ui/lib/flat-button');
 var SettingsStore = require("stores/SettingsStore");
+import counterpart from "counterpart";
 
 const history = useBasename(createHashHistory)({})
 
@@ -69,6 +73,7 @@ class CreateAccount extends React.Component {
 
     componentDidMount() {
         this.refs.disclaimer.show();
+
     }
 
     isValid() {
@@ -197,25 +202,29 @@ class CreateAccount extends React.Component {
     }
 
     render() {
+        let locale = IntlStore.getCurrentLocale();
+        IntlActions.switchLocale(locale);
+        console.log("Locale is set via CreateAccount :", locale)
+
         let my_accounts = AccountStore.getMyAccounts()
         let first_account = my_accounts.length === 0;
         let valid = this.isValid();
         let buttonClass = classNames("button", {disabled: !valid});
 
         let disclaimer_actions  = [
-         <button type="button" className="primary"  onTouchTap={this._handleDisclaimerCancel.bind(this)}>Cancel and Exit</button>,
-          <button type="button" className="secondary"  onTouchTap={this._handleDisclaimerAgree.bind(this)}>I Agree</button>
+         <button type="button" className="primary"  onTouchTap={this._handleDisclaimerCancel.bind(this)}>{counterpart.translate("wallet.settings.cancelAndExit")} </button>,
+        <button type="button" className="secondary"  onTouchTap={this._handleDisclaimerAgree.bind(this)}>{counterpart.translate("wallet.settings.iAgree")}</button>
         ];
 
         if (this.state.isDisclaimer === true) {
 
             return (
                 <main className="no-nav content">
-                    <FlatButton label="To accept the agreement"
+                    <FlatButton label={counterpart.translate("wallet.to_accept_agreement")}
                          onTouchTap={this._handleDisclaimerShow.bind(this)}
                          style={{width: '95%'}}
                         primary={true} />
-                    <Dialog title="Agreement"
+                    <Dialog title={counterpart.translate("wallet.agreement")}
                         actions={disclaimer_actions}
                         modal={true}
                         ref="disclaimer" autoScrollBodyContent={true}>
@@ -287,7 +296,7 @@ class CreateAccount extends React.Component {
                     <section>
                       {this.state.loading ?  <LoadingIndicator type="circle"/> : null}
                       <main className="no-nav content">
-                        <Dialog title="Agreement"
+                        <Dialog title={counterpart.translate("wallet.agreement")}
                         actions={disclaimer_actions}
                         modal={true}
                         ref="disclaimer" autoScrollBodyContent={true}>
@@ -351,7 +360,7 @@ class CreateAccount extends React.Component {
                           </div>
                     </Dialog>
                         <div className="page-header">
-                            <h3>ACCOUNT CREATE/REGISTER OR IMPORT</h3>
+                            <h3>{counterpart.translate("wallet.acnt_createRegisterOrImport")}  </h3>
                         </div>
                             <form className="register-form" onSubmit={this.onSubmit.bind(this)} noValidate>
                                 <div className="form-group">
@@ -373,10 +382,10 @@ class CreateAccount extends React.Component {
                                                 onChange={this.onRegistrarAccountChange.bind(this)}/>
                                         </div>)
                                 }
-                                <RaisedButton type="submit" label="Create" secondary={true} />
+                                <RaisedButton type="submit" label={counterpart.translate("wallet.create")} secondary={true} />
                                 <br/>
                                 <br/>
-                                <label className="inline"><Link to="existing-account">Existing account</Link></label>
+                                <label className="inline"><Link to="existing-account">{counterpart.translate("wallet.existing_account")}</Link></label>
                             </form>
                       </main>
                       </section>
