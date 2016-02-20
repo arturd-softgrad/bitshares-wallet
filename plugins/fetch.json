@@ -7,42 +7,28 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-indexeddb-async": {
+    "cordova-plugin-media": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-indexeddb-async"
+            "id": "cordova-plugin-media@~2.1.0"
         },
         "is_top_level": true,
         "variables": {}
     },
-    "org.apache.cordova.device": {
+    "cordova-plugin-file": {
         "source": {
-            "type": "registry",
-            "id": "org.apache.cordova.device"
+            "type": "git",
+            "url": "https://git-wip-us.apache.org/repos/asf/cordova-plugin-file.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
     },
-    "com.msopentech.indexedDB": {
+    "phonegap-plugin-barcodescanner": {
         "source": {
-            "type": "registry",
-            "id": "com.msopentech.indexeddb"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
-    "cordova-plugin-x-socialsharing": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-x-socialsharing"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
-    "nl.x-services.plugins.socialsharing": {
-        "source": {
-            "type": "registry",
-            "id": "nl.x-services.plugins.socialsharing@4.3.16"
+            "type": "git",
+            "url": "https://github.com/wildabeast/BarcodeScanner",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
@@ -55,26 +41,47 @@
         "is_top_level": true,
         "variables": {}
     },
+    "cordova-plugin-indexedDB": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/msopentech/cordova-plugin-indexedDB/",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-x-socialsharing": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
     "cordova-plugin-crosswalk-webview": {
         "source": {
-            "type": "registry",
-            "id": "cordova-plugin-crosswalk-webview"
+            "type": "git",
+            "url": "https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-file": {
+    "cordova-plugin-indexeddb-async": {
         "source": {
-            "type": "registry",
-            "id": "cordova-plugin-file"
+            "type": "git",
+            "url": "https://github.com/ABB-Austin/cordova-plugin-indexeddb-async",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
     },
-    "phonegap-plugin-barcodescanner": {
+    "cordova-plugin-device": {
         "source": {
-            "type": "registry",
-            "id": "phonegap-plugin-barcodescanner"
+            "type": "git",
+            "url": "https://git-wip-us.apache.org/repos/asf/cordova-plugin-device.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}
